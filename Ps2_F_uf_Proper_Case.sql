@@ -17,7 +17,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER FUNCTION [dbo].[ufProperCase](@Value varchar(8000), @Exceptions varchar(8000),@UCASEWordLength tinyint) 
+CREATE OR ALTER FUNCTION [dbo].[ufProperCase](@Value varchar(8000), @Exceptions varchar(8000),@UCASEWordLength tinyint) 
 returns varchar(8000) 
 as
 begin

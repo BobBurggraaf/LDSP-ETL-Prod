@@ -18,7 +18,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
-ALTER PROCEDURE [dbo].[usp_Insert_Alpha_2]
+CREATE OR ALTER PROCEDURE [dbo].[usp_Insert_Alpha_2]
 
 	@Alpha_Stage NVARCHAR(50) = NULL
 	, @Alpha_Step_Number NVARCHAR(10) = NULL

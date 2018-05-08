@@ -83,816 +83,6 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 	)
 	VALUES	
 -- --------------------------
--- Gift Rules
--- --------------------------
-	('Support' -- Dim_Object
-		, '_Gift_Rules_' -- Table_Name
-		, 'Gift_Rules INT
-			' -- Create_Table
-		, 'Gift_Rules
-			' -- Insert_Fields
-		, ' ' -- From_Statement
-		, ' ' -- Where_Statement
-		, 'DECLARE @TABLE_NAME NVARCHAR(100)
-			SET @TABLE_NAME = ''_Gift_Rules_'' ; ------> HARDCODE <------
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''GiftRule_D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1;                               
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''GiftRule_D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_1
-		, ' ' -- Attribute_2
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''GiftRule_E'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                            
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''GiftRule_E'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
-		' -- Attribute_3
-		, 'BEGIN TRY       
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Gift_Rules_'', @Alpha_Step_Number = ''GiftRule_G'', @Alpha_Step_Name = ''_Gift_Rules_ - Load - Begin'', @Alpha_Result = 1;
-				
-				-- Ext_Recognition_Credit
-				
-				IF OBJECT_ID(''_Gift_Credit_'') IS NOT NULL 
-				DROP TABLE _Gift_Credit_
-
-				CREATE TABLE dbo._Gift_Credit_ (
-					New_RecognitionCreditId UNIQUEIDENTIFIER
-					, New_RelatedConstituent UNIQUEIDENTIFIER
-					, New_OrganizationId UNIQUEIDENTIFIER
-					, New_RelatedGift UNIQUEIDENTIFIER
-					, New_CreditAmount MONEY
-					, Plus_Type INT
-					--, Plus_SharedCreditType INT  /*Delete from source 5/15/17*/
-					, Plus_OriginatingConstituent UNIQUEIDENTIFIER
-					, Plus_SubType INT
-					, New_ReceiptDate DATETIME
-					, Plus_InstitutionalHieararchy UNIQUEIDENTIFIER
-					, StatusCode INT
-					, I5_Not_Deleted__Rule_1 INT NOT NULL DEFAULT 1
-					, Donor_Attached__Rule_2 INT NOT NULL DEFAULT 1
-					, Constituent_When_Two_Donors__Rule_3 INT NOT NULL DEFAULT 0
-					, New_RelatedGift__Rule_4 INT NOT NULL DEFAULT  1
-					, Changed_Plus_Type_Per_Gift__Rule_5 INT NOT NULL DEFAULT 0
-					, In_Gift_And_GiftCredit__Rule_6 INT NOT NULL DEFAULT 1
-					, Hard_Or_Soft_Credit_Only__Rule_7 INT NOT NULL DEFAULT 1
-					, Add_Hard_When_Only_Soft__Rule_8 INT NOT NULL DEFAULT 0
-					, One_Record_Per_Donor_And_Gift__Rule_9 INT NOT NULL DEFAULT 1
-					, Single_Hard_Credit__Rule_10 INT NOT NULL DEFAULT 0
-				)
-
-				INSERT INTO dbo._Gift_Credit_ (
-					New_RecognitionCreditId
-					, New_RelatedConstituent
-					, New_OrganizationId
-					, New_RelatedGift
-					, New_CreditAmount
-					, Plus_Type
-					--, Plus_SharedCreditType  /*Delete from source 5/15/17*/
-					, Plus_OriginatingConstituent
-					, Plus_SubType
-					, New_ReceiptDate
-					, Plus_InstitutionalHieararchy
-					, StatusCode
-				)
-
-				SELECT New_RecognitionCreditId
-					, New_RelatedConstituent
-					, New_OrganizationId
-					, New_RelatedGift
-					, New_CreditAmount
-					, Plus_Type
-					--, Plus_SharedCreditType  /*Delete from source 5/15/17*/
-					, Plus_OriginatingConstituent
-					, Plus_SubType
-					, New_ReceiptDate
-					, Plus_InstitutionalHieararchy
-					, StatusCode
-					FROM Ext_Recognition_Credit
-
-
-				--Ext_Gift
-
-				IF OBJECT_ID(''dbo._Gift_'') IS NOT NULL 
-				DROP TABLE dbo._Gift_
-
-
-				CREATE TABLE dbo._Gift_ (
-					New_ConstituentDonor UNIQUEIDENTIFIER
-					, New_OrganizationDonor UNIQUEIDENTIFIER
-					, New_FundAccount UNIQUEIDENTIFIER
-					, New_InstitutionalHierarchyId UNIQUEIDENTIFIER
-					, New_AssociatedPledge UNIQUEIDENTIFIER
-					--, New_Opportunity UNIQUEIDENTIFIER
-					, OpportunityId UNIQUEIDENTIFIER
-					, New_GiftAmount MONEY
-					, New_BatchNumber NVARCHAR(50)
-					--, New_ProposedMatchAmount MONEY  /*Delete from source 5/15/17*/
-					, New_GiftId UNIQUEIDENTIFIER
-					, OwnerId UNIQUEIDENTIFIER			
-					, New_GiftNumber NVARCHAR(50)
-					, StatusCode INT
-					, Plus_ReceiptText NVARCHAR(4000)
-					, Plus_SpecialGiftInstructions NVARCHAR(4000)
-					, Plus_CheckNumber NVARCHAR(50)
-					, Plus_GiftSource INT
-					, Plus_Kind INT
-					, New_TenderType INT
-					, New_AccountingDate DATETIME
-					, New_ReceiptDate DATETIME
-					, New_PostDate DATETIME
-					, Plus_PlannedGift BIT
-					--, New_MatchingDonation BIT  /*Delete from source 5/15/17*/
-					--, Plus_GiftInKindProceeds BIT  /*Delete from source 5/15/17*/
-					, New_Transmitted BIT
-					, Plus_AnonymousGift BIT
-					, Plus_ReceiptDeliveryMethod INT
-					, Plus_GiftInstructions NVARCHAR(4000)
-					, Plus_AcknowledgementInstructions NVARCHAR(4000)
-					, Plus_ExcludeFromReport BIT
-					, Plus_IncludeOnYearEndReceipt BIT
-					, Plus_GoodsServicesProvided BIT
-					, Plus_EntitledBenefitValue MONEY
-					, Plus_AcknowledgeContact NVARCHAR(100)
-					, Plus_ContactRole INT
-					, Plus_Salutation INT
-					, Plus_Signer UNIQUEIDENTIFIER
-					, Plus_NoAcknowledgement BIT
-					, Match_Gift_Number NVARCHAR(50)
-					, Plus_Appeal UNIQUEIDENTIFIER
-					, Plus_MatchExpected BIT
-					, New_Batch UNIQUEIDENTIFIER
-					, Plus_Description NVARCHAR(4000)
-					, Lds_RecurringGiftRule UNIQUEIDENTIFIER
-					, Lds_RecurringGiftGroup UNIQUEIDENTIFIER
-					, I5_Not_Deleted__Rule_1 INT NOT NULL DEFAULT 1
-					, Donor_Attached__Rule_2 INT NOT NULL DEFAULT 1
-					, Constituent_When_Two_Donors__Rule_3 INT NOT NULL DEFAULT 0
-					, In_Gift_And_GiftCredit__Rule_6 INT NOT NULL DEFAULT 1
-					, Accounting_Date_Present__Rule_12 INT NOT NULL DEFAULT 1
-				)
-
-				INSERT INTO dbo._Gift_ (
-					New_ConstituentDonor
-					, New_OrganizationDonor
-					, New_FundAccount
-					, New_InstitutionalHierarchyId
-					, New_AssociatedPledge
-					--, New_Opportunity
-					, OpportunityId
-					, New_GiftAmount
-					, New_BatchNumber
-					--, New_ProposedMatchAmount  /*Delete from source 5/15/17*/
-					, New_GiftId
-					, OwnerId			
-					, New_GiftNumber
-					, StatusCode
-					, Plus_ReceiptText
-					, Plus_SpecialGiftInstructions
-					, Plus_CheckNumber
-					, Plus_GiftSource
-					, Plus_Kind
-					, New_TenderType
-					, New_AccountingDate
-					, New_ReceiptDate
-					, New_PostDate
-					, Plus_PlannedGift
-					--, New_MatchingDonation  /*Delete from source 5/15/17*/
-					--, Plus_GiftInKindProceeds  /*Delete from source 5/15/17*/
-					, New_Transmitted
-					, Plus_AnonymousGift
-					, Plus_ReceiptDeliveryMethod
-					, Plus_GiftInstructions
-					, Plus_AcknowledgementInstructions
-					, Plus_ExcludeFromReport
-					, Plus_IncludeOnYearEndReceipt
-					, Plus_GoodsServicesProvided
-					, Plus_EntitledBenefitValue
-					, Plus_AcknowledgeContact
-					, Plus_ContactRole
-					, Plus_Salutation
-					, Plus_Signer
-					, Plus_NoAcknowledgement
-					, Match_Gift_Number
-					, Plus_Appeal
-					, Plus_MatchExpected
-					, New_Batch
-					, Plus_Description
-					, Lds_RecurringGiftRule
-					, Lds_RecurringGiftGroup
-				)
-
-				SELECT A.New_ConstituentDonor
-					, A.New_OrganizationDonor
-					, A.New_FundAccount
-					, A.New_InstitutionalHierarchyId
-					, A.New_AssociatedPledge
-					--, New_Opportunity
-					, C.OpportunityId
-					, A.New_GiftAmount
-					, A.New_BatchNumber
-					--, New_ProposedMatchAmount  /*Delete from source 5/15/17*/
-					, A.New_GiftId
-					, A.OwnerId			
-					, A.New_GiftNumber
-					, A.StatusCode
-					, A.Plus_ReceiptText
-					, A.Plus_SpecialGiftInstructions
-					, A.Plus_CheckNumber
-					, A.Plus_GiftSource
-					, A.Plus_Kind
-					, A.New_TenderType
-					, A.New_AccountingDate
-					, A.New_ReceiptDate
-					, A.New_PostDate
-					, A.Plus_PlannedGift
-					--, New_MatchingDonation  /*Delete from source 5/15/17*/
-					--, Plus_GiftInKindProceeds  /*Delete from source 5/15/17*/
-					, A.New_Transmitted
-					, A.Plus_AnonymousGift
-					, A.Plus_ReceiptDeliveryMethod
-					, A.Plus_GiftInstructions
-					, A.Plus_AcknowledgementInstructions
-					, A.Plus_ExcludeFromReport
-					, A.Plus_IncludeOnYearEndReceipt
-					, A.Plus_GoodsServicesProvided
-					, A.Plus_EntitledBenefitValue
-					, A.Plus_AcknowledgeContact
-					, A.Plus_ContactRole
-					, A.Plus_Salutation
-					, A.Plus_Signer
-					, A.Plus_NoAcknowledgement
-					, A.Match_Gift_Number
-					, A.Plus_Appeal
-					, A.Plus_MatchExpected
-					, A.New_Batch
-					, A.Plus_Description
-					, A.Lds_RecurringGiftRule
-					, A.Lds_RecurringGiftGroup
-					FROM Ext_Gift A
-						LEFT JOIN Ext_Pledge B ON A.New_AssociatedPledge = B.New_PledgeId
-						LEFT JOIN Ext_Opportunity C ON B.New_Opportunity = C.OpportunityId
-
-
-				--Ext_Gift_Hist
-
-				IF OBJECT_ID(''_Gift_Hist_'') IS NOT NULL 
-				DROP TABLE _Gift_Hist_
-
-				CREATE TABLE dbo._Gift_Hist_ (
-						New_RelatedGift UNIQUEIDENTIFIER
-						, Plus_Constituent UNIQUEIDENTIFIER
-						, Plus_Organization UNIQUEIDENTIFIER
-						, Plus_FundAccount UNIQUEIDENTIFIER
-						, OwnerId UNIQUEIDENTIFIER
-						, Plus_AccountingDate DATETIME
-						, StatusCode INT
-						, New_Amount MONEY
-						, New_ReceiptDate DATETIME
-						, New_TenderType INT
-						, Plus_Kind INT
-						, Plus_Transmitted BIT
-						, Plus_Description NVARCHAR(4000)
-						, Plus_ReceiptText NVARCHAR(4000)
-						, New_Name NVARCHAR(100)
-						, Plus_GiftAdjustmentNote NVARCHAR(4000)
-						, New_GiftHistoryId UNIQUEIDENTIFIER
-						, Plus_GiftNumber NVARCHAR(50)
-						, Plus_PostDate DATETIME
-						, I5_Not_Deleted__Rule_1 INT NOT NULL DEFAULT 1
-						, Donor_Attached__Rule_2 INT NOT NULL DEFAULT 1
-						, RelatedGift_Present__Rule_11 INT NOT NULL DEFAULT 1
-						, Accounting_Date_Present__Rule_12 INT NOT NULL DEFAULT 1
-						, Summed_Value_Per_Gift_Equal_Zero__Rule_13 INT NOT NULL DEFAULT 1
-				)
-
-				INSERT INTO dbo._Gift_Hist_ (
-						New_RelatedGift
-						, Plus_Constituent
-						, Plus_Organization
-						, Plus_FundAccount
-						, OwnerId
-						, Plus_AccountingDate
-						, StatusCode
-						, New_Amount
-						, New_ReceiptDate
-						, New_TenderType
-						, Plus_Kind
-						, Plus_Transmitted
-						, Plus_Description
-						, Plus_ReceiptText
-						, New_Name
-						, Plus_GiftAdjustmentNote
-						, New_GiftHistoryId
-						, Plus_GiftNumber
-						, Plus_PostDate
-					)
-
-				SELECT New_RelatedGift
-					, Plus_Constituent
-					, Plus_Organization
-					, Plus_FundAccount
-					, OwnerId
-					, Plus_AccountingDate
-					, StatusCode
-					, New_Amount
-					, New_ReceiptDate
-					, New_TenderType
-					, Plus_Kind
-					, Plus_Transmitted
-					, Plus_Description
-					, Plus_ReceiptText
-					, New_Name
-					, Plus_GiftAdjustmentNote
-					, New_GiftHistoryId
-					, Plus_GiftNumber
-					, Plus_PostDate
-					FROM Ext_Gift_Hist
-					WHERE 1 = 1 
-						AND New_RelatedGift IS NOT NULL
-						-- AND Plus_AccountingDate IS NOT NULL
-
-					--Rule 1
-					
-						IF OBJECT_ID(''_I5_Deletes_'') IS NOT NULL 
-						DROP TABLE _I5_Deletes_
-						
-						CREATE TABLE dbo._I5_Deletes_ (
-							GiftId UNIQUEIDENTIFIER
-						)
-						
-						INSERT INTO dbo._I5_Deletes_ (
-							GiftId
-						)
-						
-						SELECT DISTINCT New_GiftId AS GiftId
-							FROM Ext_Gift
-							WHERE 1 = 1
-								AND StatusCode = 100000003
-						UNION
-						SELECT DISTINCT New_RelatedGift AS GiftId
-							FROM Ext_Recognition_Credit
-							WHERE 1 = 1
-								AND StatusCode = 100000001
-						UNION
-						SELECT DISTINCT New_RelatedGift AS GiftId
-							FROM Ext_Gift_Hist
-							WHERE 1 = 1
-								AND StatusCode = 100000001
-								
-						-- 9615 current records with this status
-						
-						
-						MERGE INTO dbo._Gift_ T
-							USING (
-								SELECT GiftId
-								FROM _I5_Deletes_
-								) S ON T.New_GiftId = S.GiftId
-							WHEN MATCHED THEN 
-								DELETE;
-						
-						MERGE INTO dbo._Gift_Credit_ T
-							USING (
-								SELECT GiftId
-								FROM _I5_Deletes_
-								) S ON T.New_RelatedGift = S.GiftId
-							WHEN MATCHED THEN 
-								DELETE;
-								
-						MERGE INTO dbo._Gift_Hist_ T
-							USING (
-								SELECT GiftId
-								FROM _I5_Deletes_
-								) S ON T.New_RelatedGift = S.GiftId
-							WHEN MATCHED THEN 
-								DELETE;
-						
-					-- Rule 2	
-
-						MERGE INTO dbo._Gift_ T
-							USING (
-								SELECT DISTINCT New_GiftId AS GiftId
-									FROM Ext_Gift
-									WHERE 1 = 1
-										AND New_ConstituentDonor IS NULL
-										AND New_OrganizationDonor IS NULL
-								) S ON T.New_GiftId = S.GiftId
-							WHEN MATCHED THEN 
-								DELETE;
-
-						MERGE INTO dbo._Gift_Credit_ T
-							USING (
-								SELECT DISTINCT A.New_GiftId AS GiftId
-									FROM Ext_Gift A
-									WHERE 1 = 1
-										AND EXISTS
-											(SELECT *
-												FROM Ext_Recognition_Credit B
-												WHERE 1 = 1
-													AND A.New_GiftId = B.New_RelatedGift
-													AND B.New_RelatedConstituent IS NULL
-													AND B.New_OrganizationId IS NULL	
-											)
-										AND A.New_ConstituentDonor IS NULL
-										AND A.New_OrganizationDonor IS NULL
-								) S ON T.New_RelatedGift = S.GiftId
-							WHEN MATCHED THEN 
-								DELETE;
-								
-						MERGE INTO dbo._Gift_Hist_ T
-							USING (
-								SELECT DISTINCT A.New_GiftId AS GiftId
-									FROM Ext_Gift A
-									WHERE 1 = 1
-										AND EXISTS 
-											(SELECT *
-												FROM Ext_Gift_Hist B
-												WHERE 1 = 1
-													AND A.New_GiftId = B.New_RelatedGift
-													AND B.Plus_Constituent IS NULL
-													AND B.Plus_Organization IS NULL 
-											)
-										AND A.New_ConstituentDonor IS NULL
-										AND A.New_OrganizationDonor IS NULL
-								) S ON T.New_RelatedGift = S.GiftId
-							WHEN MATCHED THEN 
-						DELETE;
-
-					-- Rule 3
-					
-						MERGE INTO dbo._Gift_ T
-							USING (
-								SELECT DISTINCT A.New_GiftId AS GiftId
-									FROM Ext_Gift A
-									WHERE 1 = 1
-										AND EXISTS 
-												(SELECT *
-													FROM Ext_Gift B
-													WHERE 1 = 1
-														AND A.New_GiftId = B.New_GiftId
-														AND New_ConstituentDonor IS NOT NULL
-														AND New_OrganizationDonor IS NOT NULL
-												)
-								) S ON T.New_GiftId = S.GiftId
-							WHEN MATCHED THEN 
-								UPDATE
-									SET T.New_OrganizationDonor = NULL
-									, T.Constituent_When_Two_Donors__Rule_3 = 1
-									;
-
-						MERGE INTO dbo._Gift_Credit_ T
-							USING (
-									SELECT A.New_RecognitionCreditId
-										FROM Ext_Recognition_Credit A
-										WHERE 1 = 1
-											AND EXISTS 
-												(SELECT *
-													FROM Ext_Recognition_Credit B
-													WHERE 1 = 1
-														AND A.New_RecognitionCreditId = B.New_RecognitionCreditId
-														AND New_RelatedConstituent IS NOT NULL
-														AND New_OrganizationId IS NOT NULL 
-												)
-								) S ON T.New_RecognitionCreditId = S.New_RecognitionCreditId
-							WHEN MATCHED THEN 
-								UPDATE
-									SET T.New_OrganizationId = NULL
-									, T.Constituent_When_Two_Donors__Rule_3 = 1
-						;
-					
-					-- 4
-					
-					-- 5
-					
-						MERGE INTO dbo._Gift_Credit_ T
-							USING (
-									SELECT DISTINCT B.New_RelatedGift 
-										, B.ContactId AS Wrong_ContactId -- Needs to be changed to SOFT
-										FROM
-											(SELECT New_GiftId
-												, COALESCE(New_ConstituentDonor, New_OrganizationDonor) AS ContactId
-												FROM dbo._Gift_
-											) A
-											LEFT JOIN
-											(SELECT New_RelatedGift
-												, COALESCE(New_RelatedConstituent, New_OrganizationId) AS ContactId
-												FROM _Gift_Credit_
-												WHERE 1 = 1
-													AND Plus_Type = 100000000
-											) B ON A.New_GiftId = B.New_RelatedGift
-										WHERE 1 = 1
-											AND A.ContactId != B.ContactId
-									) S ON T.New_RelatedGift = S.New_RelatedGift AND COALESCE(T.New_RelatedConstituent,T.New_OrganizationId) = S.Wrong_ContactId
-							WHEN MATCHED THEN 
-								UPDATE
-									SET T.Plus_Type = 100000002
-									, T.Changed_Plus_Type_Per_Gift__Rule_5 = 1
-									;
-
-						MERGE INTO dbo._Gift_Credit_ T
-							USING (
-									SELECT DISTINCT B.New_RelatedGift 
-										, B.ContactId AS Correct_ContactId -- Needs to be changed to HARD
-										FROM
-											(SELECT New_GiftId
-												, COALESCE(New_ConstituentDonor, New_OrganizationDonor) AS ContactId
-												FROM dbo._Gift_
-											) A
-											LEFT JOIN
-											(SELECT New_RelatedGift
-												, COALESCE(New_RelatedConstituent, New_OrganizationId) AS ContactId
-												FROM _Gift_Credit_
-												WHERE 1 = 1
-													AND Plus_Type = 100000002
-											) B ON A.New_GiftId = B.New_RelatedGift
-										WHERE 1 = 1
-											AND A.ContactId = B.ContactId
-									) S ON T.New_RelatedGift = S.New_RelatedGift AND COALESCE(T.New_RelatedConstituent,T.New_OrganizationId) = S.Correct_ContactId
-							WHEN MATCHED THEN 
-								UPDATE
-									SET T.Plus_Type = 100000000
-									, T.Changed_Plus_Type_Per_Gift__Rule_5 = 1
-						;
-						
-						
-					-- Rule 6
-					
-					-- Rule 7
-					
-						MERGE INTO dbo._Gift_Credit_ T
-							USING (
-								SELECT A.New_RecognitionCreditId
-									FROM dbo._Gift_Credit_ A
-									WHERE 1 = 1
-										AND NOT EXISTS
-											(
-											SELECT *
-												FROM dbo._Gift_Credit_ B
-												WHERE 1 = 1
-													AND A.New_RecognitionCreditId = B.New_RecognitionCreditId 
-													AND (B.Plus_Type = 100000002 
-														OR 
-														B.Plus_Type = 100000000)
-											)
-								) S ON T.New_RecognitionCreditId = S.New_RecognitionCreditId
-							WHEN MATCHED THEN 
-						DELETE;
-						
-					-- Rule 8
-					
-						MERGE INTO dbo._Gift_Credit_ T
-							USING (
-									SELECT A.New_RelatedGift
-										, MAX(COALESCE(A.New_RelatedConstituent,A.New_OrganizationId)) AS ContactId
-										FROM
-											(SELECT *
-												FROM _Gift_Credit_
-												WHERE 1 = 1
-													AND Plus_Type = 100000002
-													AND COALESCE(New_RelatedConstituent,New_OrganizationId) IS NOT NULL
-											) A
-											LEFT JOIN 
-											(SELECT *
-												FROM _Gift_Credit_
-												WHERE 1 = 1
-													AND Plus_Type = 100000000
-											) B ON A.New_RelatedGift = B.New_RelatedGift
-										WHERE 1 = 1
-											AND B.New_RelatedGift IS NULL
-										GROUP BY A.New_RelatedGift
-									) S ON T.New_RelatedGift = S.New_RelatedGift AND COALESCE(T.New_RelatedConstituent,T.New_OrganizationId) = S.ContactId
-							WHEN MATCHED THEN 
-								UPDATE
-									SET T.Plus_Type = 100000000
-									, T.Add_Hard_When_Only_Soft__Rule_8 = 1
-						;
-						
-					-- Rule 9
-					
-						MERGE INTO dbo._Gift_Credit_ T
-							USING (
-								SELECT New_RecognitionCreditId
-									, New_RelatedGift
-									FROM
-										(SELECT ROW_NUMBER() OVER(PARTITION BY COALESCE(A.New_RelatedConstituent,A.New_OrganizationId)
-																									, A.New_RelatedGift
-																		ORDER BY A.Plus_Type) AS Row_Num
-											, A.New_RecognitionCreditId
-											, A.New_RelatedGift
-											FROM dbo._Gift_Credit_ A
-										) A
-									WHERE 1 = 1
-										AND Row_Num > 1
-								) S ON T.New_RecognitionCreditId = S.New_RecognitionCreditId
-							WHEN MATCHED THEN 
-						DELETE;
-						
-					-- Rule 10
-					
-						IF OBJECT_ID(''_Multiple_Hard_Credit_'') IS NOT NULL 
-						DROP TABLE _Multiple_Hard_Credit_
-
-						CREATE TABLE dbo._Multiple_Hard_Credit_ (
-							New_GiftId UNIQUEIDENTIFIER
-						)
-
-						INSERT INTO dbo._Multiple_Hard_Credit_ (
-							New_GiftId
-						)
-
-						SELECT New_GiftId
-							FROM dbo._GIFT_
-							WHERE 1 = 1
-								AND New_GiftId IN
-									(
-										SELECT New_RelatedGift
-											FROM (
-										SELECT New_RelatedGift, COUNT(*) AS Cnt
-											FROM _Gift_Credit_
-											WHERE 1 = 1
-												AND Plus_Type = 100000000
-											GROUP BY New_RelatedGift
-											HAVING COUNT(*) > 1
-										) A
-									)
-
-
-						MERGE INTO dbo._Gift_Credit_ T
-						USING (
-								SELECT New_GiftId
-									FROM _Multiple_Hard_Credit_
-								) S ON T.New_RelatedGift = S.New_GiftId 
-						WHEN MATCHED THEN 
-							UPDATE
-								SET T.Plus_Type = 100000002
-								, T.Single_Hard_Credit__Rule_10 = 1
-								;
-
-						MERGE INTO dbo._Gift_Credit_ T
-						USING (
-								SELECT New_GiftId
-									, COALESCE(New_ConstituentDonor,New_OrganizationDonor) AS ContactId
-									FROM dbo._GIFT_
-									WHERE 1 = 1
-										AND New_GiftId IN
-											(
-												SELECT New_GiftId
-													FROM _Multiple_Hard_Credit_
-											)
-								) S ON T.New_RelatedGift = S.New_GiftId AND COALESCE(T.New_RelatedConstituent,T.New_OrganizationId) = S.ContactId
-						WHEN MATCHED THEN 
-							UPDATE
-								SET T.Plus_Type = 100000000
-								, T.Single_Hard_Credit__Rule_10 = 1
-								;
-
-					-- Rule 11
-
-
-					-- Rule 12
-					
-					
-					-- Rule 13
-						-- Missing Plus_AccountingDate where it is present on another record
-						MERGE INTO dbo._Gift_Hist_ T
-							USING (
-									SELECT A.New_RelatedGift
-										, MAX(A.Plus_AccountingDate) AS Plus_AccountingDate
-										FROM dbo._Gift_Hist_ A
-											INNER JOIN 
-												(SELECT DISTINCT A.New_RelatedGift
-													FROM			
-														(SELECT A.New_RelatedGift
-															, ROW_NUMBER() OVER(PARTITION BY A.New_RelatedGift ORDER BY A.New_RelatedGift) AS Row_Num
-															FROM dbo._Gift_Hist_ A
-															WHERE 1 = 1
-																AND A.New_RelatedGift IN
-																	(SELECT New_RelatedGift
-																		FROM _Gift_Hist_
-																		WHERE 1 = 1
-																			AND Plus_AccountingDate IS NULL
-																	)
-														) A
-													WHERE 1 = 1
-														AND Row_Num > 1
-												) B ON A.New_RelatedGift = B.New_RelatedGift
-										WHERE 1 = 1
-											AND A.Plus_AccountingDate IS NOT NULL
-										GROUP BY A.New_RelatedGift
-									) S ON T.New_RelatedGift = S.New_RelatedGift AND T.Plus_AccountingDate IS NULL
-							WHEN MATCHED THEN 
-								UPDATE
-									SET T.Plus_AccountingDate = S.Plus_AccountingDate
-									, T.Summed_Value_Per_Gift_Equal_Zero__Rule_13 = 0
-									;	
-						-- Single record that will not sum to zero
-						INSERT INTO dbo._Gift_Hist_ (
-							New_RelatedGift
-							, Plus_Constituent
-							, Plus_Organization
-							, Plus_FundAccount
-							, OwnerId
-							, Plus_AccountingDate
-							, StatusCode
-							, New_Amount
-							, New_ReceiptDate
-							, New_TenderType
-							, Plus_Kind
-							, Plus_Transmitted
-							, Plus_Description
-							, Plus_ReceiptText
-							, New_Name
-							, Plus_GiftAdjustmentNote
-							, New_GiftHistoryId
-							, Plus_GiftNumber
-							, Plus_PostDate
-							, I5_Not_Deleted__Rule_1
-							, Donor_Attached__Rule_2
-							, RelatedGift_Present__Rule_11
-							, Accounting_Date_Present__Rule_12
-							, Summed_Value_Per_Gift_Equal_Zero__Rule_13
-						)
-						SELECT A.New_RelatedGift
-							, A.Plus_Constituent
-							, A.Plus_Organization
-							, A.Plus_FundAccount
-							, A.OwnerId
-							, A.Plus_AccountingDate
-							, A.StatusCode
-							, (-1 * A.New_Amount) AS New_Amount
-							, A.New_ReceiptDate
-							, A.New_TenderType
-							, A.Plus_Kind
-							, A.Plus_Transmitted
-							, A.Plus_Description
-							, A.Plus_ReceiptText
-							, A.New_Name
-							, A.Plus_GiftAdjustmentNote
-							, A.New_GiftHistoryId
-							, A.Plus_GiftNumber
-							, A.Plus_PostDate
-							, A.I5_Not_Deleted__Rule_1
-							, A.Donor_Attached__Rule_2
-							, A.RelatedGift_Present__Rule_11
-							, A.Accounting_Date_Present__Rule_12
-							, 0 AS Summed_Value_Per_Gift_Equal_Zero__Rule_13
-							FROM dbo._Gift_Hist_ A
-								INNER JOIN
-									(SELECT A.New_RelatedGift, COUNT(*) AS Cnt
-										FROM dbo._Gift_Hist_ A
-										GROUP BY A.New_RelatedGift
-										HAVING COUNT(*) = 1
-									) B ON A.New_RelatedGift = B.New_RelatedGift						
-						-- Delete any additional records that do not have a Plus_AccountingDate
-						MERGE INTO dbo._Gift_Hist_ T
-							USING (
-									SELECT New_RelatedGift
-										FROM _Gift_Hist_
-										WHERE 1 = 1
-											AND Plus_AccountingDate IS NULL
-									) S ON T.New_RelatedGift = S.New_RelatedGift
-							WHEN MATCHED THEN 
-								DELETE
-									;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Gift_Rules_'', @Alpha_Step_Number = ''GiftRule_G'', @Alpha_Step_Name = ''_Gift_Rules_ - Load - End'', @Alpha_Result = 1;
-			END TRY             
-			BEGIN CATCH 
-				DECLARE @ERROR_NUMBER INT
-				DECLARE @ERROR_SEVERITY INT
-				DECLARE @ERROR_STATE INT
-				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
-				DECLARE @ERROR_LINE INT
-				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Gift_Rules_'', @Alpha_Step_Number = ''GiftRule_X'', @Alpha_Step_Name = ''_Gift_Rules_ - Load - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_4
-		, ' ' -- Attribute_5
-		, ' ' -- Attribute_6
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''GiftRule_H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1;
-			' -- Attribute_7
-		, ' ' -- Attribute_8
-		, ' ' -- Attribute_9
-		, ' ' -- Attribute_10
-		, ' ' -- Attribute_11
-		, ' ' -- Attribute_12
-		, ' ' -- Attribute_13
-		, ' ' -- Attribute_14
-		, ' ' -- Attribute_15
-		, ' ' -- Attribute_16
-		, ' ' -- Attribute_17
-		, ' ' -- Attribute_18
-		, ' ' -- Attribute_19
-		, ' ' -- Attribute_20
-		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Gift_Rules_''; ------> HARDCODE <------
-			' -- Attribute_21
-		, 1 -- Active
-		, GETDATE() -- Insert_Date
-		, NULL  -- Update_Date                
-	)
-	,	
-	
--- --------------------------
 -- _Affiliated_Dim Table
 -- --------------------------
 	('Dim' -- Dim_Object
@@ -1703,6 +893,535 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 	)
 	,
 -- --------------------------
+-- _Address_Dim Table
+-- --------------------------
+	('Dim' -- Dim_Object
+		, '_Address_Dim' -- Table_Name
+		, 'ContactId NVARCHAR(100)
+			, Address_Key INT  PRIMARY KEY
+			, Address_Group_Key INT
+			, Address_Primary_Yn NVARCHAR(1)
+			, Address_Street_1 NVARCHAR(100)
+			, Address_Street_2 NVARCHAR(100)
+			, Address_Street_3 NVARCHAR(100)
+			, Address_City NVARCHAR(100)
+			, Address_County NVARCHAR(100)
+			, Address_County_Code NVARCHAR(10)
+			, Address_County_Id NVARCHAR(100)
+			, Address_State_Province NVARCHAR(50)
+			, Address_State_Code NVARCHAR(100)
+			, Address_Country NVARCHAR(100)
+			, Address_Post_Code_Full NVARCHAR(100)
+			, Address_Post_Code_Last_4 NVARCHAR(15)
+			, Address_Printing_Line_1 NVARCHAR(606)
+			, Address_Printing_Line_2 NVARCHAR(406)
+			, Address_Display NVARCHAR(300)
+			, Address_Quality_Status NVARCHAR(400)
+			, Address_Quality_Status_Value INT
+			, Address_Longitude FLOAT
+			, Address_Latitude FLOAT
+			, Address_Active_Yn NVARCHAR(1)
+			, Address_Confirmed_Yn NVARCHAR(1)
+			--, Address_Undeliverable_Yn NVARCHAR(1)  /*Delete from source 5/15/17*/
+			, Address_Confidential_Yn NVARCHAR(1)
+			--, Address_Confidential_Reason NVARCHAR(400)  /*Delete from source 5/15/17*/
+			, Address_Type NVARCHAR(400)
+			, Address_Type_Value INT
+			, Address_Printing_Line_3 NVARCHAR(100)
+			, Address_Printing_Line_4 NVARCHAR(100)
+			' -- Create_Table
+		, 'ContactId
+			, Address_Key
+			, Address_Group_Key
+			, Address_Primary_Yn
+			, Address_Street_1
+			, Address_Street_2
+			, Address_Street_3
+			, Address_City
+			, Address_County
+			, Address_County_Code
+			, Address_County_Id
+			, Address_State_Province
+			, Address_State_Code
+			, Address_Country
+			, Address_Post_Code_Full
+			, Address_Post_Code_Last_4
+			, Address_Printing_Line_1
+			, Address_Printing_Line_2
+			, Address_Display
+			, Address_Quality_Status
+			, Address_Quality_Status_Value
+			, Address_Longitude
+			, Address_Latitude
+			, Address_Active_Yn
+			, Address_Confirmed_Yn
+			--, Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
+			, Address_Confidential_Yn
+			--, Address_Confidential_Reason  /*Delete from source 5/15/17*/
+			, Address_Type
+			, Address_Type_Value
+			, Address_Printing_Line_3
+			, Address_Printing_Line_4
+			' -- Insert_Fields
+		, ' ' -- From_Statement
+		, ' ' -- Where_Statement
+		, 'DECLARE @TABLE_NAME NVARCHAR(100)
+			SET @TABLE_NAME = ''_Address_Dim'' ; ------> HARDCODE <------
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''113D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1;                               
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''113D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
+			' -- Attribute_1
+		, 'DECLARE @SQL_1 NVARCHAR(MAX)
+			DECLARE @SQL_2 NVARCHAR(MAX)
+			DECLARE @TABLE_NAME_B NVARCHAR(100)
+			SET @TABLE_NAME_B = ''_Address_Bridge''
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''113E'', @Alpha_Step_Name = ''Bridge Table Creation - Begin'', @Alpha_Result = 1;
+			SET @SQL_2 = '' ''''LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + '''''', ''''U'''' ''
+			SET @SQL_1 = ''
+			IF OBJECT_ID('' + @SQL_2 + '') IS NOT NULL
+			DROP TABLE LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + ''                                               
+			CREATE TABLE LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + ''(ContactId NVARCHAR(100), Address_Key INT PRIMARY KEY, Address_Group_Key INT)''                                                        
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''113E'', @Alpha_Step_Name = ''Bridge Table Creation - Query'', @Alpha_Query = @SQL_1, @Alpha_Result = 1;                                        
+			EXEC(@SQL_1)
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''113E'', @Alpha_Step_Name = ''Bridge Table Creation - End'', @Alpha_Result = 1;
+			' -- Attribute_2
+		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''113F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''113F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
+			' -- Attribute_3
+		, 'IF OBJECT_ID(''tempdb..#Address_Temp_1'') IS NOT NULL
+					DROP TABLE #Address_Temp_1
+					IF OBJECT_ID(''tempdb..#Address_Temp_2'') IS NOT NULL
+					DROP TABLE #Address_Temp_2
+			BEGIN TRY
+				DECLARE @TABLE_CNT1 AS VARCHAR(100)
+				DECLARE @TABLE_CNT2 AS VARCHAR(100)
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
+					SELECT * INTO #Address_Temp_1
+						FROM 
+							(
+							SELECT F.ContactId
+								, ROW_NUMBER() OVER(ORDER BY F.New_AddressId) AS Address_Key
+								, F.New_AddressId
+								, F.Address_Primary_Yn
+								, F.Address_Street_1
+								, F.Address_Street_2
+								, F.Address_Street_3
+								, F.Address_City
+								, F.Address_County
+								, F.Address_County_Code
+								, F.Address_County_Id
+								, F.Address_State_Province
+								, F.Address_State_Code
+								, F.Address_Country
+								, F.Address_Post_Code_Full
+								, F.Address_Printing_Line_1
+								, F.Address_Printing_Line_2
+								, F.Address_Display
+								, F.Address_Quality_Status
+								, F.Address_Quality_Status_Value
+								, F.Address_Post_Code_Last_4
+								, F.Address_Longitude
+								, F.Address_Latitude
+								, F.Address_Active_Yn
+								, F.Address_Confirmed_Yn
+								--, F.Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
+								, F.Address_Confidential_Yn
+								--, F.Address_Confidential_Reason  /*Delete from source 5/15/17*/
+								, F.Address_Type
+								, F.Address_Type_Value
+								, F.Address_Printing_Line_3
+								, F.Address_Printing_Line_4
+								FROM
+									(SELECT A.ContactId
+										, A.New_AddressId
+										, B.Address_Primary_Yn
+										, A.Address_Street_1
+										, A.Address_Street_2
+										, A.Address_Street_3
+										, C.Address_City
+										, C.Address_County
+										, C.Address_County_Code
+										, C.Address_County_Id
+										, C.Address_State_Province
+										, C.Address_State_Code
+										, C.Address_Country
+										, C.Address_Post_Code_Full
+										, B.Address_Printing_Line_1
+										, D.Address_Printing_Line_2
+										, A.Address_Display
+										, E.Address_Quality_Status
+										, E.Address_Quality_Status_Value
+										, A.Address_Post_Code_Last_4
+										, A.Address_Longitude
+										, A.Address_Latitude
+										, B.Address_Active_Yn
+										, B.Address_Confirmed_Yn
+										--, B.Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
+										, B.Address_Confidential_Yn
+										--, E.Address_Confidential_Reason  /*Delete from source 5/15/17*/
+										, E.Address_Type
+										, E.Address_Type_Value
+										, C.Address_Printing_Line_3
+										, C.Address_Printing_Line_4
+										FROM
+											(SELECT DISTINCT OA.Plus_RelatedContact AS ContactId
+												, OA.New_AddressId
+												, OA.New_Street1 AS Address_Street_1
+												, OA.New_Street2 AS Address_Street_2
+												, OA.New_Street3 AS Address_Street_3
+												, OA.New_Zip4 AS Address_Post_Code_Last_4
+												, CONVERT(NVARCHAR(300),OA.Plus_AddressDisplay) AS Address_Display
+												, OA.Plus_Longitude AS Address_Longitude
+												, OA.Plus_Latitude AS Address_Latitude
+												FROM LDSPhilanthropiesDW.dbo.Ext_Address OA
+											) A LEFT JOIN
+											(SELECT DISTINCT OA.New_AddressId
+												, CASE WHEN OA.New_Primary = 1 THEN ''Y'' 
+													WHEN OA.New_Primary = 0 THEN ''N''
+													ELSE ''-'' END AS Address_Primary_Yn
+												, COALESCE(OA.New_Street1,'' '') + COALESCE(OA.New_Street2,'' '') + COALESCE(OA.New_Street3,'' '') AS Address_Printing_Line_1 
+												, CASE WHEN OA.StateCode = 0 THEN ''Y'' ELSE ''N'' END AS Address_Active_Yn
+												--, CASE WHEN OA.New_Confirmed = 0 THEN ''N'' ELSE ''Y'' END AS Address_Confirmed_Yn /*Delete from source 5/15/17*/
+												, CASE WHEN OA.New_ConfirmedDate IS NULL THEN ''N'' ELSE ''Y'' END AS Address_Confirmed_Yn
+												--, CASE WHEN OA.New_Undeliverable = 0 THEN ''N'' ELSE ''Y'' END AS Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
+												, CASE WHEN OA.New_Confidential = 0 THEN ''N'' ELSE ''Y'' END AS Address_Confidential_Yn
+												FROM LDSPhilanthropiesDW.dbo.Ext_Address OA
+											) B ON A.New_AddressId = B.New_AddressId LEFT JOIN
+											(SELECT DISTINCT OA.New_AddressId
+												--, NC.New_Name AS Address_City
+												, RTRIM(LTRIM(dbo.ufProperCase(OA.Lds_City,''|Act|Air|Al|am|an|Ana|and|And|Ann|Arm|as|au|Ave|ba|Bad|Bar|Bay|Bch|Bee|bei|Bei|Bel|Big|Bow|Box|Br|Bud|Buk|By|
+																	|Cd|Chi|cho|Chu|Cle|Col|Ctr|Cty|Cut|Cyn|Dam|Dan|De|de|Del|Den|Des|DeWinton|di|Do|do|Dos|Dry|du|
+																	|Eau|Edo|Egg|El|Elk|Ell|Elm|Ely|Emu|en|Et|Eup|Ewa|Eye|Fe|Fox|Foy|Ft|Fu|Gan|Gap|Gi|Gig|Gro|Gto|gu|Gu|Gun|Gye|
+																	|Hae|Ham|Hat|Hls|Ho|Hof|Hot|Hts|Hu|Ile|im|in|In|Inn|Is|Jal|Jay|Jct|Jet|Jim|Jin|Joe|Joo|Joy|Ju|
+																	|Kan|Ken|ken|Key|Ki|Ku|Kus|La|Lam|Las|Le|le|Lea|Lee|Les|Lin|Loa|Los|
+																	|Mai|Mar|Mc|Med|Mer|Mex|Mi|Mie|Min|Mnt|Mor|Mt|Mtn|Mun|Na|Nam|Nan|Nat|New|Nos|Nye|Oak|of|Oil|Ola|Old|Ord|Oro|
+																	|Pak|Paw|Paz|Pe|Pea|Pen|po|Pok|Pos|Pri|Red|Rex|Rey|Rio|Roi|Roy|Rue|Run|Rye|
+																	|Sac|Sai|Sam|San|Sao|Sea|Shi|shi|si|Siu|Six|Ski|So|St|Sta|Ste|Sul|Sun|Sur|
+																	|Ta|Tai|Tan|Tao|Tel|Ten|The|Tin|Top|Tow|Two|Twp|Usk|USSCA|Uul|Van|Vi|Vlg|Vly|voa|
+																	|Wai|Wan|Way|Wuk|Xi|Yan|Yi|Yuc|Zug|'',3
+																	))) AS Address_City
+												--, NCTY.New_Name AS Address_County
+												, OA.Lds_County AS Address_County
+												, NCTY.Plus_CountyCode AS Address_County_Code
+												, NCTY.New_CountyId AS Address_County_Id
+												--, NST.Plus_Abbreviation AS Address_State_Province
+												, OA.Lds_StateProvince AS Address_State_Province
+												--, NST.New_Name AS Address_State_Code
+												, OA.Lds_StateProvince AS Address_State_Code
+												, NCRY.New_Name AS Address_Country
+												--, CASE WHEN NCRY.New_Name  != ''United States'' THEN OA.Plus_ForeignPostalCode 
+												--	ELSE  PC.New_Name END AS Address_Post_Code_Full
+												, OA.Lds_PostalCode AS Address_Post_Code_Full
+												--, CASE WHEN NCRY.New_Name  != ''United States'' THEN OA.Plus_ForeignPostalCode 
+												--	ELSE  PC.New_Name END As Address_Printing_Line_3
+												, OA.Lds_PostalCode AS Address_Printing_Line_3
+												, NCRY.New_Name AS Address_Printing_Line_4
+												FROM LDSPhilanthropiesDW.dbo.Ext_Address OA
+													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_City NC ON OA.New_CityLookUp = NC.New_CityId
+													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_County NCTY ON OA.New_CountyId = NCTY.New_CountyId 
+													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_State NST ON OA.New_StatesProvinces = NST.New_StateId
+													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_Country NCRY ON OA.New_CountryRegions = NCRY.New_CountryId
+													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_Postal PC ON OA.New_PostalCodes = PC.New_PostalCodeId 
+											) C ON A.New_AddressId = C.New_AddressId LEFT JOIN
+											(SELECT DISTINCT OA.New_AddressId
+												, CASE WHEN AF.New_UseStateAbreviation = 1 THEN COALESCE(OA.Lds_City,'' '') + '', '' + COALESCE(OA.Lds_StateProvince,'' '') 
+													ELSE COALESCE(OA.Lds_City,'' '') + '', '' + COALESCE(OA.Lds_StateProvince,'' '') END AS Address_Printing_Line_2
+												FROM LDSPhilanthropiesDW.dbo.Ext_Address OA
+													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_City NC ON OA.New_CityLookUp = NC.New_CityId
+													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_County NCTY ON OA.New_CountyId = NCTY.New_CountyId 
+													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_State NST ON OA.New_StatesProvinces = NST.New_StateId
+													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_Country NCRY ON OA.New_CountryRegions = NCRY.New_CountryId
+													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_Postal PC ON OA.New_PostalCodes = PC.New_PostalCodeId 
+													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_Address_Format AF ON NCRY.Plus_AdderessFormat = AF.Plus_AddressFormatId
+											) D ON A.New_AddressId = D.New_AddressId LEFT JOIN
+											(SELECT DISTINCT OA.New_AddressId
+												, Q.Column_Label AS Address_Quality_Status
+												, Q.Column_Value AS Address_Quality_Status_Value
+												--, C.Column_Label AS Address_Confidential_Reason  /*Delete from source 5/15/17*/
+												, A.Column_Label AS Address_Type
+												, A.Column_Value AS Address_Type_Value
+												FROM LDSPhilanthropiesDW.dbo.Ext_Address OA
+													LEFT JOIN LDSPhilanthropiesDW.dbo._Address_Quality_ Q ON OA.Plus_OneAccordQuality = Q.Column_Value 
+													--LEFT JOIN LDSPhilanthropiesDW.dbo._Address_Confidential_ C ON OA.Plus_ConfidentialInstruction = C.Column_Value  /*Delete from source 5/15/17*/ 
+													LEFT JOIN LDSPhilanthropiesDW.dbo._Address_Type_ A ON OA.New_AddressType = A.Column_Value
+											) E ON A.New_AddressId = E.New_AddressId
+										WHERE 1 = 1
+											AND B.Address_Active_Yn = ''Y''
+									) F
+							) A  
+						OPTION(MAXDOP 4)
+					SELECT * INTO #Address_Temp_2
+						FROM 
+							(
+							SELECT ContactId
+								, ROW_NUMBER() OVER(ORDER BY ContactId) AS Address_Group_Key --> HARD CODED <--
+								FROM
+									(SELECT DISTINCT ContactId   
+										FROM #Address_Temp_1) A
+							) A
+				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Address_Temp_1)
+				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Address_Temp_2)
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
+			END TRY 
+			BEGIN CATCH
+				DECLARE @ERROR_NUMBER INT
+				DECLARE @ERROR_SEVERITY INT
+				DECLARE @ERROR_STATE INT
+				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
+				DECLARE @ERROR_LINE INT
+				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
+				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113X'', @Alpha_Step_Name = ''Dim Table - Transform - Error'', @Alpha_Result = 0
+				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+			END CATCH
+			BEGIN TRY 
+				DECLARE @TABLE_CNT3 AS VARCHAR(100)
+				DECLARE @TABLE_CNT4 AS VARCHAR(100)
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;
+					INSERT INTO _Address_Dim --> HARD CODED <--
+						(ContactId
+						, Address_Key
+						, Address_Group_Key
+						, Address_Primary_Yn
+						, Address_Street_1
+						, Address_Street_2
+						, Address_Street_3
+						, Address_City
+						, Address_County
+						, Address_County_Code
+						, Address_County_Id
+						, Address_State_Province
+						, Address_State_Code
+						, Address_Country
+						, Address_Post_Code_Full
+						, Address_Post_Code_Last_4
+						, Address_Printing_Line_1
+						, Address_Printing_Line_2
+						, Address_Display
+						, Address_Quality_Status
+						, Address_Quality_Status_Value
+						, Address_Longitude
+						, Address_Latitude
+						, Address_Active_Yn
+						, Address_Confirmed_Yn
+						--, Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
+						, Address_Confidential_Yn
+						--, Address_Confidential_Reason  /*Delete from source 5/15/17*/
+						, Address_Type
+						, Address_Type_Value
+						, Address_Printing_Line_3
+						, Address_Printing_Line_4
+						)
+						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
+							, A.Address_Key
+							, B.Address_Group_Key
+							, A.Address_Primary_Yn
+							, A.Address_Street_1
+							, A.Address_Street_2
+							, A.Address_Street_3
+							, A.Address_City
+							, A.Address_County
+							, A.Address_County_Code
+							, CONVERT(NVARCHAR(100),A.Address_County_Id) AS Address_County_Id
+							, A.Address_State_Province
+							, A.Address_State_Code
+							, A.Address_Country
+							, A.Address_Post_Code_Full
+							, A.Address_Post_Code_Last_4
+							, A.Address_Printing_Line_1
+							, A.Address_Printing_Line_2
+							, A.Address_Display
+							, A.Address_Quality_Status
+							, A.Address_Quality_Status_Value
+							, A.Address_Longitude
+							, A.Address_Latitude
+							, A.Address_Active_Yn
+							, A.Address_Confirmed_Yn
+							--, A.Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
+							, A.Address_Confidential_Yn
+							--, A.Address_Confidential_Reason   /*Delete from source 5/15/17*/
+							, A.Address_Type
+							, A.Address_Type_Value
+							, A.Address_Printing_Line_3
+							, A.Address_Printing_Line_4   
+							FROM #Address_Temp_1 A
+								LEFT JOIN #Address_Temp_2 B ON A.ContactId = B.ContactId
+					INSERT INTO _Address_Bridge --> HARD CODED <--
+						(ContactId
+						, Address_Key --> HARD CODED <--
+						, Address_Group_Key --> HARD CODED <--
+						)
+						SELECT DISTINCT ContactId
+							, Address_Key --> HARD CODED <--
+							, Address_Group_Key --> HARD CODED <--  
+							FROM _Address_Dim  --> HARD CODED <--              
+				SELECT @TABLE_CNT3 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Address_Dim)
+				SELECT @TABLE_CNT4 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Address_Bridge)
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Table - Count'', @Alpha_Count = @TABLE_CNT3, @Alpha_Result = 1;
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Bridge Table - Count'', @Alpha_Count = @TABLE_CNT4, @Alpha_Result = 1;
+				IF @TABLE_CNT3 != @TABLE_CNT4 
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Table - Load - COUNT Error'', @Alpha_Result = 0;
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Tables - Load - End'', @Alpha_Result = 1;  
+			END TRY 
+			BEGIN CATCH
+				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113X'', @Alpha_Step_Name = ''Dim Table - Load - Error'', @Alpha_Result = 0
+				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;                                             
+			END CATCH
+			' -- Attribute_4
+		, 'BEGIN TRY
+				MERGE INTO _Address_Dim T
+					USING (
+							SELECT Address_Key
+								, RTRIM(LTRIM(CASE WHEN Address_City = ''Ofallon'' AND Address_County IN (''Saint Charles'',''Saint Clair'') AND Address_State_Province IN (''MO'',''IL'') THEN ''O''''Fallon''
+										WHEN Address_City = ''O Fallon'' AND Address_County IN (''Saint Charles'',''Saint Clair'') AND Address_State_Province IN (''MO'',''IL'') THEN ''O''''Fallon''
+										WHEN Address_City = ''Mexico D.F.'' AND Address_Country = ''Mexico'' THEN ''Mexico, D.F.''
+										WHEN Address_City = ''Mexico DF'' AND Address_Country = ''Mexico'' THEN ''Mexico, D.F.''
+										WHEN Address_City = ''Mexico City D.F.'' AND Address_Country = ''Mexico'' THEN ''Mexico, D.F.''
+										WHEN Address_City = ''Mexico City DF'' AND Address_Country = ''Mexico'' THEN ''Mexico, D.F.''
+										WHEN Address_City = ''Calgary, AB'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
+										WHEN Address_City = ''Calgary  AB'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
+										WHEN Address_City = ''Calgary'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
+										WHEN Address_City = ''Calgary AI'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
+										WHEN Address_City = ''Calgary Al'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
+										WHEN Address_City = ''Calgary Alberta'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
+										WHEN Address_City = ''Calgary BC'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
+										WHEN Address_City = ''Calgary, Alberta'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
+										WHEN Address_City = ''Shore View'' AND Address_County IN (''Ramsey'') AND Address_State_Province IN (''MN'') THEN ''Shoreview''
+										WHEN Address_City = ''Hamilton, ON'' AND Address_Country = ''Canada'' THEN ''Hamilton ON''
+										WHEN Address_City = ''Hamilton Ontario'' AND Address_Country = ''Canada'' THEN ''Hamilton ON''
+										WHEN Address_City = ''Ducklake SK'' AND Address_Country = ''Canada'' THEN ''Duck Lake SK''
+										WHEN Address_City = ''Pachuca HGO'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
+										WHEN Address_City = ''Pachuca'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
+										WHEN Address_City = ''Pachuca Hidalgo'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
+										WHEN Address_City = ''Pachuca De Soto Hida'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
+										WHEN Address_City = ''Pachuca HI'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
+										WHEN Address_City = ''Pachuca HG'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
+										WHEN Address_City = ''Ottawa, ON'' AND Address_Country = ''Canada'' THEN ''Ottawa ON''
+										WHEN Address_City = ''Ottawa'' AND Address_Country = ''Canada'' THEN ''Ottawa ON''
+										WHEN Address_City = ''Ottawa Ontario'' AND Address_Country = ''Canada'' THEN ''Ottawa ON''
+										WHEN Address_City = ''Ottawa AB'' AND Address_Country = ''Canada'' THEN ''Ottawa ON''
+										WHEN Address_City = ''Weston-Super-Mare'' AND Address_Country = ''England'' THEN ''Weston-super-Mare''
+										WHEN Address_City = ''Weston-Super-Mare'' AND Address_Country = ''United Kingdom'' THEN ''Weston-super-Mare''
+										WHEN Address_City = ''Weston Super Mare'' AND Address_Country = ''United Kingdom'' THEN ''Weston-super-Mare''
+										WHEN Address_City = ''Weston-Super-Mare B'' AND Address_Country = ''England'' THEN ''Weston-super-Mare''
+										WHEN Address_City = ''Risingsun'' AND Address_State_Province IN (''OH'') THEN ''Rising Sun''
+										WHEN Address_City = ''Nuku''''Alofa'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
+										WHEN Address_City = ''Nuku Alofa'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
+										WHEN Address_City = ''Nuku'''' Alofa'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
+										WHEN Address_City = ''Nuku`alofa Tongatapu'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
+										WHEN Address_City = ''Nukuaiofa'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
+										WHEN Address_City = ''Nukualofa'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
+										WHEN Address_City = ''Nukualofa Tongatapu'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
+										WHEN Address_City = ''Nuku''''Alofa Tongatapu'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
+										WHEN Address_City = ''Nukualofa, Tongatapu'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
+										WHEN Address_City = ''Willow Brook'' AND Address_County IN (''Du Page'') AND Address_State_Province IN (''IL'') THEN ''Willowbrook''
+										WHEN Address_City = ''Puebla'' AND Address_Country = ''Mexico'' THEN ''Puebla, PUE''
+										WHEN Address_City = ''Puebla CP'' AND Address_Country = ''Mexico'' THEN ''Puebla, PUE''
+										WHEN Address_City = ''Puebla ME'' AND Address_Country = ''Mexico'' THEN ''Puebla, PUE''
+										WHEN Address_City = ''Puebla PUE'' AND Address_Country = ''Mexico'' THEN ''Puebla, PUE''
+										WHEN Address_City = ''Puebla Puebla'' AND Address_Country = ''Mexico'' THEN ''Puebla, PUE''
+										WHEN Address_City = ''Charlestown'' AND Address_County IN (''Jefferson'') AND Address_State_Province IN (''WV'') THEN ''Charles Town''
+										WHEN Address_City = ''Xian'' AND Address_Country IN (''China'',''CHINA, PEOPLE''''S REP OF'') THEN ''Xi''''an''
+										WHEN Address_City = ''Coaldale'' AND Address_Country = ''Canada'' THEN ''Coaldale AB''
+										WHEN Address_City = ''Coaldale Alberta'' AND Address_Country = ''Canada'' THEN ''Coaldale AB''
+										WHEN Address_City = ''Coaldale, AB'' AND Address_Country = ''Canada'' THEN ''Coaldale AB''
+										WHEN Address_City = ''De Lancey'' AND Address_County IN (''Delaware'') AND Address_State_Province IN (''NY'') THEN ''Delancey''
+										WHEN Address_City = ''Cardston'' AND Address_Country = ''Canada'' THEN ''Cardston AB''
+										WHEN Address_City = ''Cardston, AB'' AND Address_Country = ''Canada'' THEN ''Cardston AB''
+										WHEN Address_City = ''Salt Lake Cty'' AND Address_State_Province IN (''UT'') THEN ''Salt Lake City''
+										WHEN Address_City = ''St. George'' AND Address_State_Province IN (''UT'') THEN ''Saint George''
+										WHEN Address_City = ''W Valley City'' AND Address_State_Province IN (''UT'') THEN ''West Valley City''
+										WHEN Address_City = ''West Valley'' AND Address_State_Province IN (''UT'') THEN ''West Valley City''
+										WHEN Address_City = ''Saratoga Spgs'' AND Address_State_Province IN (''UT'') THEN ''Saratoga Springs''
+										WHEN Address_City = ''Vancouver'' AND Address_Country = ''Canada'' THEN ''Vancouver BC''
+										WHEN Address_City = ''Vancouver AB'' AND Address_Country = ''Canada'' THEN ''Vancouver BC''
+										WHEN Address_City = ''Vancover BC'' AND Address_Country = ''Canada'' THEN ''Vancouver BC''
+										WHEN Address_City = ''Eagle Mtn'' AND Address_State_Province IN (''UT'') THEN ''Eagle Mountain''
+										WHEN Address_City = ''N Salt Lake'' AND Address_State_Province IN (''UT'') THEN ''North Salt Lake''
+										WHEN Address_City = ''St Anthony'' AND Address_State_Province IN (''ID'') THEN ''Saint Anthony''
+									ELSE Address_City END)) AS Address_City
+								FROM _Address_Dim
+								WHERE 1 = 1
+									AND Address_City IN (''Ofallon'',''O Fallon''
+															,''Mexico D.F.'',''Mexico DF'',''Mexico City D.F.'',''Mexico City DF''
+															,''Calgary, AB'',''Calgary  AB'',''Calgary'',''Calgary AI'',''Calgary Al'',''Calgary Alberta'',''Calgary BC'',''Calgary, Alberta''
+															,''Shore View''
+															,''Hamilton, ON'',''Hamilton Ontario''
+															,''Ducklake SK''
+															,''Pachuca HGO'',''Pachuca'',''Pachuca Hidalgo'',''Pachuca De Soto Hida'',''Pachuca HI'',''Pachuca HG''
+															,''Ottawa, ON'',''Ottawa'',''Ottawa Ontario'',''Ottawa AB''
+															,''Weston-Super-Mare'',''Weston Super Mare'',''Weston-Super-Mare B''
+															,''Risingsun''
+															,''Nuku''''Alofa'',''Nuku Alofa'',''Nuku'''' Alofa'',''Nuku`alofa Tongatapu'',''Nukuaiofa'',''Nukualofa'',''Nukualofa Tongatapu'',''Nuku''''Alofa Tongatapu'',''Nukualofa, Tongatapu''
+															,''Willow Brook''
+															,''Puebla'',''Puebla CP'',''Puebla ME'',''Puebla PUE'',''Puebla Puebla''
+															,''Charlestown''
+															,''Xian''
+															,''Coaldale'',''Coaldale Alberta'',''Coaldale, AB''
+															,''De Lancey''
+															,''Cardston'',''Cardston, AB''
+															,''Salt Lake Cty''
+															,''St. George''
+															,''W Valley City'',''West Valley''
+															,''Saratoga Spgs''
+															,''Vancouver'',''Vancouver AB'',''Vancover BC''
+															,''Eagle Mtn''
+															,''N Salt Lake''
+															,''St Anthony''
+														)
+						) S ON T.Address_Key = S.Address_Key
+					WHEN MATCHED THEN 
+						UPDATE
+							SET T.Address_City = S.Address_City
+					;
+			END TRY 
+			BEGIN CATCH
+				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Data Integrity City Corrections'', @Alpha_Step_Number = ''113X'', @Alpha_Step_Name = ''Data Integrity City Corrections - Error'', @Alpha_Result = 0
+				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+			END CATCH
+			' -- Attribute_5
+		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''113H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+			' -- Attribute_6
+		, ' ' -- Attribute_7
+		, ' ' -- Attribute_8
+		, ' ' -- Attribute_9
+		, ' ' -- Attribute_10
+		, ' ' -- Attribute_11
+		, ' ' -- Attribute_12
+		, ' ' -- Attribute_13
+		, ' ' -- Attribute_14
+		, ' ' -- Attribute_15
+		, ' ' -- Attribute_16
+		, ' ' -- Attribute_17
+		, ' ' -- Attribute_18
+		, ' ' -- Attribute_19
+		, ' ' -- Attribute_20
+		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Address_Dim''; ------> HARDCODE <------
+			' -- Attribute_21
+		, 1 -- Active
+		, GETDATE() -- Insert_Date
+		, NULL  -- Update_Date                
+	)
+	,
+-- --------------------------
 -- _Award_Dim Table
 -- --------------------------
 	('Dim' -- Dim_Object
@@ -1740,15 +1459,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'DECLARE @TABLE_NAME NVARCHAR(100)
 			SET @TABLE_NAME = ''_Award_Dim'' ; ------> HARDCODE <------
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''103D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1;
-				-- Stage Index
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Recognition_Association'') AND NAME =''IX_New_Recognition'') 
-				DROP INDEX IX_New_Recognition ON dbo.Ext_Recognition_Association; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Recognition'') AND NAME =''IX_New_RecognitionId'') 
-				DROP INDEX IX_New_RecognitionId ON dbo.Ext_Recognition; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Recognition'') AND NAME =''IX_New_Type'') 
-				DROP INDEX IX_New_Type ON dbo.Ext_Recognition; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Recognition'') AND NAME =''IX_New_Affiliate'') 
-				DROP INDEX IX_New_Affiliate ON dbo.Ext_Recognition; 
+				
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''103D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_1
 		, 'DECLARE @SQL_1 NVARCHAR(MAX)
@@ -1766,87 +1477,15 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''103E'', @Alpha_Step_Name = ''Bridge Table Creation - End'', @Alpha_Result = 1;
 			' -- Attribute_2
 		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''103F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;
-				-- Stage Index
-				CREATE NONCLUSTERED INDEX IX_New_Recognition 
-				ON Ext_Recognition_Association(New_Recognition ASC)
-				INCLUDE (
-				New_RecognitionAssociationId
-				, New_Constituent
-				, New_StartDate
-				, New_EndDate
-				, Plus_ScholarshipGrantingOffice
-				, Plus_ScholarshipAwardTerm
-				, Plus_ScholarshipCode
-				, Plus_ScholarshipOfferedAmount
-				, Plus_ScholarshipAwardDate
-				);
-				CREATE NONCLUSTERED INDEX IX_New_RecognitionId 
-				ON Ext_Recognition(New_RecognitionId ASC)
-				INCLUDE (
-				New_Name
-				, New_Type
-				, New_Affiliate
-				);
-				CREATE NONCLUSTERED INDEX IX_New_Type 
-				ON Ext_Recognition(New_Type ASC)
-				INCLUDE (
-				New_Name
-				, New_RecognitionId
-				, New_Affiliate
-				);
-				CREATE NONCLUSTERED INDEX IX_New_Affiliate 
-				ON Ext_Recognition(New_Affiliate ASC)
-				INCLUDE (
-				New_Name
-				, New_RecognitionId
-				, New_Type
-				);
-				UPDATE STATISTICS dbo.Ext_Recognition_Association
-				UPDATE STATISTICS dbo.Ext_Recognition
+				
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''103F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_3
-		, 'IF OBJECT_ID(''tempdb..#Rec_Assoc_1'') IS NOT NULL
-				DROP TABLE #Rec_Assoc_1
-				IF OBJECT_ID(''tempdb..#Rec_Assoc_2'') IS NOT NULL
-				DROP TABLE #Rec_Assoc_2
+		, '
 			BEGIN TRY                       
 				DECLARE @TABLE_CNT1 AS VARCHAR(100)
 				DECLARE @TABLE_CNT2 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Award_Dim'', @Alpha_Step_Number = ''103G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;                 
-					SELECT * INTO #Rec_Assoc_1
-						FROM 
-							(
-							SELECT RA.New_RecognitionAssociationId
-								, ROW_NUMBER() OVER(ORDER BY RA.New_RecognitionAssociationId) AS Award_Key
-								, RA.New_Constituent AS ContactId
-								, AWD.Column_Label AS Award_Type
-								, AA.Column_Label AS Award_Affiliate_Type
-								, RA.New_StartDate AS Award_Start_Dt
-								, RA.New_EndDate  AS Award_End_Dt
-								, RA.Plus_ScholarshipGrantingOffice AS Award_Scholarship_Granting_Office
-								, RA.Plus_ScholarshipAwardTerm AS Award_Scholarship_Term
-								, RA.Plus_ScholarshipCode AS Award_Scholarship_Code
-								, RA.Plus_ScholarshipOfferedAmount AS Award_Scholarship_Amount
-								, RA.Plus_ScholarshipAwardDate AS Award_Scholarship_Dt
-								, R.New_Name AS Award_Name    
-								FROM Ext_Recognition_Association RA
-									LEFT JOIN Ext_Recognition R ON RA.New_Recognition = R.New_RecognitionId
-									LEFT JOIN _Award_Type_ AWD ON R.New_Type = AWD.Column_Value
-									LEFT JOIN _Award_Affiliate_ AA ON R.New_Affiliate = AA.Column_Value
-							) A
-					SELECT * INTO #Rec_Assoc_2
-						FROM 
-							(
-							SELECT ContactId
-								, ROW_NUMBER() OVER(ORDER BY ContactId) AS Award_Group_Key
-								FROM
-									(SELECT DISTINCT ContactId   
-										FROM #Rec_Assoc_1) A
-							) A                          
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Rec_Assoc_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Rec_Assoc_2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Award_Dim'', @Alpha_Step_Number = ''103G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Award_Dim'', @Alpha_Step_Number = ''103G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
+
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Award_Dim'', @Alpha_Step_Number = ''103G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;                    
 			END TRY 
 			BEGIN CATCH
@@ -1869,36 +1508,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				DECLARE @TABLE_CNT3 AS VARCHAR(100)
 				DECLARE @TABLE_CNT4 AS VARCHAR(100)                       
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Award_Dim'', @Alpha_Step_Number = ''103G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1; 
-					INSERT INTO _Award_Dim 
-						(ContactId
-							, Award_Key
-							, Award_Group_Key
-							, Award_Type
-							, Award_Affiliate_Type
-							, Award_Start_Dt
-							, Award_End_Dt
-							, Award_Scholarship_Granting_Office
-							, Award_Scholarship_Term
-							, Award_Scholarship_Code
-							, Award_Scholarship_Amount
-							, Award_Scholarship_Dt
-							, Award_Name
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
-							, A.Award_Key
-							, B.Award_Group_Key
-							, A.Award_Type
-							, A.Award_Affiliate_Type
-							, CONVERT(VARCHAR(10),A.Award_Start_Dt,101) AS Award_Start_Dt
-							, CONVERT(VARCHAR(10),A.Award_End_Dt,101) AS Award_End_Dt
-							, A.Award_Scholarship_Granting_Office
-							, A.Award_Scholarship_Term
-							, A.Award_Scholarship_Code
-							, A.Award_Scholarship_Amount
-							, CONVERT(VARCHAR(10),A.Award_Scholarship_Dt,101) AS Award_Scholarship_Dt
-							, A.Award_Name   
-							FROM #Rec_Assoc_1 A
-								LEFT JOIN #Rec_Assoc_2 B ON A.ContactId = B.ContactId
+					
 					INSERT INTO _Award_Bridge
 						(ContactId
 							, Award_Key
@@ -1997,15 +1607,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'DECLARE @TABLE_NAME NVARCHAR(100)
 			SET @TABLE_NAME = ''_Phone_Dim'' ; ------> HARDCODE <------
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''104D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1;
-				-- Stage Index
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Phone'') AND NAME =''IX_New_Type'') 
-				DROP INDEX IX_New_Type ON dbo.Ext_Phone; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Phone'') AND NAME =''IX_Plus_LineType'') 
-				DROP INDEX IX_Plus_LineType ON dbo.Ext_Phone; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Phone'') AND NAME =''IX_New_PreferredTime'') 
-				DROP INDEX IX_New_PreferredTime ON dbo.Ext_Phone; 
-				--IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Phone'') AND NAME =''IX_Plus_ConfidentialInstruction'')  /*Delete from source 5/15/17*/ 
-				--DROP INDEX IX_Plus_ConfidentialInstruction ON dbo.Ext_Phone;  /*Delete from source 5/15/17*/ 
+
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''104D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_1
 		, 'DECLARE @SQL_1 NVARCHAR(MAX)
@@ -2024,113 +1626,15 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 			' -- Attribute_2
 		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''104F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
 
-			CREATE NONCLUSTERED INDEX IX_New_PreferredTime 
-			ON Ext_Phone(New_PreferredTime ASC)
-				INCLUDE (
-					New_NumberId
-					, New_PhoneId
-					, New_PhoneNumber
-					, New_CountryCode
-					, New_Ext
-					, StatusCode
-					, New_Primary
-					, New_ReceiveText
-					, New_Confidential
-					, New_Type
-					, Plus_LineType
-				);
-			CREATE NONCLUSTERED INDEX IX_Plus_LineType 
-			ON Ext_Phone(Plus_LineType ASC)
-				INCLUDE (
-					New_NumberId
-					, New_PhoneId
-					, New_PhoneNumber
-					, New_CountryCode
-					, New_Ext
-					, StatusCode
-					, New_Primary
-					, New_ReceiveText
-					, New_Confidential
-					, New_Type
-					, New_PreferredTime
-				);
-			CREATE NONCLUSTERED INDEX IX_New_Type 
-			ON Ext_Phone(New_Type ASC)
-				INCLUDE (
-					New_NumberId
-					, New_PhoneId
-					, New_PhoneNumber
-					, New_CountryCode
-					, New_Ext
-					, StatusCode
-					, New_Primary
-					, New_ReceiveText
-					, New_Confidential
-					, Plus_LineType
-					, New_PreferredTime
-				);                                                       
-			UPDATE STATISTICS dbo.Ext_Phone
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''104F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_3
-		, ' IF OBJECT_ID(''tempdb..#Phone_Temp_1'') IS NOT NULL
-					DROP TABLE #Phone_Temp_1
-					IF OBJECT_ID(''tempdb..#Phone_Temp_2'') IS NOT NULL
-					DROP TABLE #Phone_Temp_2
+		, '
 			BEGIN TRY                                      
 				DECLARE @TABLE_CNT1 AS VARCHAR(100)
 				DECLARE @TABLE_CNT2 AS VARCHAR(100)
 
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Phone_Dim'', @Alpha_Step_Number = ''104G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
 
-					SELECT * INTO #Phone_Temp_1
-						FROM 
-							(
-							SELECT
-								A.New_NumberId AS ContactId
-								, ROW_NUMBER() OVER(ORDER BY New_PhoneId) AS Phone_Key
-								, A.New_PhoneNumber AS Phone_Number
-								, A.New_CountryCode AS Phone_Country_Code
-								, A.New_Ext AS Phone_Extension
-								, CASE WHEN A.StatusCode = 100000002 THEN ''Y''
-									ELSE ''N'' END AS Phone_Active_Yn
-								, CASE WHEN A.New_ConfirmationDate IS NOT NULL THEN ''Y''
-									ELSE ''N'' END AS Phone_Confirmed_Yn
-								, CASE WHEN A.New_Primary = 1 THEN ''Y''
-									WHEN A.New_Primary = 0 THEN ''N''
-									ELSE ''-'' END AS Phone_Primary_Yn
-								, CASE WHEN A.New_ReceiveText = 1 THEN ''Y''
-									WHEN A.New_ReceiveText = 0 THEN ''N''
-									ELSE ''-'' END AS Phone_Recieve_Text_Yn
-								, CASE WHEN A.New_Confidential = 1 THEN ''Y''
-									WHEN A.New_Confidential = 0 THEN ''N''
-									ELSE ''-'' END AS Phone_Confidential_Yn
-								, B.Column_Label AS Phone_Type
-								, C.Column_Label AS Phone_Line_Type
-								, D.Column_Label AS Phone_Preferred_Time
-								, B.Column_Value AS Phone_Type_Value
-								, C.Column_Value AS Phone_Line_Type_Value
-								, D.Column_Value AS Phone_Preferred_Time_Value
-								FROM Ext_Phone A
-									LEFT JOIN _Phone_Type_ B ON A.New_Type = B.Column_Value
-									LEFT JOIN _Phone_Line_Type_ C ON A.Plus_LineType = C.Column_Value
-									LEFT JOIN _Phone_Preferred_Time_ D ON A.New_PreferredTime = D.Column_Value
-									--LEFT JOIN _Phone_Confidential_ E ON A.Plus_ConfidentialInstruction = E.Column_Value  /*Delete from source 5/15/17*/
-								WHERE 1 = 1
-									AND A.StatusCode = 100000002
-							) A                                        
-					SELECT * INTO #Phone_Temp_2
-						FROM 
-							(
-							SELECT ContactId
-								, ROW_NUMBER() OVER(ORDER BY ContactId) AS Phone_Group_Key --> HARD CODED <--
-								FROM
-									(SELECT DISTINCT ContactId   
-										FROM #Phone_Temp_1) A
-							) A 
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Phone_Temp_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Phone_Temp_2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Phone_Dim'', @Alpha_Step_Number = ''104G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Phone_Dim'', @Alpha_Step_Number = ''104G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Phone_Dim'', @Alpha_Step_Number = ''104G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;                                    
 			END TRY 
 			BEGIN CATCH                                
@@ -2153,44 +1657,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				DECLARE @TABLE_CNT3 AS VARCHAR(100)
 				DECLARE @TABLE_CNT4 AS VARCHAR(100)                                     
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Phone_Dim'', @Alpha_Step_Number = ''104G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;                                         
-					INSERT INTO _Phone_Dim --> HARD CODED <--
-						(ContactId
-						, Phone_Key
-						, Phone_Group_Key
-						, Phone_Number
-						, Phone_Country_Code
-						, Phone_Extension
-						, Phone_Active_Yn
-						, Phone_Confirmed_Yn
-						, Phone_Primary_Yn
-						, Phone_Recieve_Text_Yn
-						, Phone_Confidential_Yn
-						, Phone_Type
-						, Phone_Line_Type
-						, Phone_Preferred_Time
-						, Phone_Type_Value
-						, Phone_Line_Type_Value
-						, Phone_Preferred_Time_Value
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
-							, A.Phone_Key
-							, B.Phone_Group_Key
-							, A.Phone_Number
-							, A.Phone_Country_Code
-							, A.Phone_Extension
-							, A.Phone_Active_Yn
-							, A.Phone_Confirmed_Yn
-							, A.Phone_Primary_Yn
-							, A.Phone_Recieve_Text_Yn
-							, A.Phone_Confidential_Yn
-							, A.Phone_Type
-							, A.Phone_Line_Type
-							, A.Phone_Preferred_Time
-							, A.Phone_Type_Value
-							, A.Phone_Line_Type_Value
-							, A.Phone_Preferred_Time_Value   
-							FROM #Phone_Temp_1 A
-								LEFT JOIN #Phone_Temp_2 B ON A.ContactId = B.ContactId
+
 					INSERT INTO _Phone_Bridge --> HARD CODED <--
 						(ContactId
 							, Phone_Key --> HARD CODED <--
@@ -2884,15 +2351,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'DECLARE @TABLE_NAME NVARCHAR(100)
 			SET @TABLE_NAME = ''_Drop_Include_Dim'' ; ------> HARDCODE <------
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''107D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1;
-				-- Stage Index
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Drop_Include'') AND NAME =''IX_New_Type'') 
-				DROP INDEX IX_New_Type ON dbo.Ext_Drop_Include; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Drop_Include'') AND NAME =''IX_New_Interaction'') 
-				DROP INDEX IX_New_Interaction ON dbo.Ext_Drop_Include; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Drop_Include'') AND NAME =''IX_New_CommType'') 
-				DROP INDEX IX_New_CommType ON dbo.Ext_Drop_Include; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Drop_Include'') AND NAME =''IX_New_Reason'') 
-				DROP INDEX IX_New_Reason ON dbo.Ext_Drop_Include; 
+ 
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''107D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_1
 		, 'DECLARE @SQL_1 NVARCHAR(MAX)
@@ -2910,142 +2369,12 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''107E'', @Alpha_Step_Name = ''Bridge Table Creation - End'', @Alpha_Result = 1;
 			' -- Attribute_2
 		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''107F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
-			-- Stage Index
-			CREATE NONCLUSTERED INDEX IX_New_Type 
-			ON Ext_Drop_Include(New_Type ASC)
-				INCLUDE (
-					New_DropIncludeId
-					, New_DropIncludesId
-					, New_InstitutionalHierarchy 
-					, New_VisitDeliveryType
-					, New_WebDeliveryType 
-					, New_PhoneDeliveryType 
-					--, New_ListingDeliveryType  /*Delete from source 5/15/17*/ 
-					, New_EmailDeliveryType 
-					, New_MailDeliveryType
-					, New_TextDeliveryType
-					, New_StartDate
-					, New_EndDate
-					, New_Interaction
-					, New_CommType
-					, New_Reason
-				);
-			CREATE NONCLUSTERED INDEX IX_New_Interaction 
-			ON Ext_Drop_Include(New_Interaction ASC)
-				INCLUDE (
-					New_DropIncludeId
-					, New_DropIncludesId
-					, New_InstitutionalHierarchy 
-					, New_VisitDeliveryType
-					, New_WebDeliveryType 
-					, New_PhoneDeliveryType 
-					--, New_ListingDeliveryType  /*Delete from source 5/15/17*/ 
-					, New_EmailDeliveryType 
-					, New_MailDeliveryType
-					, New_TextDeliveryType
-					, New_StartDate
-					, New_EndDate
-					, New_Type 
-					, New_CommType
-					, New_Reason
-				);
-			CREATE NONCLUSTERED INDEX IX_New_CommType 
-			ON Ext_Drop_Include(New_CommType ASC)
-				INCLUDE (
-					New_DropIncludeId
-					, New_DropIncludesId
-					, New_InstitutionalHierarchy 
-					, New_VisitDeliveryType
-					, New_WebDeliveryType 
-					, New_PhoneDeliveryType 
-					--, New_ListingDeliveryType  /*Delete from source 5/15/17*/ 
-					, New_EmailDeliveryType 
-					, New_MailDeliveryType
-					, New_TextDeliveryType
-					, New_StartDate
-					, New_EndDate
-					, New_Type
-					, New_Interaction
-					, New_Reason
-				);
-			CREATE NONCLUSTERED INDEX IX_New_Reason 
-			ON Ext_Drop_Include(New_Reason ASC)
-			INCLUDE (
-					New_DropIncludeId
-					, New_DropIncludesId
-					, New_InstitutionalHierarchy 
-					, New_VisitDeliveryType
-					, New_WebDeliveryType 
-					, New_PhoneDeliveryType 
-					--, New_ListingDeliveryType  /*Delete from source 5/15/17*/ 
-					, New_EmailDeliveryType 
-					, New_MailDeliveryType
-					, New_TextDeliveryType
-					, New_StartDate
-					, New_EndDate
-					, New_Type
-					, New_Interaction
-					, New_CommType
-				);
-			UPDATE STATISTICS dbo.Ext_Drop_Include
+			
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''107F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_3
-		, 'IF OBJECT_ID(''tempdb..#Drop_Include_Temp_1'') IS NOT NULL
-					DROP TABLE #Drop_Include_Temp_1
-					IF OBJECT_ID(''tempdb..#Drop_Include_Temp_2'') IS NOT NULL
-					DROP TABLE #Drop_Include_Temp_2
-			BEGIN TRY
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				DECLARE @TABLE_CNT2 AS VARCHAR(100)
+		, 'BEGIN TRY
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Drop_Include_Dim'', @Alpha_Step_Number = ''107G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					SELECT * INTO #Drop_Include_Temp_1
-						FROM 
-							(
-							SELECT ROW_NUMBER() OVER(ORDER BY A.New_DropIncludeId) AS Drop_Include_Key 
-								, A.New_DropIncludesId AS ContactId
-								, A.New_InstitutionalHierarchy AS Drop_Include_Instit_Hierarchy 
-								, B.Column_Label AS Drop_Include_Type 
-								, CASE WHEN A.New_VisitDeliveryType = 1 THEN ''Y'' ELSE ''N'' END AS Drop_Include_Visit_Yn
-								, CASE WHEN A.New_WebDeliveryType = 1 THEN ''Y'' ELSE ''N'' END AS Drop_Include_Web_Yn 
-								, CASE WHEN A.New_PhoneDeliveryType = 1 THEN ''Y'' ELSE ''N'' END AS Drop_Include_Phone_Yn 
-								--, CASE WHEN A.New_ListingDeliveryType = 1 THEN ''Y'' ELSE ''N'' END AS Drop_Include_Listing_Yn  /*Delete from source 5/15/17*/ 
-								, CASE WHEN A.New_EmailDeliveryType = 1 THEN ''Y'' ELSE ''N'' END AS Drop_Include_Email_Yn
-								, C.Column_Label AS Drop_Include_Scope 
-								, D.Column_Label AS Drop_Include_Comm_Type 
-								, B.Column_Value AS Drop_Include_Type_Value
-								, C.Column_Value AS Drop_Include_Scope_Value
-								, D.Column_Value AS Drop_Include_Comm_Type_Value 
-								, E.Column_Value AS Drop_Include_Reason_Value 
-								, CASE WHEN A.New_MailDeliveryType = 1 THEN ''Y'' ELSE ''N'' END AS Drop_Include_Mail_Yn
-								, CASE WHEN A.New_TextDeliveryType = 1 THEN ''Y'' ELSE ''N'' END AS Drop_Include_Text_Yn
-								, A.New_StartDate
-								, A.New_EndDate
-								, F.New_ShortName AS Association
-								, G.Name AS Campaign
-								, H.New_Inst
-								, H.New_Name AS Hier_Name
-								FROM Ext_Drop_Include A
-									LEFT JOIN _Drop_Include_Type_ B ON A.New_Type = B.Column_Value
-									LEFT JOIN _Drop_Include_Scope_ C ON A.New_Interaction = C.Column_Value
-									LEFT JOIN _Drop_Include_CommType_ D ON A.New_CommType = D.Column_Value
-									LEFT JOIN _Drop_Include_Reason_ E ON A.New_Reason = E.Column_Value
-									LEFT JOIN Ext_Association F ON A.New_Association = F.New_AssociationId
-									LEFT JOIN Ext_Campaign G ON A.Plus_CampaignId = G.CampaignId
-									LEFT JOIN Ext_Institution H ON A.New_InstitutionalHierarchy = H.New_InstitutionId
-							) A
-				SELECT * INTO #Drop_Include_Temp_2
-					FROM 
-						(
-						SELECT ContactId
-							, ROW_NUMBER() OVER(ORDER BY ContactId) AS Drop_Include_Group_Key --> HARD CODED <--
-							FROM
-								(SELECT DISTINCT ContactId                                    
-								   FROM #Drop_Include_Temp_1) A
-						) A                                                                                 
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Drop_Include_Temp_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Drop_Include_Temp_2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Drop_Include_Dim'', @Alpha_Step_Number = ''107G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Drop_Include_Dim'', @Alpha_Step_Number = ''107G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
+
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Drop_Include_Dim'', @Alpha_Step_Number = ''107G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;      
 			END TRY             
 			BEGIN CATCH                                 
@@ -3068,67 +2397,16 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				DECLARE @TABLE_CNT3 AS VARCHAR(100)
 				DECLARE @TABLE_CNT4 AS VARCHAR(100)                               
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Drop_Include_Dim'', @Alpha_Step_Number = ''107G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;                                           
-					INSERT INTO _Drop_Include_Dim --> HARD CODED <--
-						( Drop_Include_Key
-						, Drop_Include_Instit_Hierarchy 
-						, Drop_Include_Type 
-						, Drop_Include_Visit_Yn
-						, Drop_Include_Web_Yn 
-						, Drop_Include_Phone_Yn 
-						--, Drop_Include_Listing_Yn  /*Delete from source 5/15/17*/ 
-						, Drop_Include_Email_Yn
-						, Drop_Include_Scope 
-						, Drop_Include_Comm_Type 
-						, Drop_Include_Type_Value
-						, Drop_Include_Scope_Value
-						, Drop_Include_Comm_Type_Value 
-						, Drop_Include_Reason_Value 
-						, Drop_Include_Group_Key
-						, Drop_Include_Mail_Yn
-						, Drop_Include_Text_Yn
-						, New_StartDate
-						, New_EndDate
-						, Association
-						, Campaign
-						, New_Inst
-						, Hier_Name
-						)
-						SELECT A.Drop_Include_Key
-							, CONVERT(NVARCHAR(100),A.Drop_Include_Instit_Hierarchy) AS Drop_Include_Instit_Hierarchy 
-							, A.Drop_Include_Type 
-							, A.Drop_Include_Visit_Yn
-							, A.Drop_Include_Web_Yn 
-							, A.Drop_Include_Phone_Yn 
-							--, A.Drop_Include_Listing_Yn  /*Delete from source 5/15/17*/ 
-							, A.Drop_Include_Email_Yn
-							, A.Drop_Include_Scope 
-							, A.Drop_Include_Comm_Type 
-							, A.Drop_Include_Type_Value
-							, A.Drop_Include_Scope_Value
-							, A.Drop_Include_Comm_Type_Value 
-							, A.Drop_Include_Reason_Value 
-							, B.Drop_Include_Group_Key
-							, A.Drop_Include_Mail_Yn
-							, A.Drop_Include_Text_Yn
-							, CONVERT(VARCHAR(10),A.New_StartDate,101) AS New_StartDate
-							, CONVERT(VARCHAR(10),A.New_EndDate,101) AS New_EndDate
-							, Association
-							, Campaign
-							, New_Inst
-							, Hier_Name
-							FROM #Drop_Include_Temp_1 A
-								LEFT JOIN #Drop_Include_Temp_2 B ON A.ContactId = B.ContactId
+					
 					INSERT INTO _Drop_Include_Bridge --> HARD CODED <--
-						(ContactId
+						(contactId
 						, Drop_Include_Key --> HARD CODED <--
 						, Drop_Include_Group_Key --> HARD CODED <--
 						)
-						SELECT DISTINCT A.ContactId
-							--, ROW_NUMBER() OVER(ORDER BY A.New_DropIncludeId) AS Drop_Include_Key
-							, A.Drop_Include_Key --> HARD CODED <--
-							, B.Drop_Include_Group_Key              --> HARD CODED <--       
-							FROM #Drop_Include_Temp_1 A
-								LEFT JOIN #Drop_Include_Temp_2 B ON A.ContactId = B.ContactId  --> HARD CODED <--                                           
+						SELECT ContactId
+							, Drop_Include_Key --> HARD CODED <--
+							, Drop_Include_Group_Key              --> HARD CODED <--       
+							FROM _Drop_Include_Dim                                           
 				SELECT @TABLE_CNT3 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Drop_Include_Dim)
 				SELECT @TABLE_CNT4 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Drop_Include_Bridge)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Drop_Include_Dim'', @Alpha_Step_Number = ''107G'', @Alpha_Step_Name = ''Dim Table - Count'', @Alpha_Count = @TABLE_CNT3, @Alpha_Result = 1;
@@ -3235,53 +2513,10 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''108F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''108F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_3
-		, 'IF OBJECT_ID(''tempdb..#Language_Temp_1'') IS NOT NULL
-					DROP TABLE #Language_Temp_1                                                     
-					IF OBJECT_ID(''tempdb..#Language_Temp_2'') IS NOT NULL
-					DROP TABLE #Language_Temp_2
+		, '
 			BEGIN TRY
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				DECLARE @TABLE_CNT2 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Language_Dim'', @Alpha_Step_Number = ''108G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;                                 
-					SELECT * INTO #Language_Temp_1
-						FROM 
-							(
-							SELECT
-								A.New_LanguageSAId AS ContactId 
-								, ROW_NUMBER() OVER(ORDER BY A.New_LanguageSpecialAffiliationId) AS Language_Key 
-								, B.Column_Label AS Language_Name 
-								, C.Column_Label AS Language_Speech_Level 
-								, D.Column_Label AS Language_Read_Level 
-								, E.Column_Label AS Language_Write_Level 
-								, B.Column_Value AS Language_Name_Value 
-								, C.Column_Value AS Language_Speech_Level_Value 
-								, D.Column_Value AS Language_Read_Level_Value 
-								, E.Column_Value AS Language_Write_Level_Value 
-								, CASE WHEN A.New_Teacher = 0 THEN ''N'' ELSE ''Y'' END AS Language_Teacher_Yn 
-								, CASE WHEN A.New_Missionary = 0 THEN ''N'' ELSE ''Y'' END AS Language_Mission_Yn 
-								, CASE WHEN A.New_BusinessPerson = 0 THEN ''N'' ELSE ''Y'' END AS Language_Business_Yn 
-								, CASE WHEN A.New_Translator = 0 THEN ''N'' ELSE ''Y'' END AS Language_Translator_Yn 
-								, NS.New_Source AS Source
-								FROM Ext_Language A
-									LEFT JOIN Ext_Source NS ON A.New_Source = NS.New_SourceId
-									LEFT JOIN _Language_Lang_ B ON A.New_Language = B.Column_Value
-									LEFT JOIN _Language_Speech_ C ON A.New_Speech = C.Column_Value
-									LEFT JOIN _Language_Read_ D ON A.New_ReadLevel = D.Column_Value
-									LEFT JOIN _Language_Write_ E ON A.New_WriteLevel = E.Column_Value
-							) A                                        
-					SELECT * INTO #Language_Temp_2
-						FROM 
-							(
-							SELECT ContactId
-								, ROW_NUMBER() OVER(ORDER BY ContactId) AS Language_Group_Key --> HARD CODED <--
-								FROM
-									(SELECT DISTINCT ContactId   
-										FROM #Language_Temp_1) A
-							) A                                         
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Language_Temp_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Language_Temp_2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Language_Dim'', @Alpha_Step_Number = ''108G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Language_Dim'', @Alpha_Step_Number = ''108G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
+
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Language_Dim'', @Alpha_Step_Number = ''108G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;                                        
 			END TRY 
 			BEGIN CATCH
@@ -3304,42 +2539,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				DECLARE @TABLE_CNT3 AS VARCHAR(100)
 				DECLARE @TABLE_CNT4 AS VARCHAR(100)                       
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Language_Dim'', @Alpha_Step_Number = ''108G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Language_Dim --> HARD CODED <--
-						(ContactId 
-						, Language_Key 
-						, Language_Group_Key 
-						, Language_Name 
-						, Language_Speech_Level 
-						, Language_Read_Level 
-						, Language_Write_Level 
-						, Language_Name_Value 
-						, Language_Speech_Level_Value 
-						, Language_Read_Level_Value 
-						, Language_Write_Level_Value 
-						, Language_Teacher_Yn 
-						, Language_Mission_Yn 
-						, Language_Business_Yn 
-						, Language_Translator_Yn
-						, Source
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
-							, A.Language_Key 
-							, B.Language_Group_Key 
-							, A.Language_Name 
-							, A.Language_Speech_Level 
-							, A.Language_Read_Level 
-							, A.Language_Write_Level 
-							, A.Language_Name_Value 
-							, A.Language_Speech_Level_Value 
-							, A.Language_Read_Level_Value 
-							, A.Language_Write_Level_Value 
-							, A.Language_Teacher_Yn 
-							, A.Language_Mission_Yn 
-							, A.Language_Business_Yn 
-							, A.Language_Translator_Yn 
-							, A.Source
-							FROM #Language_Temp_1 A
-								LEFT JOIN #Language_Temp_2 B ON A.ContactId = B.ContactId
+					
 					INSERT INTO _Language_Bridge --> HARD CODED <--
 						(ContactId
 						, Language_Key --> HARD CODED <--
@@ -3453,51 +2653,12 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''109F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''109F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_3
-		, 'IF OBJECT_ID(''tempdb..#Association_Temp_1'') IS NOT NULL
-					DROP TABLE #Association_Temp_1
-					IF OBJECT_ID(''tempdb..#Association_Temp_2'') IS NOT NULL
-					DROP TABLE #Association_Temp_2
+		, '
 			BEGIN TRY                                      
 				DECLARE @TABLE_CNT1 AS VARCHAR(100)
 				DECLARE @TABLE_CNT2 AS VARCHAR(100)                                    
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Association_Dim'', @Alpha_Step_Number = ''109G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;                                    
-					SELECT * INTO #Association_Temp_1
-						FROM 
-							(
-							SELECT
-								COALESCE(A.New_ConstituentId, A.New_RelatedOrganization) AS ContactId 
-								, ROW_NUMBER() OVER(ORDER BY A.New_AssociationMembershipId) AS Association_Key
-								, B.New_Name AS Association_Name 
-								, B.New_Acronym AS Association_Acronym 
-								, B.New_Region AS Association_Region
-								, B.New_ChapterLevel AS Association_Chapter_Level 
-								, C.Column_Label AS Association_Type
-								, C.Column_Value AS Association_Type_Value 
-								, D.Column_Label AS Association_Sponsor
-								, D.Column_Value AS Association_Sponsor_Value 
-								, CASE WHEN B.StateCode = 0 THEN ''Y'' ELSE ''N'' END AS Association_Active_Yn
-								, A.New_StartDate
-								, A.New_EndDate
-								, E.Column_Label AS StatusCode
-								FROM Ext_Association_Membership A
-									LEFT JOIN Ext_Association B ON A.New_Association = B.New_AssociationId
-									LEFT JOIN _Association_Type_ C ON B.New_Type = C.Column_Value
-									LEFT JOIN _Association_Sponsor_ D ON B.New_Sponsor = D.Column_Value
-									LEFT JOIN _New_AssociationMembership_StatusCode_ E ON A.StatusCode = E.Column_Value
-							) A
-				SELECT * INTO #Association_Temp_2
-					FROM 
-						(
-						SELECT ContactId
-							, ROW_NUMBER() OVER(ORDER BY ContactId) AS Association_Group_Key --> HARD CODED <--
-							FROM
-								(SELECT DISTINCT ContactId   
-									FROM #Association_Temp_1) A
-						) A
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Association_Temp_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Association_Temp_2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Association_Dim'', @Alpha_Step_Number = ''109G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Association_Dim'', @Alpha_Step_Number = ''109G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
+
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Association_Dim'', @Alpha_Step_Number = ''109G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
 			END TRY 
 			BEGIN CATCH
@@ -3520,40 +2681,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				DECLARE @TABLE_CNT3 AS VARCHAR(100)
 				DECLARE @TABLE_CNT4 AS VARCHAR(100)                                      
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Association_Dim'', @Alpha_Step_Number = ''109G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1; 
-					INSERT INTO _Association_Dim --> HARD CODED <--
-						(ContactId 
-						, Association_Key 
-						, Association_Group_Key 
-						, Association_Name 
-						, Association_Acronym 
-						, Association_Region
-						, Association_Chapter_Level 
-						, Association_Type
-						, Association_Type_Value 
-						, Association_Sponsor
-						, Association_Sponsor_Value 
-						, Association_Active_Yn
-						, New_StartDate
-						, New_EndDate
-						, StatusCode
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
-							, A.Association_Key 
-							, B.Association_Group_Key 
-							, A.Association_Name 
-							, A.Association_Acronym 
-							, A.Association_Region
-							, A.Association_Chapter_Level 
-							, A.Association_Type
-							, A.Association_Type_Value 
-							, A.Association_Sponsor
-							, A.Association_Sponsor_Value 
-							, A.Association_Active_Yn
-							, CONVERT(VARCHAR(10),A.New_StartDate,101) AS New_StartDate
-							, CONVERT(VARCHAR(10),A.New_EndDate,101) AS New_EndDate
-							, A.StatusCode
-							FROM #Association_Temp_1 A
-								LEFT JOIN #Association_Temp_2 B ON A.ContactId = B.ContactId
+					
 					INSERT INTO _Association_Bridge --> HARD CODED <--
 						(ContactId
 						, Association_Key --> HARD CODED <--
@@ -4352,66 +3480,10 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''111F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''111F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_3
-		, 'IF OBJECT_ID(''tempdb..#Employment_Temp_1'') IS NOT NULL
-					DROP TABLE #Employment_Temp_1
-					IF OBJECT_ID(''tempdb..#Employment_Temp_2'') IS NOT NULL
-					DROP TABLE #Employment_Temp_2
+		, '
 			BEGIN TRY
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				DECLARE @TABLE_CNT2 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Employment_Dim'', @Alpha_Step_Number = ''111G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					SELECT * INTO #Employment_Temp_1
-						FROM 
-							(
-							SELECT E.New_EmploymentsId AS ContactId
-								, ROW_NUMBER() OVER(ORDER BY E.New_EmploymentId) AS Employment_Key
-								, CASE WHEN E.New_PaymentFrequency IS NULL THEN ''N'' ELSE ''Y'' END AS Employment_Donor_Yn 
-								, CASE WHEN E.StateCode = 0 THEN ''Y'' ELSE ''N'' END AS Employment_Active_Yn 
-								, E.New_Department AS Employment_Church_Affil_Dept
-								, CASE WHEN E.New_ChurchAff = 1 THEN NI.New_Name 
-									WHEN E.New_ChurchAff = 0 THEN COALESCE(REPLACE(E.New_Department,''Employment - '',''''),A.Name,E.Plus_AlternateOrganizationName)
-									ELSE NULL END AS Employer
-								, E.New_Title AS Job_Title
-								, NJ.New_Name AS Job_Code
-								, NIB.New_Name AS Industry
-								, NS.New_Source AS Source
-								, CASE WHEN E.New_ChurchAff = 1 THEN ''Y'' 
-									WHEN E.New_ChurchAff = 0 THEN ''N'' 
-									ELSE NULL END AS Church_Affiliated
-								, E.New_DateStarted AS Start_Date
-								, E.New_DateEnded AS End_Date            
-								, CASE WHEN E.New_Internship = 1 THEN ''Y''
-									WHEN E.New_Internship = 0 THEN ''N'' 
-									ELSE NULL END AS Internship
-								, P.Column_Label AS Church_Employment_Status 
-								, NI.New_Name AS Employment_Institutional_Hierarchy
-								, E.New_InstitutionalHierarchyId
-								, A.New_LdspId AS Employer_Ldsp_Id
-								, S.Column_Label AS StatusCode
-								, E.ModifiedOn AS Employment_Modified_On_Date
-								, E.Lds_CampusAddress AS Employment_Lds_CampusAddress
-								FROM Ext_Employment E
-									LEFT JOIN Ext_Source NS ON E.New_Source = NS.New_SourceId
-									LEFT JOIN Ext_Institution NI ON E.New_InstitutionalHierarchyId = NI.New_InstitutionId
-									LEFT JOIN Ext_Industry NIB ON E.New_IndustryCategory = NIB.New_IndustryId
-									LEFT JOIN Ext_Job_Code NJ ON E.New_JobCode = NJ.New_JobCodeId
-									LEFT JOIN Ext_Account A ON E.New_Company = A.AccountId
-									LEFT JOIN _Plus_Church_Employment_Status_ P ON E.Plus_ChurchEmploymentStatus = P.Column_Value
-									LEFT JOIN _Employment_StatusCode_ S ON E.StatusCode = S.Column_Value
-							) A
-					SELECT * INTO #Employment_Temp_2
-						FROM 
-							(
-							SELECT ContactId
-								, ROW_NUMBER() OVER(ORDER BY ContactId) AS Employment_Group_Key --> HARD CODED <--
-								FROM
-									(SELECT DISTINCT ContactId   
-										FROM #Employment_Temp_1) A
-							) A                                                     
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Employment_Temp_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Employment_Temp_2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Employment_Dim'', @Alpha_Step_Number = ''111G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Employment_Dim'', @Alpha_Step_Number = ''111G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
+
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Employment_Dim'', @Alpha_Step_Number = ''111G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
 			END TRY 
 			BEGIN CATCH                                
@@ -4434,54 +3506,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				DECLARE @TABLE_CNT3 AS VARCHAR(100)
 				DECLARE @TABLE_CNT4 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Employment_Dim'', @Alpha_Step_Number = ''111G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Employment_Dim --> HARD CODED <--
-						(ContactId
-						, Employment_Key
-						, Employment_Group_Key
-						, Employment_Donor_Yn 
-						, Employment_Active_Yn 
-						, Employment_Church_Affil_Dept
-						, Employer
-						, Job_Title
-						, Job_Code
-						, Industry
-						, Source
-						, Church_Affiliated
-						, Start_Date
-						, End_Date         
-						, Internship
-						, Church_Employment_Status 
-						, Employment_Institutional_Hierarchy
-						, New_InstitutionalHierarchyId
-						, Employer_Ldsp_Id
-						, StatusCode
-						, Employment_Modified_On_Date
-						, Employment_Lds_CampusAddress
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
-						, A.Employment_Key
-						, B.Employment_Group_Key
-						, A.Employment_Donor_Yn 
-						, A.Employment_Active_Yn 
-						, A.Employment_Church_Affil_Dept
-						, A.Employer
-						, A.Job_Title
-						, A.Job_Code
-						, A.Industry
-						, A.Source
-						, A.Church_Affiliated
-						, CONVERT(VARCHAR(10),A.Start_Date,101) AS Start_Date
-						, CONVERT(VARCHAR(10),A.End_Date,101) AS End_Date           
-						, A.Internship
-						, A.Church_Employment_Status 
-						, A.Employment_Institutional_Hierarchy
-						, CONVERT(NVARCHAR(100),A.New_InstitutionalHierarchyId) AS New_InstitutionalHierarchyId
-						, A.Employer_Ldsp_Id
-						, A.StatusCode
-						, A.Employment_Modified_On_Date
-						, A.Employment_Lds_CampusAddress
-						FROM #Employment_Temp_1 A
-							LEFT JOIN #Employment_Temp_2 B ON A.ContactId = B.ContactId
+					
 					INSERT INTO _Employment_Bridge --> HARD CODED <--
 						(ContactId
 						, Employment_Key --> HARD CODED <--
@@ -4722,535 +3747,6 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 	)
 	,
 -- --------------------------
--- _Address_Dim Table
--- --------------------------
-	('Dim' -- Dim_Object
-		, '_Address_Dim' -- Table_Name
-		, 'ContactId NVARCHAR(100)
-			, Address_Key INT  PRIMARY KEY
-			, Address_Group_Key INT
-			, Address_Primary_Yn NVARCHAR(1)
-			, Address_Street_1 NVARCHAR(100)
-			, Address_Street_2 NVARCHAR(100)
-			, Address_Street_3 NVARCHAR(100)
-			, Address_City NVARCHAR(100)
-			, Address_County NVARCHAR(100)
-			, Address_County_Code NVARCHAR(10)
-			, Address_County_Id NVARCHAR(100)
-			, Address_State_Province NVARCHAR(50)
-			, Address_State_Code NVARCHAR(100)
-			, Address_Country NVARCHAR(100)
-			, Address_Post_Code_Full NVARCHAR(100)
-			, Address_Post_Code_Last_4 NVARCHAR(15)
-			, Address_Printing_Line_1 NVARCHAR(606)
-			, Address_Printing_Line_2 NVARCHAR(406)
-			, Address_Display NVARCHAR(300)
-			, Address_Quality_Status NVARCHAR(400)
-			, Address_Quality_Status_Value INT
-			, Address_Longitude FLOAT
-			, Address_Latitude FLOAT
-			, Address_Active_Yn NVARCHAR(1)
-			, Address_Confirmed_Yn NVARCHAR(1)
-			--, Address_Undeliverable_Yn NVARCHAR(1)  /*Delete from source 5/15/17*/
-			, Address_Confidential_Yn NVARCHAR(1)
-			--, Address_Confidential_Reason NVARCHAR(400)  /*Delete from source 5/15/17*/
-			, Address_Type NVARCHAR(400)
-			, Address_Type_Value INT
-			, Address_Printing_Line_3 NVARCHAR(100)
-			, Address_Printing_Line_4 NVARCHAR(100)
-			' -- Create_Table
-		, 'ContactId
-			, Address_Key
-			, Address_Group_Key
-			, Address_Primary_Yn
-			, Address_Street_1
-			, Address_Street_2
-			, Address_Street_3
-			, Address_City
-			, Address_County
-			, Address_County_Code
-			, Address_County_Id
-			, Address_State_Province
-			, Address_State_Code
-			, Address_Country
-			, Address_Post_Code_Full
-			, Address_Post_Code_Last_4
-			, Address_Printing_Line_1
-			, Address_Printing_Line_2
-			, Address_Display
-			, Address_Quality_Status
-			, Address_Quality_Status_Value
-			, Address_Longitude
-			, Address_Latitude
-			, Address_Active_Yn
-			, Address_Confirmed_Yn
-			--, Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
-			, Address_Confidential_Yn
-			--, Address_Confidential_Reason  /*Delete from source 5/15/17*/
-			, Address_Type
-			, Address_Type_Value
-			, Address_Printing_Line_3
-			, Address_Printing_Line_4
-			' -- Insert_Fields
-		, ' ' -- From_Statement
-		, ' ' -- Where_Statement
-		, 'DECLARE @TABLE_NAME NVARCHAR(100)
-			SET @TABLE_NAME = ''_Address_Dim'' ; ------> HARDCODE <------
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''113D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1;                               
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''113D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_1
-		, 'DECLARE @SQL_1 NVARCHAR(MAX)
-			DECLARE @SQL_2 NVARCHAR(MAX)
-			DECLARE @TABLE_NAME_B NVARCHAR(100)
-			SET @TABLE_NAME_B = ''_Address_Bridge''
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''113E'', @Alpha_Step_Name = ''Bridge Table Creation - Begin'', @Alpha_Result = 1;
-			SET @SQL_2 = '' ''''LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + '''''', ''''U'''' ''
-			SET @SQL_1 = ''
-			IF OBJECT_ID('' + @SQL_2 + '') IS NOT NULL
-			DROP TABLE LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + ''                                               
-			CREATE TABLE LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + ''(ContactId NVARCHAR(100), Address_Key INT PRIMARY KEY, Address_Group_Key INT)''                                                        
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''113E'', @Alpha_Step_Name = ''Bridge Table Creation - Query'', @Alpha_Query = @SQL_1, @Alpha_Result = 1;                                        
-			EXEC(@SQL_1)
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''113E'', @Alpha_Step_Name = ''Bridge Table Creation - End'', @Alpha_Result = 1;
-			' -- Attribute_2
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''113F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''113F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_3
-		, 'IF OBJECT_ID(''tempdb..#Address_Temp_1'') IS NOT NULL
-					DROP TABLE #Address_Temp_1
-					IF OBJECT_ID(''tempdb..#Address_Temp_2'') IS NOT NULL
-					DROP TABLE #Address_Temp_2
-			BEGIN TRY
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				DECLARE @TABLE_CNT2 AS VARCHAR(100)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					SELECT * INTO #Address_Temp_1
-						FROM 
-							(
-							SELECT F.ContactId
-								, ROW_NUMBER() OVER(ORDER BY F.New_AddressId) AS Address_Key
-								, F.New_AddressId
-								, F.Address_Primary_Yn
-								, F.Address_Street_1
-								, F.Address_Street_2
-								, F.Address_Street_3
-								, F.Address_City
-								, F.Address_County
-								, F.Address_County_Code
-								, F.Address_County_Id
-								, F.Address_State_Province
-								, F.Address_State_Code
-								, F.Address_Country
-								, F.Address_Post_Code_Full
-								, F.Address_Printing_Line_1
-								, F.Address_Printing_Line_2
-								, F.Address_Display
-								, F.Address_Quality_Status
-								, F.Address_Quality_Status_Value
-								, F.Address_Post_Code_Last_4
-								, F.Address_Longitude
-								, F.Address_Latitude
-								, F.Address_Active_Yn
-								, F.Address_Confirmed_Yn
-								--, F.Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
-								, F.Address_Confidential_Yn
-								--, F.Address_Confidential_Reason  /*Delete from source 5/15/17*/
-								, F.Address_Type
-								, F.Address_Type_Value
-								, F.Address_Printing_Line_3
-								, F.Address_Printing_Line_4
-								FROM
-									(SELECT A.ContactId
-										, A.New_AddressId
-										, B.Address_Primary_Yn
-										, A.Address_Street_1
-										, A.Address_Street_2
-										, A.Address_Street_3
-										, C.Address_City
-										, C.Address_County
-										, C.Address_County_Code
-										, C.Address_County_Id
-										, C.Address_State_Province
-										, C.Address_State_Code
-										, C.Address_Country
-										, C.Address_Post_Code_Full
-										, B.Address_Printing_Line_1
-										, D.Address_Printing_Line_2
-										, A.Address_Display
-										, E.Address_Quality_Status
-										, E.Address_Quality_Status_Value
-										, A.Address_Post_Code_Last_4
-										, A.Address_Longitude
-										, A.Address_Latitude
-										, B.Address_Active_Yn
-										, B.Address_Confirmed_Yn
-										--, B.Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
-										, B.Address_Confidential_Yn
-										--, E.Address_Confidential_Reason  /*Delete from source 5/15/17*/
-										, E.Address_Type
-										, E.Address_Type_Value
-										, C.Address_Printing_Line_3
-										, C.Address_Printing_Line_4
-										FROM
-											(SELECT DISTINCT OA.Plus_RelatedContact AS ContactId
-												, OA.New_AddressId
-												, OA.New_Street1 AS Address_Street_1
-												, OA.New_Street2 AS Address_Street_2
-												, OA.New_Street3 AS Address_Street_3
-												, OA.New_Zip4 AS Address_Post_Code_Last_4
-												, CONVERT(NVARCHAR(300),OA.Plus_AddressDisplay) AS Address_Display
-												, OA.Plus_Longitude AS Address_Longitude
-												, OA.Plus_Latitude AS Address_Latitude
-												FROM LDSPhilanthropiesDW.dbo.Ext_Address OA
-											) A LEFT JOIN
-											(SELECT DISTINCT OA.New_AddressId
-												, CASE WHEN OA.New_Primary = 1 THEN ''Y'' 
-													WHEN OA.New_Primary = 0 THEN ''N''
-													ELSE ''-'' END AS Address_Primary_Yn
-												, COALESCE(OA.New_Street1,'' '') + COALESCE(OA.New_Street2,'' '') + COALESCE(OA.New_Street3,'' '') AS Address_Printing_Line_1 
-												, CASE WHEN OA.StateCode = 0 THEN ''Y'' ELSE ''N'' END AS Address_Active_Yn
-												--, CASE WHEN OA.New_Confirmed = 0 THEN ''N'' ELSE ''Y'' END AS Address_Confirmed_Yn /*Delete from source 5/15/17*/
-												, CASE WHEN OA.New_ConfirmedDate IS NULL THEN ''N'' ELSE ''Y'' END AS Address_Confirmed_Yn
-												--, CASE WHEN OA.New_Undeliverable = 0 THEN ''N'' ELSE ''Y'' END AS Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
-												, CASE WHEN OA.New_Confidential = 0 THEN ''N'' ELSE ''Y'' END AS Address_Confidential_Yn
-												FROM LDSPhilanthropiesDW.dbo.Ext_Address OA
-											) B ON A.New_AddressId = B.New_AddressId LEFT JOIN
-											(SELECT DISTINCT OA.New_AddressId
-												--, NC.New_Name AS Address_City
-												, RTRIM(LTRIM(dbo.ufProperCase(OA.Lds_City,''|Act|Air|Al|am|an|Ana|and|And|Ann|Arm|as|au|Ave|ba|Bad|Bar|Bay|Bch|Bee|bei|Bei|Bel|Big|Bow|Box|Br|Bud|Buk|By|
-																	|Cd|Chi|cho|Chu|Cle|Col|Ctr|Cty|Cut|Cyn|Dam|Dan|De|de|Del|Den|Des|DeWinton|di|Do|do|Dos|Dry|du|
-																	|Eau|Edo|Egg|El|Elk|Ell|Elm|Ely|Emu|en|Et|Eup|Ewa|Eye|Fe|Fox|Foy|Ft|Fu|Gan|Gap|Gi|Gig|Gro|Gto|gu|Gu|Gun|Gye|
-																	|Hae|Ham|Hat|Hls|Ho|Hof|Hot|Hts|Hu|Ile|im|in|In|Inn|Is|Jal|Jay|Jct|Jet|Jim|Jin|Joe|Joo|Joy|Ju|
-																	|Kan|Ken|ken|Key|Ki|Ku|Kus|La|Lam|Las|Le|le|Lea|Lee|Les|Lin|Loa|Los|
-																	|Mai|Mar|Mc|Med|Mer|Mex|Mi|Mie|Min|Mnt|Mor|Mt|Mtn|Mun|Na|Nam|Nan|Nat|New|Nos|Nye|Oak|of|Oil|Ola|Old|Ord|Oro|
-																	|Pak|Paw|Paz|Pe|Pea|Pen|po|Pok|Pos|Pri|Red|Rex|Rey|Rio|Roi|Roy|Rue|Run|Rye|
-																	|Sac|Sai|Sam|San|Sao|Sea|Shi|shi|si|Siu|Six|Ski|So|St|Sta|Ste|Sul|Sun|Sur|
-																	|Ta|Tai|Tan|Tao|Tel|Ten|The|Tin|Top|Tow|Two|Twp|Usk|USSCA|Uul|Van|Vi|Vlg|Vly|voa|
-																	|Wai|Wan|Way|Wuk|Xi|Yan|Yi|Yuc|Zug|'',3
-																	))) AS Address_City
-												--, NCTY.New_Name AS Address_County
-												, OA.Lds_County AS Address_County
-												, NCTY.Plus_CountyCode AS Address_County_Code
-												, NCTY.New_CountyId AS Address_County_Id
-												--, NST.Plus_Abbreviation AS Address_State_Province
-												, OA.Lds_StateProvince AS Address_State_Province
-												--, NST.New_Name AS Address_State_Code
-												, OA.Lds_StateProvince AS Address_State_Code
-												, NCRY.New_Name AS Address_Country
-												--, CASE WHEN NCRY.New_Name  != ''United States'' THEN OA.Plus_ForeignPostalCode 
-												--	ELSE  PC.New_Name END AS Address_Post_Code_Full
-												, OA.Lds_PostalCode AS Address_Post_Code_Full
-												--, CASE WHEN NCRY.New_Name  != ''United States'' THEN OA.Plus_ForeignPostalCode 
-												--	ELSE  PC.New_Name END As Address_Printing_Line_3
-												, OA.Lds_PostalCode AS Address_Printing_Line_3
-												, NCRY.New_Name AS Address_Printing_Line_4
-												FROM LDSPhilanthropiesDW.dbo.Ext_Address OA
-													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_City NC ON OA.New_CityLookUp = NC.New_CityId
-													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_County NCTY ON OA.New_CountyId = NCTY.New_CountyId 
-													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_State NST ON OA.New_StatesProvinces = NST.New_StateId
-													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_Country NCRY ON OA.New_CountryRegions = NCRY.New_CountryId
-													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_Postal PC ON OA.New_PostalCodes = PC.New_PostalCodeId 
-											) C ON A.New_AddressId = C.New_AddressId LEFT JOIN
-											(SELECT DISTINCT OA.New_AddressId
-												, CASE WHEN AF.New_UseStateAbreviation = 1 THEN COALESCE(OA.Lds_City,'' '') + '', '' + COALESCE(OA.Lds_StateProvince,'' '') 
-													ELSE COALESCE(OA.Lds_City,'' '') + '', '' + COALESCE(OA.Lds_StateProvince,'' '') END AS Address_Printing_Line_2
-												FROM LDSPhilanthropiesDW.dbo.Ext_Address OA
-													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_City NC ON OA.New_CityLookUp = NC.New_CityId
-													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_County NCTY ON OA.New_CountyId = NCTY.New_CountyId 
-													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_State NST ON OA.New_StatesProvinces = NST.New_StateId
-													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_Country NCRY ON OA.New_CountryRegions = NCRY.New_CountryId
-													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_Postal PC ON OA.New_PostalCodes = PC.New_PostalCodeId 
-													LEFT JOIN LDSPhilanthropiesDW.dbo.Ext_Address_Format AF ON NCRY.Plus_AdderessFormat = AF.Plus_AddressFormatId
-											) D ON A.New_AddressId = D.New_AddressId LEFT JOIN
-											(SELECT DISTINCT OA.New_AddressId
-												, Q.Column_Label AS Address_Quality_Status
-												, Q.Column_Value AS Address_Quality_Status_Value
-												--, C.Column_Label AS Address_Confidential_Reason  /*Delete from source 5/15/17*/
-												, A.Column_Label AS Address_Type
-												, A.Column_Value AS Address_Type_Value
-												FROM LDSPhilanthropiesDW.dbo.Ext_Address OA
-													LEFT JOIN LDSPhilanthropiesDW.dbo._Address_Quality_ Q ON OA.Plus_OneAccordQuality = Q.Column_Value 
-													--LEFT JOIN LDSPhilanthropiesDW.dbo._Address_Confidential_ C ON OA.Plus_ConfidentialInstruction = C.Column_Value  /*Delete from source 5/15/17*/ 
-													LEFT JOIN LDSPhilanthropiesDW.dbo._Address_Type_ A ON OA.New_AddressType = A.Column_Value
-											) E ON A.New_AddressId = E.New_AddressId
-										WHERE 1 = 1
-											AND B.Address_Active_Yn = ''Y''
-									) F
-							) A  
-						OPTION(MAXDOP 4)
-					SELECT * INTO #Address_Temp_2
-						FROM 
-							(
-							SELECT ContactId
-								, ROW_NUMBER() OVER(ORDER BY ContactId) AS Address_Group_Key --> HARD CODED <--
-								FROM
-									(SELECT DISTINCT ContactId   
-										FROM #Address_Temp_1) A
-							) A
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Address_Temp_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Address_Temp_2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
-			END TRY 
-			BEGIN CATCH
-				DECLARE @ERROR_NUMBER INT
-				DECLARE @ERROR_SEVERITY INT
-				DECLARE @ERROR_STATE INT
-				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
-				DECLARE @ERROR_LINE INT
-				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113X'', @Alpha_Step_Name = ''Dim Table - Transform - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			BEGIN TRY 
-				DECLARE @TABLE_CNT3 AS VARCHAR(100)
-				DECLARE @TABLE_CNT4 AS VARCHAR(100)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Address_Dim --> HARD CODED <--
-						(ContactId
-						, Address_Key
-						, Address_Group_Key
-						, Address_Primary_Yn
-						, Address_Street_1
-						, Address_Street_2
-						, Address_Street_3
-						, Address_City
-						, Address_County
-						, Address_County_Code
-						, Address_County_Id
-						, Address_State_Province
-						, Address_State_Code
-						, Address_Country
-						, Address_Post_Code_Full
-						, Address_Post_Code_Last_4
-						, Address_Printing_Line_1
-						, Address_Printing_Line_2
-						, Address_Display
-						, Address_Quality_Status
-						, Address_Quality_Status_Value
-						, Address_Longitude
-						, Address_Latitude
-						, Address_Active_Yn
-						, Address_Confirmed_Yn
-						--, Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
-						, Address_Confidential_Yn
-						--, Address_Confidential_Reason  /*Delete from source 5/15/17*/
-						, Address_Type
-						, Address_Type_Value
-						, Address_Printing_Line_3
-						, Address_Printing_Line_4
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
-							, A.Address_Key
-							, B.Address_Group_Key
-							, A.Address_Primary_Yn
-							, A.Address_Street_1
-							, A.Address_Street_2
-							, A.Address_Street_3
-							, A.Address_City
-							, A.Address_County
-							, A.Address_County_Code
-							, CONVERT(NVARCHAR(100),A.Address_County_Id) AS Address_County_Id
-							, A.Address_State_Province
-							, A.Address_State_Code
-							, A.Address_Country
-							, A.Address_Post_Code_Full
-							, A.Address_Post_Code_Last_4
-							, A.Address_Printing_Line_1
-							, A.Address_Printing_Line_2
-							, A.Address_Display
-							, A.Address_Quality_Status
-							, A.Address_Quality_Status_Value
-							, A.Address_Longitude
-							, A.Address_Latitude
-							, A.Address_Active_Yn
-							, A.Address_Confirmed_Yn
-							--, A.Address_Undeliverable_Yn  /*Delete from source 5/15/17*/
-							, A.Address_Confidential_Yn
-							--, A.Address_Confidential_Reason   /*Delete from source 5/15/17*/
-							, A.Address_Type
-							, A.Address_Type_Value
-							, A.Address_Printing_Line_3
-							, A.Address_Printing_Line_4   
-							FROM #Address_Temp_1 A
-								LEFT JOIN #Address_Temp_2 B ON A.ContactId = B.ContactId
-					INSERT INTO _Address_Bridge --> HARD CODED <--
-						(ContactId
-						, Address_Key --> HARD CODED <--
-						, Address_Group_Key --> HARD CODED <--
-						)
-						SELECT DISTINCT ContactId
-							, Address_Key --> HARD CODED <--
-							, Address_Group_Key --> HARD CODED <--  
-							FROM _Address_Dim  --> HARD CODED <--              
-				SELECT @TABLE_CNT3 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Address_Dim)
-				SELECT @TABLE_CNT4 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Address_Bridge)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Table - Count'', @Alpha_Count = @TABLE_CNT3, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Bridge Table - Count'', @Alpha_Count = @TABLE_CNT4, @Alpha_Result = 1;
-				IF @TABLE_CNT3 != @TABLE_CNT4 
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Table - Load - COUNT Error'', @Alpha_Result = 0;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113G'', @Alpha_Step_Name = ''Dim Tables - Load - End'', @Alpha_Result = 1;  
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Address_Dim'', @Alpha_Step_Number = ''113X'', @Alpha_Step_Name = ''Dim Table - Load - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;                                             
-			END CATCH
-			' -- Attribute_4
-		, 'BEGIN TRY
-				MERGE INTO _Address_Dim T
-					USING (
-							SELECT Address_Key
-								, RTRIM(LTRIM(CASE WHEN Address_City = ''Ofallon'' AND Address_County IN (''Saint Charles'',''Saint Clair'') AND Address_State_Province IN (''MO'',''IL'') THEN ''O''''Fallon''
-										WHEN Address_City = ''O Fallon'' AND Address_County IN (''Saint Charles'',''Saint Clair'') AND Address_State_Province IN (''MO'',''IL'') THEN ''O''''Fallon''
-										WHEN Address_City = ''Mexico D.F.'' AND Address_Country = ''Mexico'' THEN ''Mexico, D.F.''
-										WHEN Address_City = ''Mexico DF'' AND Address_Country = ''Mexico'' THEN ''Mexico, D.F.''
-										WHEN Address_City = ''Mexico City D.F.'' AND Address_Country = ''Mexico'' THEN ''Mexico, D.F.''
-										WHEN Address_City = ''Mexico City DF'' AND Address_Country = ''Mexico'' THEN ''Mexico, D.F.''
-										WHEN Address_City = ''Calgary, AB'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
-										WHEN Address_City = ''Calgary  AB'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
-										WHEN Address_City = ''Calgary'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
-										WHEN Address_City = ''Calgary AI'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
-										WHEN Address_City = ''Calgary Al'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
-										WHEN Address_City = ''Calgary Alberta'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
-										WHEN Address_City = ''Calgary BC'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
-										WHEN Address_City = ''Calgary, Alberta'' AND Address_Country = ''Canada'' THEN ''Calgary AB''
-										WHEN Address_City = ''Shore View'' AND Address_County IN (''Ramsey'') AND Address_State_Province IN (''MN'') THEN ''Shoreview''
-										WHEN Address_City = ''Hamilton, ON'' AND Address_Country = ''Canada'' THEN ''Hamilton ON''
-										WHEN Address_City = ''Hamilton Ontario'' AND Address_Country = ''Canada'' THEN ''Hamilton ON''
-										WHEN Address_City = ''Ducklake SK'' AND Address_Country = ''Canada'' THEN ''Duck Lake SK''
-										WHEN Address_City = ''Pachuca HGO'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
-										WHEN Address_City = ''Pachuca'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
-										WHEN Address_City = ''Pachuca Hidalgo'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
-										WHEN Address_City = ''Pachuca De Soto Hida'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
-										WHEN Address_City = ''Pachuca HI'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
-										WHEN Address_City = ''Pachuca HG'' AND Address_Country = ''Mexico'' THEN ''Pachuca, HGO''
-										WHEN Address_City = ''Ottawa, ON'' AND Address_Country = ''Canada'' THEN ''Ottawa ON''
-										WHEN Address_City = ''Ottawa'' AND Address_Country = ''Canada'' THEN ''Ottawa ON''
-										WHEN Address_City = ''Ottawa Ontario'' AND Address_Country = ''Canada'' THEN ''Ottawa ON''
-										WHEN Address_City = ''Ottawa AB'' AND Address_Country = ''Canada'' THEN ''Ottawa ON''
-										WHEN Address_City = ''Weston-Super-Mare'' AND Address_Country = ''England'' THEN ''Weston-super-Mare''
-										WHEN Address_City = ''Weston-Super-Mare'' AND Address_Country = ''United Kingdom'' THEN ''Weston-super-Mare''
-										WHEN Address_City = ''Weston Super Mare'' AND Address_Country = ''United Kingdom'' THEN ''Weston-super-Mare''
-										WHEN Address_City = ''Weston-Super-Mare B'' AND Address_Country = ''England'' THEN ''Weston-super-Mare''
-										WHEN Address_City = ''Risingsun'' AND Address_State_Province IN (''OH'') THEN ''Rising Sun''
-										WHEN Address_City = ''Nuku''''Alofa'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
-										WHEN Address_City = ''Nuku Alofa'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
-										WHEN Address_City = ''Nuku'''' Alofa'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
-										WHEN Address_City = ''Nuku`alofa Tongatapu'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
-										WHEN Address_City = ''Nukuaiofa'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
-										WHEN Address_City = ''Nukualofa'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
-										WHEN Address_City = ''Nukualofa Tongatapu'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
-										WHEN Address_City = ''Nuku''''Alofa Tongatapu'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
-										WHEN Address_City = ''Nukualofa, Tongatapu'' AND Address_Country = ''Tonga'' THEN ''Nuku''''alofa''
-										WHEN Address_City = ''Willow Brook'' AND Address_County IN (''Du Page'') AND Address_State_Province IN (''IL'') THEN ''Willowbrook''
-										WHEN Address_City = ''Puebla'' AND Address_Country = ''Mexico'' THEN ''Puebla, PUE''
-										WHEN Address_City = ''Puebla CP'' AND Address_Country = ''Mexico'' THEN ''Puebla, PUE''
-										WHEN Address_City = ''Puebla ME'' AND Address_Country = ''Mexico'' THEN ''Puebla, PUE''
-										WHEN Address_City = ''Puebla PUE'' AND Address_Country = ''Mexico'' THEN ''Puebla, PUE''
-										WHEN Address_City = ''Puebla Puebla'' AND Address_Country = ''Mexico'' THEN ''Puebla, PUE''
-										WHEN Address_City = ''Charlestown'' AND Address_County IN (''Jefferson'') AND Address_State_Province IN (''WV'') THEN ''Charles Town''
-										WHEN Address_City = ''Xian'' AND Address_Country IN (''China'',''CHINA, PEOPLE''''S REP OF'') THEN ''Xi''''an''
-										WHEN Address_City = ''Coaldale'' AND Address_Country = ''Canada'' THEN ''Coaldale AB''
-										WHEN Address_City = ''Coaldale Alberta'' AND Address_Country = ''Canada'' THEN ''Coaldale AB''
-										WHEN Address_City = ''Coaldale, AB'' AND Address_Country = ''Canada'' THEN ''Coaldale AB''
-										WHEN Address_City = ''De Lancey'' AND Address_County IN (''Delaware'') AND Address_State_Province IN (''NY'') THEN ''Delancey''
-										WHEN Address_City = ''Cardston'' AND Address_Country = ''Canada'' THEN ''Cardston AB''
-										WHEN Address_City = ''Cardston, AB'' AND Address_Country = ''Canada'' THEN ''Cardston AB''
-										WHEN Address_City = ''Salt Lake Cty'' AND Address_State_Province IN (''UT'') THEN ''Salt Lake City''
-										WHEN Address_City = ''St. George'' AND Address_State_Province IN (''UT'') THEN ''Saint George''
-										WHEN Address_City = ''W Valley City'' AND Address_State_Province IN (''UT'') THEN ''West Valley City''
-										WHEN Address_City = ''West Valley'' AND Address_State_Province IN (''UT'') THEN ''West Valley City''
-										WHEN Address_City = ''Saratoga Spgs'' AND Address_State_Province IN (''UT'') THEN ''Saratoga Springs''
-										WHEN Address_City = ''Vancouver'' AND Address_Country = ''Canada'' THEN ''Vancouver BC''
-										WHEN Address_City = ''Vancouver AB'' AND Address_Country = ''Canada'' THEN ''Vancouver BC''
-										WHEN Address_City = ''Vancover BC'' AND Address_Country = ''Canada'' THEN ''Vancouver BC''
-										WHEN Address_City = ''Eagle Mtn'' AND Address_State_Province IN (''UT'') THEN ''Eagle Mountain''
-										WHEN Address_City = ''N Salt Lake'' AND Address_State_Province IN (''UT'') THEN ''North Salt Lake''
-										WHEN Address_City = ''St Anthony'' AND Address_State_Province IN (''ID'') THEN ''Saint Anthony''
-									ELSE Address_City END)) AS Address_City
-								FROM _Address_Dim
-								WHERE 1 = 1
-									AND Address_City IN (''Ofallon'',''O Fallon''
-															,''Mexico D.F.'',''Mexico DF'',''Mexico City D.F.'',''Mexico City DF''
-															,''Calgary, AB'',''Calgary  AB'',''Calgary'',''Calgary AI'',''Calgary Al'',''Calgary Alberta'',''Calgary BC'',''Calgary, Alberta''
-															,''Shore View''
-															,''Hamilton, ON'',''Hamilton Ontario''
-															,''Ducklake SK''
-															,''Pachuca HGO'',''Pachuca'',''Pachuca Hidalgo'',''Pachuca De Soto Hida'',''Pachuca HI'',''Pachuca HG''
-															,''Ottawa, ON'',''Ottawa'',''Ottawa Ontario'',''Ottawa AB''
-															,''Weston-Super-Mare'',''Weston Super Mare'',''Weston-Super-Mare B''
-															,''Risingsun''
-															,''Nuku''''Alofa'',''Nuku Alofa'',''Nuku'''' Alofa'',''Nuku`alofa Tongatapu'',''Nukuaiofa'',''Nukualofa'',''Nukualofa Tongatapu'',''Nuku''''Alofa Tongatapu'',''Nukualofa, Tongatapu''
-															,''Willow Brook''
-															,''Puebla'',''Puebla CP'',''Puebla ME'',''Puebla PUE'',''Puebla Puebla''
-															,''Charlestown''
-															,''Xian''
-															,''Coaldale'',''Coaldale Alberta'',''Coaldale, AB''
-															,''De Lancey''
-															,''Cardston'',''Cardston, AB''
-															,''Salt Lake Cty''
-															,''St. George''
-															,''W Valley City'',''West Valley''
-															,''Saratoga Spgs''
-															,''Vancouver'',''Vancouver AB'',''Vancover BC''
-															,''Eagle Mtn''
-															,''N Salt Lake''
-															,''St Anthony''
-														)
-						) S ON T.Address_Key = S.Address_Key
-					WHEN MATCHED THEN 
-						UPDATE
-							SET T.Address_City = S.Address_City
-					;
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Data Integrity City Corrections'', @Alpha_Step_Number = ''113X'', @Alpha_Step_Name = ''Data Integrity City Corrections - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_5
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''113H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
-			' -- Attribute_6
-		, ' ' -- Attribute_7
-		, ' ' -- Attribute_8
-		, ' ' -- Attribute_9
-		, ' ' -- Attribute_10
-		, ' ' -- Attribute_11
-		, ' ' -- Attribute_12
-		, ' ' -- Attribute_13
-		, ' ' -- Attribute_14
-		, ' ' -- Attribute_15
-		, ' ' -- Attribute_16
-		, ' ' -- Attribute_17
-		, ' ' -- Attribute_18
-		, ' ' -- Attribute_19
-		, ' ' -- Attribute_20
-		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Address_Dim''; ------> HARDCODE <------
-			' -- Attribute_21
-		, 1 -- Active
-		, GETDATE() -- Insert_Date
-		, NULL  -- Update_Date                
-	)
-	,
--- --------------------------
 -- _Connection_Dim Table
 -- --------------------------
 	('Dim' -- Dim_Object
@@ -5294,61 +3790,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'DECLARE @TABLE_NAME NVARCHAR(100)
 			SET @TABLE_NAME = ''_Connection_Dim'' ; ------> HARDCODE <------
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''114D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1; 
-				-- Stage Index
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Connection'') AND NAME =''IX_Record2ObjectTypeCode'') 
-				DROP INDEX IX_Record2ObjectTypeCode ON dbo.Ext_Connection; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Connection'') AND NAME =''IX_Record1Id'') 
-				DROP INDEX IX_Record1Id ON dbo.Ext_Connection; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Connection'') AND NAME =''IX_Record2Id'') 
-				DROP INDEX IX_Record2Id ON dbo.Ext_Connection; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Email'') AND NAME =''IX_New_Primary'') 
-				DROP INDEX IX_New_Primary ON dbo.Ext_Email;
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Phone'') AND NAME =''IX_New_Primary'') 
-				DROP INDEX IX_New_Primary ON dbo.Ext_Phone; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo.Ext_Contact'') AND NAME =''IX_New_Birthdate'') 
-				DROP INDEX IX_New_Birthdate ON dbo.Ext_Contact;
-				CREATE NONCLUSTERED INDEX IX_Record2ObjectTypeCode 
-					ON Ext_Connection(Record2ObjectTypeCode ASC)
-					INCLUDE (
-					Record1Id
-					, Plus_AlternateName
-					, Record2Id
-					);
-				CREATE NONCLUSTERED INDEX IX_Record1Id 
-					ON Ext_Connection(Record1Id ASC)
-					INCLUDE (
-					Record2ObjectTypeCode
-					, Plus_AlternateName
-					, Record2Id
-					);
-				CREATE NONCLUSTERED INDEX IX_Record2Id
-					ON Ext_Connection(Record2Id ASC)
-					INCLUDE (
-					Record2ObjectTypeCode
-					, Plus_AlternateName
-					, Record1Id
-					);
-					UPDATE STATISTICS dbo.Ext_Connection
-				CREATE NONCLUSTERED INDEX IX_New_Primary 
-					ON Ext_Email(New_Primary ASC)
-					INCLUDE (
-					New_ConstituentId
-					, New_Emails
-					);
-					UPDATE STATISTICS dbo.Ext_Email
-				CREATE NONCLUSTERED INDEX IX_New_Primary 
-					ON Ext_Phone(New_Primary ASC)
-					INCLUDE (
-					New_NumberId
-					, New_PhoneNumber
-					);
-					UPDATE STATISTICS dbo.Ext_Phone
-				CREATE NONCLUSTERED INDEX IX_New_Birthdate 
-					ON Ext_Contact(New_Birthdate ASC)
-					INCLUDE (
-					ContactId
-					);
-				UPDATE STATISTICS dbo.Ext_Contact
+				
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''114D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_1
 		, 'DECLARE @SQL_1 NVARCHAR(MAX)
@@ -5368,133 +3810,11 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''114F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''114F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_3
-		, 'IF OBJECT_ID(''tempdb..#Connection_Temp_1'') IS NOT NULL
-					DROP TABLE #Connection_Temp_1
-					IF OBJECT_ID(''tempdb..#Connection_Temp_2'') IS NOT NULL
-					DROP TABLE #Connection_Temp_2
+		, '
 			BEGIN TRY
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				DECLARE @TABLE_CNT2 AS VARCHAR(100)
+
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Connection_Dim'', @Alpha_Step_Number = ''114G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					SELECT * INTO #Connection_Temp_1
-						FROM 
-							(
-							SELECT A.ContactId
-								, ROW_NUMBER() OVER(ORDER BY A.ContactId,A.Contact_Name,A.Relationship,A.Relationship_ContactId,A.Relationship_Ldspid,A.Relationship_Name,B.New_Emails) AS Connection_Key
-								, A.Contact_Name
-								, A.Relationship
-								, A.Relationship_ContactId
-								, A.Relationship_LdspId
-								, A.Relationship_Name
-								, C.New_PhoneNumber AS Relationship_Phone_Number
-								, B.New_Emails AS Relationship_Email
-								, A.Relationship_First_Name
-								, A.Relationship_Last_Name
-								, A.Relationship_Birth_Date
-								, D.Relationship_Age
-								, A.Relationship_Middle_Name
-								, A.Relationship_Birth_Name
-								FROM
-									(SELECT DISTINCT              
-										A.Record1Id AS ContactId
-										, COALESCE(D.fullname, F.Name,A.Plus_AlternateName) AS Contact_Name
-										, B.Name AS Relationship
-										, A.Record2Id AS Relationship_ContactId
-										, COALESCE(E.New_LdspId, G.New_LdspId) AS Relationship_LdspId
-										, COALESCE(E.FullName, G.Name,A.Plus_AlternateName) AS Relationship_Name
-										, E.FirstName AS Relationship_First_Name
-										, E.LastName AS Relationship_Last_Name
-										, E.New_BirthDate AS Relationship_Birth_Date
-										, NULL AS Relationship_Age
-										, E.MiddleName AS Relationship_Middle_Name
-										, E.New_BirthName AS Relationship_Birth_Name
-										FROM Ext_Connection A
-											INNER JOIN Ext_Connection_Role B ON A.Record2RoleId = B.ConnectionRoleId 
-											LEFT JOIN Ext_Contact D ON A.Record1Id = D.ContactId 
-											LEFT JOIN Ext_Contact E ON  A.Record2Id = E.ContactId
-											LEFT JOIN Ext_Account F ON  A.Record1Id = F.AccountId
-											LEFT JOIN Ext_Account G ON  A.Record2Id = G.AccountId
-										WHERE 1 = 1 
-											AND EXISTS
-												(SELECT *
-													FROM Ext_Connection H
-													WHERE 1 = 1 
-														AND A.ConnectionId = H.ConnectionId
-														AND (H.Record2ObjectTypeCode = 1 OR H.Record2ObjectTypeCode = 2)
-												)
-									UNION
-									SELECT DISTINCT              
-										A.Record2Id AS ContactId
-										, COALESCE(E.FullName, G.Name,A.Plus_AlternateName) AS Contact_Name
-										, C.Name AS Relationship
-										, A.Record1Id AS Relationship_ContactId
-										, COALESCE(D.New_LdspId, F.New_LdspId) AS Relationship_LdspId
-										, COALESCE(D.fullname, F.Name,A.Plus_AlternateName) AS Relationship_Name
-										, D.FirstName AS Relationship_First_Name
-										, D.LastName AS Relationship_Last_Name
-										, D.New_BirthDate AS Relationship_Birth_Date
-										, NULL AS Relationship_Age
-										, D.MiddleName AS Relationship_Middle_Name
-										, D.New_BirthName AS Relationship_Birth_Name
-										FROM Ext_Connection A
-											INNER JOIN Ext_Connection_Role C ON A.Record1RoleId = C.ConnectionRoleId
-											LEFT JOIN Ext_Contact D ON A.Record1Id = D.ContactId 
-											LEFT JOIN Ext_Contact E ON  A.Record2Id = E.ContactId
-											LEFT JOIN Ext_Account F ON  A.Record1Id = F.AccountId
-											LEFT JOIN Ext_Account G ON  A.Record2Id = G.AccountId
-										WHERE 1 = 1 
-											AND EXISTS
-												(SELECT *
-													FROM Ext_Connection H
-													WHERE 1 = 1 
-														AND A.ConnectionId = H.ConnectionId
-														AND (Record1ObjectTypeCode = 1 OR Record1ObjectTypeCode = 2)
-												)
-									) A LEFT JOIN 
-									(
-									SELECT New_ConstituentId
-										, New_Emails 
-										FROM Ext_Email
-										WHERE 1 = 1
-											AND New_Primary = 1
-									) B ON A.Relationship_ContactId = B.New_ConstituentId LEFT JOIN
-									(
-									SELECT New_NumberId
-										, New_PhoneNumber
-										FROM Ext_Phone
-										WHERE 1 = 1
-											AND New_Primary = 1
-									) C ON A.Relationship_ContactId = C.New_NumberId LEFT JOIN
-									(SELECT Donor_Key
-										, CASE WHEN DATEADD(YEAR, DATEDIFF (YEAR, Birthdate, GETDATE()), Birthdate) > GETDATE()
-											THEN DATEDIFF(YEAR, Birthdate, GETDATE()) - 1
-											ELSE DATEDIFF(YEAR, Birthdate, GETDATE()) END AS Relationship_Age
-										FROM
-											(SELECT CONVERT(NVARCHAR(100),ContactId) AS Donor_Key
-												, CONVERT(NVARCHAR(20),CAST(New_Birthdate AS DATETIME),110) AS Birthdate
-												FROM Ext_Contact
-												WHERE 1 = 1
-													AND SUBSTRING(New_Birthdate,4,2) <> ''00''
-													AND SUBSTRING(New_Birthdate,1,2) <> ''00''
-													AND SUBSTRING(New_Birthdate,4,2) <> ''##''
-													AND SUBSTRING(New_Birthdate,1,2) <> ''##''
-											) A
-									) D ON A.Relationship_ContactId = D.Donor_Key
-							) A
-						OPTION(MAXDOP 4)
-					SELECT * INTO #Connection_Temp_2
-						FROM 
-							(
-							SELECT ContactId
-								, ROW_NUMBER() OVER(ORDER BY ContactId) AS Connection_Group_Key --> HARD CODED <--
-								FROM
-									(SELECT DISTINCT ContactId   
-										FROM #Connection_Temp_1) A
-							) A
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Connection_Temp_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Connection_Temp_2)  
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Connection_Dim'', @Alpha_Step_Number = ''114G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Connection_Dim'', @Alpha_Step_Number = ''114G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
+
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Connection_Dim'', @Alpha_Step_Number = ''114G'', @Alpha_Step_Name = ''Dim Tables - Transform - End'', @Alpha_Result = 1;
 			END TRY 
 			BEGIN CATCH 
@@ -5516,48 +3836,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 			BEGIN TRY 
 				DECLARE @TABLE_CNT3 AS VARCHAR(100)
 				DECLARE @TABLE_CNT4 AS VARCHAR(100)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Connection_Dim'', @Alpha_Step_Number = ''114G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Connection_Dim --> HARD CODED <--
-						(ContactId
-						, Connection_Key
-						, Connection_Group_Key
-						, Contact_Name
-						, Relationship
-						, Relationship_ContactId
-						, Relationship_LdspId
-						, Relationship_Name
-						, Relationship_Phone_Number
-						, Relationship_Email
-						, Relationship_First_Name
-						, Relationship_Last_Name
-						, Relationship_Birth_Date
-						, Relationship_Age
-						, Relationship_Middle_Name
-						, Relationship_Birth_Name
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
-							, A.Connection_Key
-							, B.Connection_Group_Key
-							, A.Contact_Name
-							, A.Relationship
-							, CONVERT(NVARCHAR(100),A.Relationship_ContactId) AS Relationship_ContactId
-							, A.Relationship_LdspId
-							, A.Relationship_Name
-							, A.Relationship_Phone_Number
-							, A.Relationship_Email
-							, A.Relationship_First_Name
-							, A.Relationship_Last_Name
-							, CASE WHEN SUBSTRING(Relationship_Birth_Date,1,2) IN (''01'',''02'',''03'',''04'',''05'',''06'',''07'',''08'',''09'',''10'',''11'',''12'')
-										AND SUBSTRING(Relationship_Birth_Date,4,2) IN (''01'',''02'',''03'',''04'',''05'',''06'',''07'',''08'',''09'',''10'',
-											''11'',''12'',''13'',''14'',''15'',''16'',''17'',''18'',''19'',''20'',
-											''21'',''22'',''23'',''24'',''25'',''26'',''27'',''28'',''29'',''30'',''31'') 
-										AND SUBSTRING(Relationship_Birth_Date,7,2) IN (''19'',''20'')
-										THEN CONVERT(VARCHAR(10),A.Relationship_Birth_Date,101) ELSE NULL END AS Relationship_Birth_Date
-							, A.Relationship_Age 
-							, A.Relationship_Middle_Name
-							, A.Relationship_Birth_Name
-							FROM #Connection_Temp_1 A
-								LEFT JOIN #Connection_Temp_2 B ON A.ContactId = B.ContactId
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Connection_Dim'', @Alpha_Step_Number = ''114G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;					
 					INSERT INTO _Connection_Bridge --> HARD CODED <--
 						(ContactId
 						, Connection_Key --> HARD CODED <--
@@ -5570,7 +3849,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				SELECT @TABLE_CNT3 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Connection_Dim)
 				SELECT @TABLE_CNT4 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Connection_Bridge)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Connection_Dim'', @Alpha_Step_Number = ''114G'', @Alpha_Step_Name = ''Dim Table - Count'', @Alpha_Count = @TABLE_CNT3, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Connection_Dim'', @Alpha_Step_Number = ''114G'', @Alpha_Step_Name = ''Bridge Table - Count'', @Alpha_Count = @TABLE_CNT3, @Alpha_Result = 1;
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Connection_Dim'', @Alpha_Step_Number = ''114G'', @Alpha_Step_Name = ''Bridge Table - Count'', @Alpha_Count = @TABLE_CNT4, @Alpha_Result = 1;
 				IF @TABLE_CNT3 != @TABLE_CNT4 
 				BEGIN
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Connection_Dim'', @Alpha_Step_Number = ''114G'', @Alpha_Step_Name = ''Dim Table - Count Error'', @Alpha_Result = 0;
@@ -5664,80 +3943,8 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					IF OBJECT_ID(''tempdb..#Id_Temp_2'') IS NOT NULL
 					DROP TABLE #Id_Temp_2
 			BEGIN TRY
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				DECLARE @TABLE_CNT2 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Id_Dim'', @Alpha_Step_Number = ''115G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					SELECT * INTO #Id_Temp_1
-						FROM
-							(SELECT C.ContactId
-								, ROW_NUMBER() OVER(ORDER BY C.Id_Key) AS Id_Key
-								, C.New_Type
-								, C.Plus_Id
-								, C.ConstituentId
-								, C.AccountId
-								, C.New_Id
-								FROM
-									(SELECT B.ContactId
-										, B.Id_Key
-										, B.New_Type
-										, B.Plus_Id
-										, B.ConstituentId
-										, B.AccountId
-										, B.New_Id
-										, ROW_NUMBER() OVER(PARTITION BY B.ContactId, B.New_Type ORDER BY B.New_Type) AS RowNumber
-										FROM
-											(SELECT A.ContactId
-												, A.Id_Key
-												, A.New_Type
-												, MAX(A.Plus_Id) as Plus_Id
-												, A.ConstituentId
-												, A.AccountId
-												, A.New_Id
-												FROM
-													(SELECT COALESCE(C.ContactId,A.AccountId) AS ContactId
-														, O.New_OtherIdentifiersId AS Id_Key           
-														, T.Column_Label AS New_Type -- Picklist
-														, O.Plus_Id  -- Number   
-														, C.ContactId AS ConstituentId
-														, A.AccountId
-														, O.New_Id  -- Type
-														, MAX(ModifiedOn) AS ModifiedOn
-														FROM Ext_Other_Identifiers O
-															LEFT JOIN Ext_Contact C ON O.New_EmploymentId = C.ContactId
-															LEFT JOIN Ext_Account A ON O.New_OtherIdentifiers = A.AccountId
-															LEFT JOIN _New_OtherIdentifiers_New_Type_ T ON O.New_Type = T.Column_Value
-														GROUP BY COALESCE(C.ContactId,A.AccountId)
-															, O.New_OtherIdentifiersId        
-															, T.Column_Label
-															, O.Plus_Id
-															, C.ContactId
-															, A.AccountId
-															, O.New_Id
-													) A
-												GROUP BY A.ContactId
-													, A.Id_Key
-													, A.New_Type
-													, A.ConstituentId
-													, A.AccountId
-													, A.New_Id         
-											) B
-									) C                        
-								WHERE 1 = 1
-									AND C.RowNumber = 1
-							) D
-					SELECT * INTO #Id_Temp_2
-						FROM 
-							(
-							SELECT ContactId
-								, ROW_NUMBER() OVER(ORDER BY ContactId) AS Id_Group_Key --> HARD CODED <--
-								FROM
-									(SELECT DISTINCT ContactId   
-										FROM #Id_Temp_1) A
-							) A                                                     
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Id_Temp_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Id_Temp_2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Id_Dim'', @Alpha_Step_Number = ''115G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Id_Dim'', @Alpha_Step_Number = ''115G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
+
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Id_Dim'', @Alpha_Step_Number = ''115G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
 			END TRY 
 			BEGIN CATCH
@@ -5760,26 +3967,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				DECLARE @TABLE_CNT3 AS VARCHAR(100)
 				DECLARE @TABLE_CNT4 AS VARCHAR(100)       
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Id_Dim'', @Alpha_Step_Number = ''115G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Id_Dim --> HARD CODED <--
-						(ContactId
-						, Id_Key
-						, Id_Group_Key
-						, New_Type
-						, Plus_Id
-						, ConstituentId
-						, AccountId
-						, New_Id
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
-							, A.Id_Key
-							, B.Id_Group_Key
-							, A.New_Type
-							, A.Plus_Id
-							, CONVERT(NVARCHAR(100),A.ConstituentId) AS ConstituentId
-							, CONVERT(NVARCHAR(100),A.AccountId) AS AccountId
-							, A.New_Id   
-							FROM #Id_Temp_1 A
-								LEFT JOIN #Id_Temp_2 B ON A.ContactId = B.ContactId
+					
 					INSERT INTO _Id_Bridge --> HARD CODED <--
 						(ContactId
 						, Id_Key --> HARD CODED <--
@@ -5891,54 +4079,9 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''116F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''116F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_3
-		, 'IF OBJECT_ID(''tempdb..#Interest_Temp_1'') IS NOT NULL
-					DROP TABLE #Interest_Temp_1
-					IF OBJECT_ID(''tempdb..#Interest_Temp_2'') IS NOT NULL
-					DROP TABLE #Interest_Temp_2
-			BEGIN TRY
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				DECLARE @TABLE_CNT2 AS VARCHAR(100)
+		, 'BEGIN TRY
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Interest_Dim'', @Alpha_Step_Number = ''116G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					SELECT * INTO #Interest_Temp_1
-						FROM 
-							(
-							SELECT ROW_NUMBER() OVER(ORDER BY A.New_InternationalExperienceId) AS Interest_Key
-								, A.New_InternationalExperiencesAId AS ContactId
-								, NE.Column_Label AS Experience
-								, CASE WHEN A.Plus_Emeritus = 1 THEN ''Y''
-									WHEN A.Plus_Emeritus = 0 THEN ''N'' 
-									ELSE NULL END AS Emeritus
-								, CASE WHEN A.Plus_StudyAbroad = 1 THEN ''Y''
-									WHEN A.Plus_StudyAbroad = 0 THEN ''N'' 
-									ELSE NULL END AS Study_Abroad
-								, NS.New_Source AS Source
-								, A.New_StartDate
-								, A.New_EndDate
-								, B.Plus_Name AS Interest  
-								, PL.Column_Label AS Lds_Position
-								, NI.New_Name AS Institutional_Hierarchy
-								, NCRY.New_Name AS Country  
-								FROM Ext_International_Experience A 
-									LEFT JOIN Ext_Institution NI ON A.Plus_InstitutionalHierarchy = NI.New_InstitutionId
-									LEFT JOIN Ext_Source NS ON A.New_Source = NS.New_SourceId  
-									LEFT JOIN Ext_Interest B ON A.Plus_Interest = B.Plus_InterestId
-									LEFT JOIN Ext_Country NCRY ON A.New_Country = NCRY.New_CountryId
-									LEFT JOIN _New_Experience_ NE ON A.New_Experience = NE.Column_Value
-									LEFT JOIN _Plus_LdsPosition_ PL ON A.Plus_LdsPosition = PL.Column_Value
-							) A
-					SELECT * INTO #Interest_Temp_2
-						FROM 
-							(
-							SELECT ContactId
-								, ROW_NUMBER() OVER(ORDER BY ContactId) AS Interest_Group_Key --> HARD CODED <--
-								FROM
-									(SELECT DISTINCT ContactId   
-										FROM #Interest_Temp_1) A
-							) A                                                     
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Interest_Temp_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Interest_Temp_2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Interest_Dim'', @Alpha_Step_Number = ''116G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Interest_Dim'', @Alpha_Step_Number = ''116G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
+					
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Interest_Dim'', @Alpha_Step_Number = ''116G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
 			END TRY 
 			BEGIN CATCH
@@ -5961,36 +4104,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				DECLARE @TABLE_CNT3 AS VARCHAR(100)
 				DECLARE @TABLE_CNT4 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Interest_Dim'', @Alpha_Step_Number = ''116G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Interest_Dim --> HARD CODED <--
-						(Interest_Key
-						, Interest_Group_Key
-						, ContactId
-						, Experience
-						, Emeritus
-						, Study_Abroad
-						, Source
-						, New_StartDate
-						, New_EndDate
-						, Interest
-						, Lds_Position
-						, Institutional_Hierarchy
-						, Country
-						)
-						SELECT DISTINCT A.Interest_Key
-							, B.Interest_Group_Key
-							, CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
-							, A.Experience
-							, A.Emeritus
-							, A.Study_Abroad
-							, A.Source
-							, CONVERT(VARCHAR(10),A.New_StartDate,101) AS New_StartDate
-							, CONVERT(VARCHAR(10),A.New_EndDate,101) AS New_EndDate
-							, A.Interest
-							, A.Lds_Position
-							, A.Institutional_Hierarchy
-							, A.Country   
-							FROM #Interest_Temp_1 A
-								LEFT JOIN #Interest_Temp_2 B ON A.ContactId = B.ContactId
+					
 					INSERT INTO _Interest_Bridge --> HARD CODED <--
 						(ContactId
 						, Interest_Key --> HARD CODED <--
@@ -6110,47 +4224,9 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''117F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''117F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_3
-		, 'IF OBJECT_ID(''tempdb..#Student_Temp_1'') IS NOT NULL
-					DROP TABLE #Student_Temp_1
-					IF OBJECT_ID(''tempdb..#Student_Temp_2'') IS NOT NULL
-					DROP TABLE #Student_Temp_2
-			BEGIN TRY
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				DECLARE @TABLE_CNT2 AS VARCHAR(100)
+		, 'BEGIN TRY
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Student_Dim'', @Alpha_Step_Number = ''117G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					SELECT * INTO #Student_Temp_1
-						FROM 
-							(
-							SELECT ROW_NUMBER() OVER(ORDER BY A.New_StudentAttendanceId) AS Student_Key
-								, A.New_StudentsAttendanceId AS ContactId
-								, U.New_University AS New_University
-								, A.Plus_Year
-								, A.New_Term
-								, A.New_HoursCompleted
-								, A.New_ExpectedGraduationDate
-								, P.New_MajorName AS New_Major
-								, E.New_MajorName AS Plus_Emphasis
-								, C.New_Name AS New_College
-								, C.New_Name AS Plus_Department
-								FROM Ext_Student A 
-									LEFT JOIN Ext_College C ON A.New_College = C.New_CollegeId
-									LEFT JOIN Ext_University U ON A.New_University = U.New_UniversityId
-									LEFT JOIN Ext_Major P ON A.New_Major = P.New_MajorId
-									LEFT JOIN Ext_Major E ON A.Plus_Emphasis = E.New_MajorId
-							) A
-					SELECT * INTO #Student_Temp_2
-						FROM 
-							(
-							SELECT ContactId
-								, ROW_NUMBER() OVER(ORDER BY ContactId) AS Student_Group_Key --> HARD CODED <--
-								FROM
-									(SELECT DISTINCT ContactId   
-										FROM #Student_Temp_1) A
-							) A                                                     
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Student_Temp_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #Student_Temp_2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Student_Dim'', @Alpha_Step_Number = ''117G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Student_Dim'', @Alpha_Step_Number = ''117G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
+					
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Student_Dim'', @Alpha_Step_Number = ''117G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
 			END TRY 
 			BEGIN CATCH
@@ -6173,46 +4249,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				DECLARE @TABLE_CNT3 AS VARCHAR(100)
 				DECLARE @TABLE_CNT4 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Student_Dim'', @Alpha_Step_Number = ''117G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Student_Dim --> HARD CODED <--
-						(Student_Key
-						, Student_Group_Key
-						, ContactId
-						, New_University
-						, Plus_Year
-						, New_Term
-						, New_HoursCompleted
-						, New_ExpectedGraduationDate
-						, New_Major
-						, Plus_Emphasis
-						, New_College
-						, Plus_Department
-						, Academic_Term_Date
-						, Academic_Year
-						, Current_Academic_Year
-						, Graduated_In_Current_Academic_Year
-						, Current_Year_Plus_4_Student
-						, Current_Year_Plus_4_Graduate
-						)
-						SELECT DISTINCT A.Student_Key
-							, B.Student_Group_Key
-							, CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
-							, A.New_University
-							, A.Plus_Year
-							, A.New_Term
-							, A.New_HoursCompleted
-							, CONVERT(VARCHAR(10),A.New_ExpectedGraduationDate,101) AS New_ExpectedGraduationDate
-							, A.New_Major
-							, A.Plus_Emphasis
-							, A.New_College
-							, A.Plus_Department
-							, NULL AS Academic_Term_Date
-							, NULL AS Academic_Year
-							, NULL AS Current_Academic_Year
-							, ''N'' AS Graduated_In_Current_Academic_Year
-							, ''N'' AS Current_Year_Plus_4_Student
-							, ''N'' AS Current_Year_Plus_4_Graduate
-							FROM #Student_Temp_1 A
-								LEFT JOIN #Student_Temp_2 B ON A.ContactId = B.ContactId
+
 					INSERT INTO _Student_Bridge --> HARD CODED <--
 						(ContactId
 						, Student_Key --> HARD CODED <--
@@ -6241,174 +4278,13 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;                
 			END CATCH
 			' -- Attribute_4
-		, 'BEGIN TRY	
-				MERGE INTO _Student_Dim T
-					USING (	
-							SELECT Student_Key
-								, Academic_Date AS Academic_Term_Date
-								, Academic_Year
-								, CASE WHEN MONTH(GETDATE()) >= 9 AND Academic_Year >= (YEAR(GETDATE())+1) THEN ''Y'' 
-									WHEN MONTH(GETDATE()) < 9 AND Academic_Year = YEAR(GETDATE()) THEN ''Y''
-									ELSE ''N'' END AS Current_Academic_Year
-								FROM 
-									(SELECT Student_Key
-										, Academic_Date
-										, CASE WHEN MONTH(Academic_Date) >= 9 THEN YEAR(DATEADD(YEAR,1,Academic_Date))
-											ELSE YEAR(Academic_Date) END AS Academic_Year
-										FROM
-											(SELECT Student_Key
-												, CONVERT(DATE,CONCAT(Academic_Year,''-'',Academic_Month,''-'',Academic_Day)) AS Academic_Date
-												FROM
-													(SELECT Student_Key
-														, ContactId
-														, New_University
-														, Plus_Year AS Academic_Year
-														, CASE WHEN New_Term = ''Fall'' THEN ''09''
-															WHEN New_Term = ''Winter'' THEN ''01''
-															WHEN New_Term = ''Spring'' THEN ''04''
-															WHEN New_Term = ''Summer'' THEN ''06''
-															WHEN Student_Key = 0 THEN NULL
-															ELSE ''01'' END AS Academic_Month
-														, CASE WHEN Student_Key = 0 THEN NULL
-															ELSE ''01'' END AS Academic_Day
-														FROM _Student_Dim
-														WHERE 1 = 1
-															AND Student_Key != 0
-															AND LEN(Plus_Year) = 4
-													) A
-											) B
-									) C
-						) S ON T.Student_Key = S.Student_Key
-					WHEN MATCHED THEN 
-						UPDATE
-							SET T.Academic_Term_Date = S.Academic_Term_Date
-							, T.Academic_Year = S.Academic_Year
-							, T.Current_Academic_Year = S.Current_Academic_Year
-				;
-								
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Student Academic'', @Alpha_Step_Number = ''117X'', @Alpha_Step_Name = ''Student Academic - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
+		, '
 			' -- Attribute_5
-		, 'BEGIN TRY	
-				MERGE INTO _Student_Dim T
-					USING (	
-							SELECT DISTINCT Plus_Constituent AS ContactId
-								, New_University
-								FROM
-									(SELECT Plus_Constituent
-										, New_University
-										, Plus_ActualGraduationDate
-										, Academic_Year
-										, Current_Academic_Year
-										FROM
-											(SELECT Plus_Constituent
-												, New_University
-												, Plus_ActualGraduationDate
-												, Academic_Year
-												, CASE WHEN MONTH(GETDATE()) >= 9 AND Academic_Year >= (YEAR(GETDATE())+1) THEN ''Y'' 
-														WHEN MONTH(GETDATE()) < 9 AND Academic_Year = YEAR(GETDATE()) THEN ''Y''
-														ELSE ''N'' END AS Current_Academic_Year
-												FROM
-													(SELECT Plus_Constituent
-														, New_University
-														, Plus_ActualGraduationDate
-														, CASE WHEN MONTH(Plus_ActualGraduationDate) >= 9 THEN YEAR(DATEADD(YEAR,1,Plus_ActualGraduationDate))
-																ELSE YEAR(Plus_ActualGraduationDate) END AS Academic_Year
-														FROM
-															(SELECT DISTINCT A.Plus_Constituent
-																, B.New_University
-																, A.Plus_ActualGraduationDate
-																FROM Ext_Alumni A
-																	LEFT JOIN Ext_University B ON A.Plus_University = B.New_UniversityId
-																WHERE 1 = 1
-																	AND A.Plus_AlumniStatus = 100000000 --Graduated
-																	AND A.Plus_ActualGraduationDate IS NOT NULL
-															) A
-													) B
-											) C
-										WHERE 1 = 1
-											AND Current_Academic_Year = ''Y''
-									) A -- Graduated in current academic year							
-						) S ON T.ContactId = S.ContactId  AND T.New_University = S.New_University
-					WHEN MATCHED THEN 
-						UPDATE
-							SET T.Graduated_In_Current_Academic_Year = ''Y''
-				;
-								
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Student Academic 2'', @Alpha_Step_Number = ''117X'', @Alpha_Step_Name = ''Student Academic 2 - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
+		, '
 			' -- Attribute_6
-		, 'BEGIN TRY	
-				MERGE INTO _Student_Dim T
-					USING (	
-							SELECT DISTINCT Student_Key
-								FROM _Student_Dim
-								WHERE 1 = 1
-									-- 16 months going back from the end of the current calander year
-									AND Academic_Term_Date >= DATEADD(MONTH,-16,DATEADD(yy, DATEDIFF(yy, 0, GETDATE()) + 1, -1)) + 1 						
-						) S ON T.Student_Key = S.Student_Key
-					WHEN MATCHED THEN 
-						UPDATE
-							SET T.Current_Year_Plus_4_Student = ''Y''
-				;
-								
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Current_Year_Plus_4_Student'', @Alpha_Step_Number = ''117X'', @Alpha_Step_Name = ''Current_Year_Plus_4_Student - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
+		, '
 			' -- Attribute_7
-		, 'BEGIN TRY	
-				MERGE INTO _Student_Dim T
-					USING (	
-							SELECT DISTINCT A.Plus_Constituent AS ContactId
-								, B.New_University
-								FROM Ext_Alumni A
-									LEFT JOIN Ext_University B ON A.Plus_University = B.New_UniversityId
-								WHERE 1 = 1
-									AND A.Plus_AlumniStatus = 100000000 --Graduated
-									AND A.Plus_ActualGraduationDate >= DATEADD(MONTH,-16,DATEADD(yy, DATEDIFF(yy, 0, GETDATE()) + 1, -1)) + 1					
-						) S ON T.ContactId = S.ContactId  AND T.New_University = S.New_University
-					WHEN MATCHED THEN 
-						UPDATE
-							SET T.Current_Year_Plus_4_Graduate = ''Y''
-				;
-								
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Current_Year_Plus_4_Graduate'', @Alpha_Step_Number = ''117X'', @Alpha_Step_Name = ''Current_Year_Plus_4_Graduate - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH 
+		, ' 
 			' -- Attribute_8
 		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''117H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
 			' -- Attribute_9
@@ -6426,776 +4302,6 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Student_Dim''; ------> HARDCODE <------
 			' -- Attribute_21
 		, 1 -- Active
-		, GETDATE() -- Insert_Date
-		, NULL  -- Update_Date                
-	)
-	,
--- --------------------------
--- _Date_Dim Table
--- --------------------------
-	('Dim' -- Dim_Object
-		, '_Date_Dim' -- Table_Name
-		, 'Date_Key NUMERIC(10,0) PRIMARY KEY
-			, Time_Key NUMERIC(38,0)
-			, Date_Type NVARCHAR(20)
-			, Full_Date DATETIME2(7)
-			, Week_Day_0_1_Flag NUMERIC(1,0)
-			, Last_Day_In_Month_0_1_Flag NUMERIC(1,0)
-			, Last_Day_In_Quarter_0_1_Flag NUMERIC(1,0)
-			, Last_Day_In_Year_0_1_Flag NUMERIC(1,0)
-			, Day_Nbr_Of_Month NUMERIC(2,0)
-			, Month_Nbr_In_Year NUMERIC(2,0)
-			, Month_Name NVARCHAR(27)
-			, Month_Name_Abbrev NVARCHAR(3)
-			, Quarter_Nbr NUMERIC(4,0)
-			, Year_Nbr NUMERIC(4,0)
-			, Day_Of_Week NVARCHAR(27)
-			, Day_Nbr_Of_Week NUMERIC(1,0)
-			, Day_Nbr_Of_Year NUMERIC(3,0)
-			, Week_Nbr_In_Month NUMERIC(1,0)
-			, Week_Nbr_In_Year NUMERIC(2,0)
-			, Year_Sun_Sat_Nbr NUMERIC(4,0)
-			, Week_Nbr_In_Year_Sun_Sat NUMERIC(2,0)
-			, Year_Sat_Fri_Nbr NUMERIC(4,0)
-			, Week_Nbr_In_Year_Sat_Fri NUMERIC(2,0)
-			, Julian_Days NVARCHAR(384)
-			, Full_Date_YYYYMMDD_Txt NVARCHAR(8)
-			, Month_Name_Year NVARCHAR(20)
-			, Month_Abbrev_Year NVARCHAR(20)
-			, Quarter_Year_Txt NVARCHAR(20)
-			, Year_Month_Name NVARCHAR(45)
-			, Year_Month_Abbrev NVARCHAR(45)
-			, Year_Quarter_Txt NVARCHAR(20)
-			, Full_Date_MMSDDSYYYY_Txt NVARCHAR(10)
-			, Full_Date_Month_Day_Year NVARCHAR(45)
-			, Full_Date_Mon_Day_Year NVARCHAR(45)
-			, Full_Date_DDPMMPYYYY_Txt NVARCHAR(10)
-			, Full_Date_Day_Month_Year NVARCHAR(45)
-			, Full_Date_Day_Mon_Year NVARCHAR(45)
-			, Full_Date_YYYYPMMPDD_Txt NVARCHAR(10)
-			, Full_Date_Year_Month_Day NVARCHAR(45)
-			, Full_Date_Year_Mon_Day NVARCHAR(45)
-			, Week_Nbr_Within_Month NUMERIC(1,0)
-			, Days_In_Month NUMERIC(3,0)
-			, Month_Start_Date DATETIME2(7)
-			, Month_End_Date DATETIME2(7)
-			, Pef_Month_Txt NVARCHAR(60)
-			, Days_In_Quarter NUMERIC(3,0)
-			, Quarter_Start_Date DATETIME2(7)
-			, Quarter_End_Date DATETIME2(7)
-			, Days_In_Year NUMERIC(3,0)
-			, Leap_Year_0_1_Flag NUMERIC(1,0)
-			, Year_Start_Date DATETIME2(7)
-			, Year_End_Date DATETIME2(7)
-			, Week_Sun_Sat_Start_Date DATETIME2(7)
-			, Week_Sun_Sat_End_Date DATETIME2(7)
-			, Week_Sat_Fri_Start_Date DATETIME2(7)
-			, Week_Sat_Fri_End_Date DATETIME2(7)
-			, Week_Nbr_Sat_Fri_Within_Month NUMERIC(1,0)
-			, Week_Mon_Sun_Start_Date DATETIME2(7)
-			, Week_Mon_Sun_End_Date DATETIME2(7)
-			, Week_Nbr_Mon_Sun_Within_Month NUMERIC(1,0)
-			, Year_Mon_Sun_Nbr NUMERIC(4,0)
-			, Week_Nbr_In_Year_Mon_Sun NUMERIC(2,0)
-			, Chq_Holiday_0_1_Flag NUMERIC(1,0)
-			, Chq_Holiday_Name NVARCHAR(100)
-			, Us_Fed_Holiday_0_1_Flag NUMERIC(1,0)
-			, Us_Fed_Holiday_Name NVARCHAR(100)
-			, Load_Date DATETIME2(7)
-			, Chq_Business_Day_Flag NUMERIC(1,0)
-			, Chq_Business_Day_Of_Month NUMERIC(2,0)
-			, Chq_Business_Day_Of_Quarter NUMERIC(3,0)
-			, Chq_Business_Day_Of_Week NUMERIC(1,0)
-			, Chq_Business_Day_Of_Year NUMERIC(3,0)
-			, Chq_Business_Days_From_Cur_Day NUMERIC(5,0)
-			, Chq_Business_Days_In_Month NUMERIC(2,0)
-			, Chq_Business_Days_In_Quarter NUMERIC(3,0)
-			, Days_From_Current_Day NUMERIC(5,0)
-			, Months_From_Current_Month NUMERIC(4,0)
-			, Quarters_From_Current_Quarter NUMERIC(3,0)
-			, Weeks_From_Current_Week NUMERIC(5,0)
-			, Years_From_Current_Year NUMERIC(3,0)
-			' -- Create_Table 
-		, 'Date_Key
-			, Time_Key
-			, Date_Type
-			, Full_Date
-			, Week_Day_0_1_Flag
-			, Last_Day_In_Month_0_1_Flag
-			, Last_Day_In_Quarter_0_1_Flag
-			, Last_Day_In_Year_0_1_Flag
-			, Day_Nbr_Of_Month
-			, Month_Nbr_In_Year
-			, Month_Name
-			, Month_Name_Abbrev
-			, Quarter_Nbr
-			, Year_Nbr
-			, Day_Of_Week
-			, Day_Nbr_Of_Week
-			, Day_Nbr_Of_Year
-			, Week_Nbr_In_Month
-			, Week_Nbr_In_Year
-			, Year_Sun_Sat_Nbr
-			, Week_Nbr_In_Year_Sun_Sat
-			, Year_Sat_Fri_Nbr
-			, Week_Nbr_In_Year_Sat_Fri
-			, Julian_Days
-			, Full_Date_YYYYMMDD_Txt
-			, Month_Name_Year
-			, Month_Abbrev_Year
-			, Quarter_Year_Txt
-			, Year_Month_Name
-			, Year_Month_Abbrev
-			, Year_Quarter_Txt
-			, Full_Date_MMSDDSYYYY_Txt
-			, Full_Date_Month_Day_Year
-			, Full_Date_Mon_Day_Year
-			, Full_Date_DDPMMPYYYY_Txt
-			, Full_Date_Day_Month_Year
-			, Full_Date_Day_Mon_Year
-			, Full_Date_YYYYPMMPDD_Txt
-			, Full_Date_Year_Month_Day
-			, Full_Date_Year_Mon_Day
-			, Week_Nbr_Within_Month
-			, Days_In_Month
-			, Month_Start_Date
-			, Month_End_Date
-			, Pef_Month_Txt
-			, Days_In_Quarter
-			, Quarter_Start_Date
-			, Quarter_End_Date
-			, Days_In_Year
-			, Leap_Year_0_1_Flag
-			, Year_Start_Date
-			, Year_End_Date
-			, Week_Sun_Sat_Start_Date
-			, Week_Sun_Sat_End_Date
-			, Week_Sat_Fri_Start_Date
-			, Week_Sat_Fri_End_Date
-			, Week_Nbr_Sat_Fri_Within_Month
-			, Week_Mon_Sun_Start_Date
-			, Week_Mon_Sun_End_Date
-			, Week_Nbr_Mon_Sun_Within_Month
-			, Year_Mon_Sun_Nbr
-			, Week_Nbr_In_Year_Mon_Sun
-			, Chq_Holiday_0_1_Flag
-			, Chq_Holiday_Name
-			, Us_Fed_Holiday_0_1_Flag
-			, Us_Fed_Holiday_Name
-			, Load_Date
-			, Chq_Business_Day_Flag
-			, Chq_Business_Day_Of_Month
-			, Chq_Business_Day_Of_Quarter
-			, Chq_Business_Day_Of_Week
-			, Chq_Business_Day_Of_Year
-			, Chq_Business_Days_From_Cur_Day
-			, Chq_Business_Days_In_Month
-			, Chq_Business_Days_In_Quarter
-			, Days_From_Current_Day
-			, Months_From_Current_Month
-			, Quarters_From_Current_Quarter
-			, Weeks_From_Current_Week
-			, Years_From_Current_Year
-			' -- Insert_Fields
-		, ' ' -- From_Statement
-		, ' ' -- Where_Statement
-		, 'BEGIN TRY
-				DECLARE @TABLE_NAME NVARCHAR(100)
-				SET @TABLE_NAME = ''_Date_Dim'' ; ------> HARDCODE <------
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Date_Dim'', @Alpha_Step_Number = ''118D'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Date_Dim (
-						Date_Key
-						, Time_Key
-						, Date_Type
-						, Full_Date
-						, Week_Day_0_1_Flag
-						, Last_Day_In_Month_0_1_Flag
-						, Last_Day_In_Quarter_0_1_Flag
-						, Last_Day_In_Year_0_1_Flag
-						, Day_Nbr_Of_Month
-						, Month_Nbr_In_Year
-						, Month_Name
-						, Month_Name_Abbrev
-						, Quarter_Nbr
-						, Year_Nbr
-						, Day_Of_Week
-						, Day_Nbr_Of_Week
-						, Day_Nbr_Of_Year
-						, Week_Nbr_In_Month
-						, Week_Nbr_In_Year
-						, Year_Sun_Sat_Nbr
-						, Week_Nbr_In_Year_Sun_Sat
-						, Year_Sat_Fri_Nbr
-						, Week_Nbr_In_Year_Sat_Fri
-						, Julian_Days
-						, Full_Date_YYYYMMDD_Txt
-						, Month_Name_Year
-						, Month_Abbrev_Year
-						, Quarter_Year_Txt
-						, Year_Month_Name
-						, Year_Month_Abbrev
-						, Year_Quarter_Txt
-						, Full_Date_MMSDDSYYYY_Txt
-						, Full_Date_Month_Day_Year
-						, Full_Date_Mon_Day_Year
-						, Full_Date_DDPMMPYYYY_Txt
-						, Full_Date_Day_Month_Year
-						, Full_Date_Day_Mon_Year
-						, Full_Date_YYYYPMMPDD_Txt
-						, Full_Date_Year_Month_Day
-						, Full_Date_Year_Mon_Day
-						, Week_Nbr_Within_Month
-						, Days_In_Month
-						, Month_Start_Date
-						, Month_End_Date
-						, Pef_Month_Txt
-						, Days_In_Quarter
-						, Quarter_Start_Date
-						, Quarter_End_Date
-						, Days_In_Year
-						, Leap_Year_0_1_Flag
-						, Year_Start_Date
-						, Year_End_Date
-						, Week_Sun_Sat_Start_Date
-						, Week_Sun_Sat_End_Date
-						, Week_Sat_Fri_Start_Date
-						, Week_Sat_Fri_End_Date
-						, Week_Nbr_Sat_Fri_Within_Month
-						, Week_Mon_Sun_Start_Date
-						, Week_Mon_Sun_End_Date
-						, Week_Nbr_Mon_Sun_Within_Month
-						, Year_Mon_Sun_Nbr
-						, Week_Nbr_In_Year_Mon_Sun
-						, Chq_Holiday_0_1_Flag
-						, Chq_Holiday_Name
-						, Us_Fed_Holiday_0_1_Flag
-						, Us_Fed_Holiday_Name
-						, Load_Date
-						, Chq_Business_Day_Flag
-						, Chq_Business_Day_Of_Month
-						, Chq_Business_Day_Of_Quarter
-						, Chq_Business_Day_Of_Week
-						, Chq_Business_Day_Of_Year
-						, Chq_Business_Days_From_Cur_Day
-						, Chq_Business_Days_In_Month
-						, Chq_Business_Days_In_Quarter
-						, Days_From_Current_Day
-						, Months_From_Current_Month
-						, Quarters_From_Current_Quarter
-						, Weeks_From_Current_Week
-						, Years_From_Current_Year
-						)
-						SELECT Date_Key
-							, Time_Key
-							, Date_Type
-							, Full_Date
-							, Week_Day_0_1_Flag
-							, Last_Day_In_Month_0_1_Flag
-							, Last_Day_In_Quarter_0_1_Flag
-							, Last_Day_In_Year_0_1_Flag
-							, Day_Nbr_Of_Month
-							, Month_Nbr_In_Year
-							, Month_Name
-							, Month_Name_Abbrev
-							, Quarter_Nbr
-							, Year_Nbr
-							, Day_Of_Week
-							, Day_Nbr_Of_Week
-							, Day_Nbr_Of_Year
-							, Week_Nbr_In_Month
-							, Week_Nbr_In_Year
-							, Year_Sun_Sat_Nbr
-							, Week_Nbr_In_Year_Sun_Sat
-							, Year_Sat_Fri_Nbr
-							, Week_Nbr_In_Year_Sat_Fri
-							, Julian_Days
-							, Full_Date_YYYYMMDD_Txt
-							, Month_Name_Year
-							, Month_Abbrev_Year
-							, Quarter_Year_Txt
-							, Year_Month_Name
-							, Year_Month_Abbrev
-							, Year_Quarter_Txt
-							, Full_Date_MMSDDSYYYY_Txt
-							, Full_Date_Month_Day_Year
-							, Full_Date_Mon_Day_Year
-							, Full_Date_DDPMMPYYYY_Txt
-							, Full_Date_Day_Month_Year
-							, Full_Date_Day_Mon_Year
-							, Full_Date_YYYYPMMPDD_Txt
-							, Full_Date_Year_Month_Day
-							, Full_Date_Year_Mon_Day
-							, Week_Nbr_Within_Month
-							, Days_In_Month
-							, Month_Start_Date
-							, Month_End_Date
-							, Pef_Month_Txt
-							, Days_In_Quarter
-							, Quarter_Start_Date
-							, Quarter_End_Date
-							, Days_In_Year
-							, Leap_Year_0_1_Flag
-							, Year_Start_Date
-							, Year_End_Date
-							, Week_Sun_Sat_Start_Date
-							, Week_Sun_Sat_End_Date
-							, Week_Sat_Fri_Start_Date
-							, Week_Sat_Fri_End_Date
-							, Week_Nbr_Sat_Fri_Within_Month
-							, Week_Mon_Sun_Start_Date
-							, Week_Mon_Sun_End_Date
-							, Week_Nbr_Mon_Sun_Within_Month
-							, Year_Mon_Sun_Nbr
-							, Week_Nbr_In_Year_Mon_Sun
-							, Chq_Holiday_0_1_Flag
-							, Chq_Holiday_Name
-							, Us_Fed_Holiday_0_1_Flag
-							, Us_Fed_Holiday_Name
-							, Load_Date
-							, Chq_Business_Day_Flag
-							, Chq_Business_Day_Of_Month
-							, Chq_Business_Day_Of_Quarter
-							, Chq_Business_Day_Of_Week
-							, Chq_Business_Day_Of_Year
-							, Chq_Business_Days_From_Cur_Day
-							, Chq_Business_Days_In_Month
-							, Chq_Business_Days_In_Quarter
-							, Days_From_Current_Day
-							, Months_From_Current_Month
-							, Quarters_From_Current_Quarter
-							, Weeks_From_Current_Week
-							, Years_From_Current_Year
-					        FROM Ext_Date_Dim                                          
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Date_Dim)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Date_Dim'', @Alpha_Step_Number = ''118D'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Date_Dim'', @Alpha_Step_Number = ''118D'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
-			END TRY 
-			BEGIN CATCH
-				DECLARE @ERROR_NUMBER INT
-				DECLARE @ERROR_SEVERITY INT
-				DECLARE @ERROR_STATE INT
-				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
-				DECLARE @ERROR_LINE INT
-				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Date_Dim'', @Alpha_Step_Number = ''118X'', @Alpha_Step_Name = ''Dim Table - Transform - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH 
-			' -- Attribute_1
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''118H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1;
-			' -- Attribute_2
-		, ' ' -- Attribute_3
-		, ' ' -- Attribute_4
-		, ' ' -- Attribute_5
-		, ' ' -- Attribute_6
-		, ' ' -- Attribute_7
-		, ' ' -- Attribute_8
-		, ' ' -- Attribute_9
-		, ' ' -- Attribute_10
-		, ' ' -- Attribute_11
-		, ' ' -- Attribute_12
-		, ' ' -- Attribute_13
-		, ' ' -- Attribute_14
-		, ' ' -- Attribute_15
-		, ' ' -- Attribute_16
-		, ' ' -- Attribute_17
-		, ' ' -- Attribute_18
-		, ' ' -- Attribute_19
-		, ' ' -- Attribute_20
-		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Date_Dim''; ------> HARDCODE <------
-			' -- Attribute_21
-		, 0 -- Active
-		, GETDATE() -- Insert_Date
-		, NULL  -- Update_Date                
-	)
-	,
--- --------------------------
--- _Date_Dim2 Table
--- --------------------------
-	('Dim' -- Dim_Object
-		, '_Date_Dim2' -- Table_Name
-		, 'Date_Key NUMERIC(10,0) PRIMARY KEY
-			, Time_Key NUMERIC(38,0)
-			, Date_Type NVARCHAR(20)
-			, Full_Date DATETIME2(7)
-			, Week_Day_0_1_Flag NUMERIC(1,0)
-			, Last_Day_In_Month_0_1_Flag NUMERIC(1,0)
-			, Last_Day_In_Quarter_0_1_Flag NUMERIC(1,0)
-			, Last_Day_In_Year_0_1_Flag NUMERIC(1,0)
-			, Day_Nbr_Of_Month NUMERIC(2,0)
-			, Month_Nbr_In_Year NUMERIC(2,0)
-			, Month_Name NVARCHAR(27)
-			, Month_Name_Abbrev NVARCHAR(3)
-			, Quarter_Nbr NUMERIC(4,0)
-			, Year_Nbr NUMERIC(4,0)
-			, Day_Of_Week NVARCHAR(27)
-			, Day_Nbr_Of_Week NUMERIC(1,0)
-			, Day_Nbr_Of_Year NUMERIC(3,0)
-			, Week_Nbr_In_Month NUMERIC(1,0)
-			, Week_Nbr_In_Year NUMERIC(2,0)
-			, Year_Sun_Sat_Nbr NUMERIC(4,0)
-			, Week_Nbr_In_Year_Sun_Sat NUMERIC(2,0)
-			, Year_Sat_Fri_Nbr NUMERIC(4,0)
-			, Week_Nbr_In_Year_Sat_Fri NUMERIC(2,0)
-			, Julian_Days NVARCHAR(384)
-			, Full_Date_YYYYMMDD_Txt NVARCHAR(8)
-			, Month_Name_Year NVARCHAR(20)
-			, Month_Abbrev_Year NVARCHAR(20)
-			, Quarter_Year_Txt NVARCHAR(20)
-			, Year_Month_Name NVARCHAR(45)
-			, Year_Month_Abbrev NVARCHAR(45)
-			, Year_Quarter_Txt NVARCHAR(20)
-			, Full_Date_MMSDDSYYYY_Txt NVARCHAR(10)
-			, Full_Date_Month_Day_Year NVARCHAR(45)
-			, Full_Date_Mon_Day_Year NVARCHAR(45)
-			, Full_Date_DDPMMPYYYY_Txt NVARCHAR(10)
-			, Full_Date_Day_Month_Year NVARCHAR(45)
-			, Full_Date_Day_Mon_Year NVARCHAR(45)
-			, Full_Date_YYYYPMMPDD_Txt NVARCHAR(10)
-			, Full_Date_Year_Month_Day NVARCHAR(45)
-			, Full_Date_Year_Mon_Day NVARCHAR(45)
-			, Week_Nbr_Within_Month NUMERIC(1,0)
-			, Days_In_Month NUMERIC(3,0)
-			, Month_Start_Date DATETIME2(7)
-			, Month_End_Date DATETIME2(7)
-			, Pef_Month_Txt NVARCHAR(60)
-			, Days_In_Quarter NUMERIC(3,0)
-			, Quarter_Start_Date DATETIME2(7)
-			, Quarter_End_Date DATETIME2(7)
-			, Days_In_Year NUMERIC(3,0)
-			, Leap_Year_0_1_Flag NUMERIC(1,0)
-			, Year_Start_Date DATETIME2(7)
-			, Year_End_Date DATETIME2(7)
-			, Week_Sun_Sat_Start_Date DATETIME2(7)
-			, Week_Sun_Sat_End_Date DATETIME2(7)
-			, Week_Sat_Fri_Start_Date DATETIME2(7)
-			, Week_Sat_Fri_End_Date DATETIME2(7)
-			, Week_Nbr_Sat_Fri_Within_Month NUMERIC(1,0)
-			, Week_Mon_Sun_Start_Date DATETIME2(7)
-			, Week_Mon_Sun_End_Date DATETIME2(7)
-			, Week_Nbr_Mon_Sun_Within_Month NUMERIC(1,0)
-			, Year_Mon_Sun_Nbr NUMERIC(4,0)
-			, Week_Nbr_In_Year_Mon_Sun NUMERIC(2,0)
-			, Chq_Holiday_0_1_Flag NUMERIC(1,0)
-			, Chq_Holiday_Name NVARCHAR(100)
-			, Us_Fed_Holiday_0_1_Flag NUMERIC(1,0)
-			, Us_Fed_Holiday_Name NVARCHAR(100)
-			, Load_Date DATETIME2(7)
-			, Chq_Business_Day_Flag NUMERIC(1,0)
-			, Chq_Business_Day_Of_Month NUMERIC(2,0)
-			, Chq_Business_Day_Of_Quarter NUMERIC(3,0)
-			, Chq_Business_Day_Of_Week NUMERIC(1,0)
-			, Chq_Business_Day_Of_Year NUMERIC(3,0)
-			, Chq_Business_Days_From_Cur_Day NUMERIC(5,0)
-			, Chq_Business_Days_In_Month NUMERIC(2,0)
-			, Chq_Business_Days_In_Quarter NUMERIC(3,0)
-			, Days_From_Current_Day NUMERIC(5,0)
-			, Months_From_Current_Month NUMERIC(4,0)
-			, Quarters_From_Current_Quarter NUMERIC(3,0)
-			, Weeks_From_Current_Week NUMERIC(5,0)
-			, Years_From_Current_Year NUMERIC(3,0)
-			' -- Create_Table 
-		, 'Date_Key
-			, Time_Key
-			, Date_Type
-			, Full_Date
-			, Week_Day_0_1_Flag
-			, Last_Day_In_Month_0_1_Flag
-			, Last_Day_In_Quarter_0_1_Flag
-			, Last_Day_In_Year_0_1_Flag
-			, Day_Nbr_Of_Month
-			, Month_Nbr_In_Year
-			, Month_Name
-			, Month_Name_Abbrev
-			, Quarter_Nbr
-			, Year_Nbr
-			, Day_Of_Week
-			, Day_Nbr_Of_Week
-			, Day_Nbr_Of_Year
-			, Week_Nbr_In_Month
-			, Week_Nbr_In_Year
-			, Year_Sun_Sat_Nbr
-			, Week_Nbr_In_Year_Sun_Sat
-			, Year_Sat_Fri_Nbr
-			, Week_Nbr_In_Year_Sat_Fri
-			, Julian_Days
-			, Full_Date_YYYYMMDD_Txt
-			, Month_Name_Year
-			, Month_Abbrev_Year
-			, Quarter_Year_Txt
-			, Year_Month_Name
-			, Year_Month_Abbrev
-			, Year_Quarter_Txt
-			, Full_Date_MMSDDSYYYY_Txt
-			, Full_Date_Month_Day_Year
-			, Full_Date_Mon_Day_Year
-			, Full_Date_DDPMMPYYYY_Txt
-			, Full_Date_Day_Month_Year
-			, Full_Date_Day_Mon_Year
-			, Full_Date_YYYYPMMPDD_Txt
-			, Full_Date_Year_Month_Day
-			, Full_Date_Year_Mon_Day
-			, Week_Nbr_Within_Month
-			, Days_In_Month
-			, Month_Start_Date
-			, Month_End_Date
-			, Pef_Month_Txt
-			, Days_In_Quarter
-			, Quarter_Start_Date
-			, Quarter_End_Date
-			, Days_In_Year
-			, Leap_Year_0_1_Flag
-			, Year_Start_Date
-			, Year_End_Date
-			, Week_Sun_Sat_Start_Date
-			, Week_Sun_Sat_End_Date
-			, Week_Sat_Fri_Start_Date
-			, Week_Sat_Fri_End_Date
-			, Week_Nbr_Sat_Fri_Within_Month
-			, Week_Mon_Sun_Start_Date
-			, Week_Mon_Sun_End_Date
-			, Week_Nbr_Mon_Sun_Within_Month
-			, Year_Mon_Sun_Nbr
-			, Week_Nbr_In_Year_Mon_Sun
-			, Chq_Holiday_0_1_Flag
-			, Chq_Holiday_Name
-			, Us_Fed_Holiday_0_1_Flag
-			, Us_Fed_Holiday_Name
-			, Load_Date
-			, Chq_Business_Day_Flag
-			, Chq_Business_Day_Of_Month
-			, Chq_Business_Day_Of_Quarter
-			, Chq_Business_Day_Of_Week
-			, Chq_Business_Day_Of_Year
-			, Chq_Business_Days_From_Cur_Day
-			, Chq_Business_Days_In_Month
-			, Chq_Business_Days_In_Quarter
-			, Days_From_Current_Day
-			, Months_From_Current_Month
-			, Quarters_From_Current_Quarter
-			, Weeks_From_Current_Week
-			, Years_From_Current_Year
-			' -- Insert_Fields
-		, ' ' -- From_Statement
-		, ' ' -- Where_Statement
-		, 'BEGIN TRY
-				DECLARE @TABLE_NAME NVARCHAR(100)
-				SET @TABLE_NAME = ''_Date_Dim2'' ; ------> HARDCODE <------
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Date_Dim2'', @Alpha_Step_Number = ''119D'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Date_Dim2 (
-						Date_Key
-						, Time_Key
-						, Date_Type
-						, Full_Date
-						, Week_Day_0_1_Flag
-						, Last_Day_In_Month_0_1_Flag
-						, Last_Day_In_Quarter_0_1_Flag
-						, Last_Day_In_Year_0_1_Flag
-						, Day_Nbr_Of_Month
-						, Month_Nbr_In_Year
-						, Month_Name
-						, Month_Name_Abbrev
-						, Quarter_Nbr
-						, Year_Nbr
-						, Day_Of_Week
-						, Day_Nbr_Of_Week
-						, Day_Nbr_Of_Year
-						, Week_Nbr_In_Month
-						, Week_Nbr_In_Year
-						, Year_Sun_Sat_Nbr
-						, Week_Nbr_In_Year_Sun_Sat
-						, Year_Sat_Fri_Nbr
-						, Week_Nbr_In_Year_Sat_Fri
-						, Julian_Days
-						, Full_Date_YYYYMMDD_Txt
-						, Month_Name_Year
-						, Month_Abbrev_Year
-						, Quarter_Year_Txt
-						, Year_Month_Name
-						, Year_Month_Abbrev
-						, Year_Quarter_Txt
-						, Full_Date_MMSDDSYYYY_Txt
-						, Full_Date_Month_Day_Year
-						, Full_Date_Mon_Day_Year
-						, Full_Date_DDPMMPYYYY_Txt
-						, Full_Date_Day_Month_Year
-						, Full_Date_Day_Mon_Year
-						, Full_Date_YYYYPMMPDD_Txt
-						, Full_Date_Year_Month_Day
-						, Full_Date_Year_Mon_Day
-						, Week_Nbr_Within_Month
-						, Days_In_Month
-						, Month_Start_Date
-						, Month_End_Date
-						, Pef_Month_Txt
-						, Days_In_Quarter
-						, Quarter_Start_Date
-						, Quarter_End_Date
-						, Days_In_Year
-						, Leap_Year_0_1_Flag
-						, Year_Start_Date
-						, Year_End_Date
-						, Week_Sun_Sat_Start_Date
-						, Week_Sun_Sat_End_Date
-						, Week_Sat_Fri_Start_Date
-						, Week_Sat_Fri_End_Date
-						, Week_Nbr_Sat_Fri_Within_Month
-						, Week_Mon_Sun_Start_Date
-						, Week_Mon_Sun_End_Date
-						, Week_Nbr_Mon_Sun_Within_Month
-						, Year_Mon_Sun_Nbr
-						, Week_Nbr_In_Year_Mon_Sun
-						, Chq_Holiday_0_1_Flag
-						, Chq_Holiday_Name
-						, Us_Fed_Holiday_0_1_Flag
-						, Us_Fed_Holiday_Name
-						, Load_Date
-						, Chq_Business_Day_Flag
-						, Chq_Business_Day_Of_Month
-						, Chq_Business_Day_Of_Quarter
-						, Chq_Business_Day_Of_Week
-						, Chq_Business_Day_Of_Year
-						, Chq_Business_Days_From_Cur_Day
-						, Chq_Business_Days_In_Month
-						, Chq_Business_Days_In_Quarter
-						, Days_From_Current_Day
-						, Months_From_Current_Month
-						, Quarters_From_Current_Quarter
-						, Weeks_From_Current_Week
-						, Years_From_Current_Year
-						)
-						SELECT Date_Key
-							, Time_Key
-							, Date_Type
-							, Full_Date
-							, Week_Day_0_1_Flag
-							, Last_Day_In_Month_0_1_Flag
-							, Last_Day_In_Quarter_0_1_Flag
-							, Last_Day_In_Year_0_1_Flag
-							, Day_Nbr_Of_Month
-							, Month_Nbr_In_Year
-							, Month_Name
-							, Month_Name_Abbrev
-							, Quarter_Nbr
-							, Year_Nbr
-							, Day_Of_Week
-							, Day_Nbr_Of_Week
-							, Day_Nbr_Of_Year
-							, Week_Nbr_In_Month
-							, Week_Nbr_In_Year
-							, Year_Sun_Sat_Nbr
-							, Week_Nbr_In_Year_Sun_Sat
-							, Year_Sat_Fri_Nbr
-							, Week_Nbr_In_Year_Sat_Fri
-							, Julian_Days
-							, Full_Date_YYYYMMDD_Txt
-							, Month_Name_Year
-							, Month_Abbrev_Year
-							, Quarter_Year_Txt
-							, Year_Month_Name
-							, Year_Month_Abbrev
-							, Year_Quarter_Txt
-							, Full_Date_MMSDDSYYYY_Txt
-							, Full_Date_Month_Day_Year
-							, Full_Date_Mon_Day_Year
-							, Full_Date_DDPMMPYYYY_Txt
-							, Full_Date_Day_Month_Year
-							, Full_Date_Day_Mon_Year
-							, Full_Date_YYYYPMMPDD_Txt
-							, Full_Date_Year_Month_Day
-							, Full_Date_Year_Mon_Day
-							, Week_Nbr_Within_Month
-							, Days_In_Month
-							, Month_Start_Date
-							, Month_End_Date
-							, Pef_Month_Txt
-							, Days_In_Quarter
-							, Quarter_Start_Date
-							, Quarter_End_Date
-							, Days_In_Year
-							, Leap_Year_0_1_Flag
-							, Year_Start_Date
-							, Year_End_Date
-							, Week_Sun_Sat_Start_Date
-							, Week_Sun_Sat_End_Date
-							, Week_Sat_Fri_Start_Date
-							, Week_Sat_Fri_End_Date
-							, Week_Nbr_Sat_Fri_Within_Month
-							, Week_Mon_Sun_Start_Date
-							, Week_Mon_Sun_End_Date
-							, Week_Nbr_Mon_Sun_Within_Month
-							, Year_Mon_Sun_Nbr
-							, Week_Nbr_In_Year_Mon_Sun
-							, Chq_Holiday_0_1_Flag
-							, Chq_Holiday_Name
-							, Us_Fed_Holiday_0_1_Flag
-							, Us_Fed_Holiday_Name
-							, Load_Date
-							, Chq_Business_Day_Flag
-							, Chq_Business_Day_Of_Month
-							, Chq_Business_Day_Of_Quarter
-							, Chq_Business_Day_Of_Week
-							, Chq_Business_Day_Of_Year
-							, Chq_Business_Days_From_Cur_Day
-							, Chq_Business_Days_In_Month
-							, Chq_Business_Days_In_Quarter
-							, Days_From_Current_Day
-							, Months_From_Current_Month
-							, Quarters_From_Current_Quarter
-							, Weeks_From_Current_Week
-							, Years_From_Current_Year
-					        FROM Ext_Date_Dim                                          
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Date_Dim2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Date_Dim2'', @Alpha_Step_Number = ''119D'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Date_Dim2'', @Alpha_Step_Number = ''119D'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
-			END TRY 
-			BEGIN CATCH
-				DECLARE @ERROR_NUMBER INT
-				DECLARE @ERROR_SEVERITY INT
-				DECLARE @ERROR_STATE INT
-				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
-				DECLARE @ERROR_LINE INT
-				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Date_Dim2'', @Alpha_Step_Number = ''119X'', @Alpha_Step_Name = ''Dim Table - Transform - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH 
-			' -- Attribute_1
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''119H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1;
-			' -- Attribute_2
-		, ' ' -- Attribute_3
-		, ' ' -- Attribute_4
-		, ' ' -- Attribute_5
-		, ' ' -- Attribute_6
-		, ' ' -- Attribute_7
-		, ' ' -- Attribute_8
-		, ' ' -- Attribute_9
-		, ' ' -- Attribute_10
-		, ' ' -- Attribute_11
-		, ' ' -- Attribute_12
-		, ' ' -- Attribute_13
-		, ' ' -- Attribute_14
-		, ' ' -- Attribute_15
-		, ' ' -- Attribute_16
-		, ' ' -- Attribute_17
-		, ' ' -- Attribute_18
-		, ' ' -- Attribute_19
-		, ' ' -- Attribute_20
-		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Date_Dim2''; ------> HARDCODE <------
-			' -- Attribute_21
-		, 0 -- Active
 		, GETDATE() -- Insert_Date
 		, NULL  -- Update_Date                
 	)
@@ -7264,49 +4370,9 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				UPDATE STATISTICS dbo._All_Employment;
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''120F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_3
-		, 'IF OBJECT_ID(''tempdb..#_All_Employment_Temp_1'') IS NOT NULL
-					DROP TABLE #_All_Employment_Temp_1
-					IF OBJECT_ID(''tempdb..#_All_Employment_Temp_2'') IS NOT NULL
-					DROP TABLE #_All_Employment_Temp_2
-			BEGIN TRY
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				DECLARE @TABLE_CNT2 AS VARCHAR(100)
+		, 'BEGIN TRY
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_All_Employment'', @Alpha_Step_Number = ''120G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					SELECT * INTO #_All_Employment_Temp_1
-						FROM 
-							(
-							SELECT ROW_NUMBER() OVER(ORDER BY A.New_EmploymentsId,A.StatusCode) AS All_Employment_Key
-								, A.New_EmploymentsId AS ContactId
-								, CASE WHEN A.StatusCode = 100000002 THEN ''C''
-									WHEN A.StatusCode = 100000003 THEN ''F''
-									WHEN A.StatusCode = 100000004 THEN ''R''
-									ELSE NULL END AS StatusCode 
-								, B.Name AS Organization_Name
-								, C.New_Name AS Institutional_Hierarchy
-								, A.New_Title
-								, D.New_Name AS New_JobCode
-								, A.New_DateStarted
-								, A.Plus_AlternateOrganizationName
-								FROM Ext_Employment A
-									LEFT JOIN Ext_Account B ON A.New_Company = B.AccountId
-									LEFT JOIN Ext_Institution C ON A.New_InstitutionalHierarchyId = C.New_InstitutionId
-									LEFT JOIN Ext_Job_Code D ON A.New_JobCode = D.New_JobCodeId
-								WHERE 1 = 1
-									AND A.New_Type = 100000000
-							) A
-					SELECT * INTO #_All_Employment_Temp_2
-						FROM 
-							(
-							SELECT ContactId
-								, ROW_NUMBER() OVER(ORDER BY ContactId) AS All_Employment_Group_Key --> HARD CODED <--
-								FROM
-									(SELECT DISTINCT ContactId   
-										FROM #_All_Employment_Temp_1) A
-									) A                                                     
-				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #_All_Employment_Temp_1)
-				SELECT @TABLE_CNT2 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM #_All_Employment_Temp_2)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_All_Employment'', @Alpha_Step_Number = ''120G'', @Alpha_Step_Name = ''Dim Temp Table - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_All_Employment'', @Alpha_Step_Number = ''120G'', @Alpha_Step_Name = ''Bridge Temp Table - Count'', @Alpha_Count = @TABLE_CNT2, @Alpha_Result = 1;
+					
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_All_Employment'', @Alpha_Step_Number = ''120G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
 			END TRY 
 			BEGIN CATCH
@@ -7329,30 +4395,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				DECLARE @TABLE_CNT3 AS VARCHAR(100)
 				DECLARE @TABLE_CNT4 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_All_Employment'', @Alpha_Step_Number = ''120G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;
-					INSERT INTO _All_Employment --> HARD CODED <--
-						(All_Employment_Key
-						, All_Employment_Group_Key
-						, ContactId
-						, StatusCode 
-						, Organization_Name
-						, Institutional_Hierarchy
-						, New_Title
-						, New_JobCode
-						, New_DateStarted
-						, Plus_AlternateOrganizationName
-						)
-						SELECT DISTINCT A.All_Employment_Key
-							, B.All_Employment_Group_Key
-							, CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
-							, A.StatusCode 
-							, A.Organization_Name
-							, A.Institutional_Hierarchy
-							, A.New_Title
-							, A.New_JobCode
-							, CONVERT(VARCHAR(10),A.New_DateStarted,101) AS New_DateStarted
-							, A.Plus_AlternateOrganizationName   
-							FROM #_All_Employment_Temp_1 A
-								LEFT JOIN #_All_Employment_Temp_2 B ON A.ContactId = B.ContactId
+					
 					INSERT INTO _All_Employment_Bridge --> HARD CODED <--
 						(ContactId
 						, All_Employment_Key --> HARD CODED <--
@@ -7440,43 +4483,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY
 				DECLARE @TABLE_CNT1 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Soft_Credit'', @Alpha_Step_Number = ''121F'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Soft_Credit
-						(New_RelatedGift
-						, New_CreditAmount
-						, Plus_Type
-						, Plus_SharedCreditType
-						, FullName
-						, New_LdspId
-						, Row_Num
-						)
-						SELECT CONVERT(NVARCHAR(100),New_RelatedGift) AS New_RelatedGift
-							, New_CreditAmount
-							, Plus_Type
-							, Plus_SharedCreditType
-							, FullName
-							, New_LdspId
-							, ROW_NUMBER() OVER(ORDER BY New_RelatedGift) AS Row_Num
-							FROM 
-								(SELECT A.New_RelatedGift
-									, CONCAT(''$'',CONVERT(NVARCHAR(50),A.New_CreditAmount)) AS New_CreditAmount
-									, A.Plus_Type     
-									, CASE WHEN A.Plus_SubType = 100000004 THEN ''(I):''
-									WHEN A.Plus_SubType = 100000007 THEN ''(I):''
-									WHEN A.Plus_SubType = 100000002 THEN ''(M):''
-									WHEN A.Plus_SubType = 100000003 THEN ''(O):''
-									WHEN A.Plus_SubType = 100000005 THEN ''(I):''
-									WHEN A.Plus_SubType = 100000006 THEN ''(I):''
-									WHEN A.Plus_SubType = 100000000 THEN ''(H):''
-									WHEN A.Plus_SubType = 100000001 THEN ''(S):''
-									ELSE NULL END AS Plus_SharedCreditType 
-									, B.FullName
-									, B.New_LdspId
-									FROM dbo._Gift_Credit_ A
-										LEFT JOIN Ext_Contact B ON A.New_RelatedConstituent = B.ContactId
-									WHERE 1 = 1
-										AND B.New_LdspId IS NOT NULL
-										AND A.Plus_Type = 100000002
-								) A                                      
+                                      
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Soft_Credit)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Soft_Credit'', @Alpha_Step_Number = ''121F'', @Alpha_Step_Name = ''_Soft_Credit - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Soft_Credit'', @Alpha_Step_Number = ''121F'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
@@ -9692,7 +6699,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 														, Plus_ConnectedLiaison
 														, Plus_PendingLiaison
 														FROM 
-															(SELECT ROW_NUMBER() OVER(PARTITION BY ContactId ORDER BY ContactId) AS Row_Num
+															(SELECT ROW_NUMBER() OVER(PARTITION BY ContactId ORDER BY Liaison_Type) AS Row_Num
 																, CONVERT(NVARCHAR(100),ContactId) AS ContactId
 																, CASE WHEN Liaison_Type = ''Coordinating_Liaison'' THEN Liaison ELSE NULL END AS Plus_CoordinatingLiaison
 																, CASE WHEN Liaison_Type = ''Connected_Liaison'' THEN Liaison ELSE NULL END AS Plus_ConnectedLiaison
@@ -10860,140 +7867,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY                                                  
 				DECLARE @TABLE_CNT112 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Fund_Dim'', @Alpha_Step_Number = ''123G'', @Alpha_Step_Name = ''Fund Dim Table - Load - Begin'', @Alpha_Result = 1;                                               
-					INSERT INTO _Fund_Dim 
-						(Fund_Key
-						, Fund_Name
-						, Fund_Institution_Name
-						, Fund_Account_Number
-						, Plus_GiftPurposeSubtype
-						, Plus_GiftPurposeType
-						, Plus_LdspAccountNumberInt
-						, New_FormalAccountName
-						, New_InstitutionalHierarchy
-						, New_InstitutionAccountNumber
-						, Plus_Unrestricted
-						, Plus_Scholarship
-						, New_Endowment
-						, Plus_EffectiveFrom
-						, Plus_EffectiveTo
-						, New_CaePurpose
-						, Plus_SubClassAccountNumber
-						, New_Description
-						, Plus_Notes
-						, Plus_AwardRestrictionGender
-						, Plus_AwardRestrictionClassYear
-						, Plus_AwardRestrictionCollege
-						, Plus_AwardRestrictionEthnicity
-						, Plus_AwardRestrictionGPA
-						, Plus_AwardRestrictionMajor
-						, Plus_GeographicArea
-						, Plus_AwardRestrictionSeminaryGraduate
-						, Plus_NeedBased
-						, Plus_AwardRestrictionSingleParent
-						, Plus_AwardRestrictionReturnedMissionary
-						, Plus_PayItForward
-						, Plus_AwardRestrictionNotes
-						, Plus_Athletics
-						, Plus_FourYear
-						, Plus_GraduateProfessional
-						, Plus_TvRadio
-						, Plus_TechnologySpec
-						, Plus_AlumniAssociation
-						, Plus_MatchingGiftText
-						, Plus_PrincipalAccountNumber
-						, Plus_Spendable
-						, Plus_ProposedEndowment
-						, Plus_ReportFrequency
-						, StatusCode
-						, Hier_New_Inst
-						, New_AllowGifts
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.New_FundAccountId) AS Fund_Key
-							, A.New_Name AS Fund_Name
-							, A.New_FundName AS Fund_Institution_Name
-							, A.New_AccountNumber AS Fund_Account_Number
-							, C.Column_Label AS Plus_GiftPurposeSubtype
-							, B.Column_Label AS Plus_GiftPurposeType
-							, A.Plus_LdspAccountNumberInt
-							, A.New_FormalAccountName
-							, CONVERT(NVARCHAR(100),A.New_InstitutionalHierarchy) AS New_InstitutionalHierarchy
-							, A.New_InstitutionAccountNumber
-							, CASE WHEN A.Plus_Unrestricted = 0 THEN ''N'' 
-								WHEN A.Plus_Unrestricted = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_Unrestricted
-							, CASE WHEN A.Plus_Scholarship = 0 THEN ''N'' 
-								WHEN A.Plus_Scholarship = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_Scholarship
-							, CASE WHEN A.New_Endowment = 0 THEN ''N'' 
-								WHEN A.New_Endowment = 1 THEN ''Y'' 
-								ELSE NULL END AS New_Endowment
-							, CONVERT(VARCHAR(10),A.Plus_EffectiveFrom,101) AS Plus_EffectiveFrom
-							, CONVERT(VARCHAR(10),A.Plus_EffectiveTo,101) AS Plus_EffectiveTo
-							, D.Column_Label AS New_CaePurpose
-							, A.Plus_SubClassAccountNumber
-							, A.New_Description
-							, A.Plus_Notes
-							, E.Column_Label AS Plus_AwardRestrictionGender
-							, F.Column_Label AS Plus_AwardRestrictionClassYear
-							, CONVERT(NVARCHAR(100),A.Plus_AwardRestrictionCollege) AS Plus_AwardRestrictionCollege
-							, G.Column_Label AS Plus_AwardRestrictionEthnicity
-							, A.Plus_AwardRestrictionGPA
-							, CONVERT(NVARCHAR(100),A.Plus_AwardRestrictionMajor) AS Plus_AwardRestrictionMajor
-							, CONVERT(NVARCHAR(100),A.Plus_GeographicArea) AS Plus_GeographicArea
-							, CASE WHEN A.Plus_AwardRestrictionSeminaryGraduate = 0 THEN ''N'' 
-								WHEN A.Plus_AwardRestrictionSeminaryGraduate = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_AwardRestrictionSeminaryGraduate
-							, CASE WHEN A.Plus_NeedBased = 0 THEN ''N''
-								WHEN A.Plus_NeedBased = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_NeedBased
-							, CASE WHEN A.Plus_AwardRestrictionSingleParent = 0 THEN ''N'' 
-								WHEN A.Plus_AwardRestrictionSingleParent = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_AwardRestrictionSingleParent
-							, CASE WHEN A.Plus_AwardRestrictionReturnedMissionary = 0 THEN ''N'' 
-								WHEN A.Plus_AwardRestrictionReturnedMissionary = 1 THEN ''Y''
-								ELSE NULL END AS Plus_AwardRestrictionReturnedMissionary
-							, CASE WHEN A.Plus_PayItForward = 0 THEN ''N'' 
-								WHEN A.Plus_PayItForward = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_PayItForward
-							, A.Plus_AwardRestrictionNotes
-							, CASE WHEN A.Plus_Athletics = 0 THEN ''N'' 
-								WHEN A.Plus_Athletics = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_Athletics
-							, CASE WHEN A.Plus_FourYear = 0 THEN ''N'' 
-								WHEN A.Plus_FourYear = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_FourYear
-							, CASE WHEN A.Plus_GraduateProfessional = 0 THEN ''N''
-								WHEN A.Plus_GraduateProfessional = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_GraduateProfessional
-							, CASE WHEN A.Plus_TvRadio = 0 THEN ''N'' 
-								WHEN A.Plus_TvRadio = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_TvRadio
-							, CASE WHEN A.Plus_TechnologySpec = 0 THEN ''N''
-								WHEN A.Plus_TechnologySpec = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_TechnologySpec
-							, CASE WHEN A.Plus_AlumniAssociation = 0 THEN ''N'' 
-								WHEN A.Plus_AlumniAssociation = 1 THEN ''Y'' 
-								ELSE NULL END AS Plus_AlumniAssociation
-							, A.Plus_MatchingGiftText
-							, A.Plus_PrincipalAccountNumber
-							, A.Plus_Spendable
-							, H.Column_Label AS Plus_ProposedEndowment
-							, I.Column_Label AS Plus_ReportFrequency
-							, J.Column_Label AS StatusCode
-							, NULL AS Hier_New_Inst
-							, CASE WHEN A.New_AllowGifts = 0 THEN ''N'' 
-								WHEN A.New_AllowGifts = 1 THEN ''Y''
-								ELSE NULL END AS New_AllowGifts
-							FROM Ext_Fund_Account A
-								LEFT JOIN _Fund_GiftPurposeType_ B ON A.Plus_GiftPurposeType = B.Column_Value
-								LEFT JOIN _Fund_GiftPurposeSubType_ C ON A.Plus_GiftPurposeSubtype = C.Column_Value
-								LEFT JOIN _Fund_CaePurpose_ D ON A.New_CaePurpose = D.Column_Value
-								LEFT JOIN _Fund_AwardRestrictionGender_ E ON A.Plus_AwardRestrictionGender = E.Column_Value
-								LEFT JOIN _Fund_AwardRestrictionClassYear_ F ON A.Plus_AwardRestrictionClassYear = F.Column_Value
-								LEFT JOIN _Fund_AwardRestrictionEthnicity_ G ON A.Plus_AwardRestrictionEthnicity = G.Column_Value
-								LEFT JOIN _FundAccount_Plus_ProposedEndowment_ H ON A.Plus_ProposedEndowment = H.Column_Value
-								LEFT JOIN _FundAccount_Plus_ReportFrequency_ I ON A.Plus_ReportFrequency = I.Column_Value
-								LEFT JOIN _FundAccount_StatusCode_ J ON A.StatusCode = J.Column_Value
+					
 				SELECT @TABLE_CNT112 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Fund_Dim)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Fund_Dim'', @Alpha_Step_Number = ''123G'', @Alpha_Step_Name = ''Fund Dim Table - Count'', @Alpha_Count = @TABLE_CNT112, @Alpha_Result = 1;
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Fund_Dim'', @Alpha_Step_Number = ''123G'', @Alpha_Step_Name = ''Fund Dim Table - Load - End'', @Alpha_Result = 1;                                                   
@@ -11297,40 +8171,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY                                                  
 				DECLARE @TABLE_CNT312 AS VARCHAR(100)                     
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_User_Coordinating_Liaison_Dim'', @Alpha_Step_Number = ''125G'', @Alpha_Step_Name = ''User Dim Table - Load - Begin'', @Alpha_Result = 1;    
-					INSERT INTO _User_Coordinating_Liaison_Dim 
-						(User_Coordinating_Liaison_Key
-						, User_Full_Name
-						, User_First_Name
-						, User_Last_Name
-						, User_Personal_Email
-						, User_Title
-						, User_Internal_Email
-						, User_Mobile_Phone
-						, User_Domain_Name
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.SystemUserId) AS User_Coordinating_Liaison_Key
-							, A.FullName AS User_Full_Name
-							, A.FirstName AS User_First_Name
-							, A.LastName AS User_Last_Name
-							, A.PersonalEmailAddress AS User_Personal_Email
-							, A.Title AS User_Title
-							, A.InternalEmailAddress AS User_Internal_Email
-							, A.MobilePhone AS User_Mobile_Phone
-							, A.DomainName AS User_Domain_Name
-							FROM LDSPhilanthropiesDW.dbo.Ext_System_User A  
-								INNER JOIN 
-										(SELECT ContactId AS Donor_Key
-											, COALESCE(CONVERT(NVARCHAR(100),Plus_CoordinatingLiaison),''0'') AS User_Coordinating_Liaison_Key
-											FROM Ext_Contact
-											WHERE 1 = 1
-												AND Plus_CoordinatingLiaison IS NOT NULL
-										UNION
-										SELECT AccountId AS Donor_Key
-											, COALESCE(CONVERT(NVARCHAR(100),Plus_CoordinatingLiaison),''0'') AS User_Coordinating_Liaison_Key
-											FROM Ext_Account
-											WHERE 1 = 1
-												AND Plus_CoordinatingLiaison IS NOT NULL										
-										) B ON A.SystemUserId = B.User_Coordinating_Liaison_Key
+					
 				SELECT @TABLE_CNT312 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _User_Coordinating_Liaison_Dim)                                           
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_User_Coordinating_Liaison_Dim'', @Alpha_Step_Number = ''125G'', @Alpha_Step_Name = ''User Dim Table - Count'', @Alpha_Count = @TABLE_CNT312, @Alpha_Result = 1;                                              
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_User_Coordinating_Liaison_Dim'', @Alpha_Step_Number = ''125G'', @Alpha_Step_Name = ''User Dim Table - Load - End'', @Alpha_Result = 1;       
@@ -11428,40 +8269,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY                                                  
 				DECLARE @TABLE_CNT312 AS VARCHAR(100)                     
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_User_Pending_Liaison_Dim'', @Alpha_Step_Number = ''125G'', @Alpha_Step_Name = ''User Dim Table - Load - Begin'', @Alpha_Result = 1;    
-					INSERT INTO _User_Pending_Liaison_Dim 
-						(User_Pending_Liaison_Key
-						, User_Full_Name
-						, User_First_Name
-						, User_Last_Name
-						, User_Personal_Email
-						, User_Title
-						, User_Internal_Email
-						, User_Mobile_Phone
-						, User_Domain_Name
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.SystemUserId) AS User_Pending_Liaison_Key
-							, A.FullName AS User_Full_Name
-							, A.FirstName AS User_First_Name
-							, A.LastName AS User_Last_Name
-							, A.PersonalEmailAddress AS User_Personal_Email
-							, A.Title AS User_Title
-							, A.InternalEmailAddress AS User_Internal_Email
-							, A.MobilePhone AS User_Mobile_Phone
-							, A.DomainName AS User_Domain_Name
-							FROM LDSPhilanthropiesDW.dbo.Ext_System_User A 
-								INNER JOIN
-										(SELECT ContactId AS Donor_Key
-											, COALESCE(CONVERT(NVARCHAR(100),Plus_PendingLiaison),''0'') AS User_Pending_Liaison_Key
-											FROM Ext_Contact
-											WHERE 1 = 1
-												AND Plus_PendingLiaison IS NOT NULL
-										UNION
-										SELECT AccountId AS Donor_Key
-											, COALESCE(CONVERT(NVARCHAR(100),Plus_PendingLiaison),''0'') AS User_Pending_Liaison_Key
-											FROM Ext_Account
-											WHERE 1 = 1
-												AND Plus_PendingLiaison IS NOT NULL										
-										) B ON A.SystemUserId = B.User_Pending_Liaison_Key
+					
 				SELECT @TABLE_CNT312 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _User_Pending_Liaison_Dim)                                           
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_User_Pending_Liaison_Dim'', @Alpha_Step_Number = ''125G'', @Alpha_Step_Name = ''User Dim Table - Count'', @Alpha_Count = @TABLE_CNT312, @Alpha_Result = 1;                                              
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_User_Pending_Liaison_Dim'', @Alpha_Step_Number = ''125G'', @Alpha_Step_Name = ''User Dim Table - Load - End'', @Alpha_Result = 1;       
@@ -11559,40 +8367,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY                                                  
 				DECLARE @TABLE_CNT312 AS VARCHAR(100)                     
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_User_Connected_Liaison_Dim'', @Alpha_Step_Number = ''125G'', @Alpha_Step_Name = ''User Dim Table - Load - Begin'', @Alpha_Result = 1;    
-					INSERT INTO _User_Connected_Liaison_Dim 
-						(User_Connected_Liaison_Key
-						, User_Full_Name
-						, User_First_Name
-						, User_Last_Name
-						, User_Personal_Email
-						, User_Title
-						, User_Internal_Email
-						, User_Mobile_Phone
-						, User_Domain_Name
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.SystemUserId) AS User_Connected_Liaison_Key
-							, A.FullName AS User_Full_Name
-							, A.FirstName AS User_First_Name
-							, A.LastName AS User_Last_Name
-							, A.PersonalEmailAddress AS User_Personal_Email
-							, A.Title AS User_Title
-							, A.InternalEmailAddress AS User_Internal_Email
-							, A.MobilePhone AS User_Mobile_Phone
-							, A.DomainName AS User_Domain_Name
-							FROM LDSPhilanthropiesDW.dbo.Ext_System_User A 
-								INNER JOIN
-										(SELECT ContactId AS Donor_Key
-											, COALESCE(CONVERT(NVARCHAR(100),Plus_ConnectedLiaison),''0'') AS User_Connected_Liaison_Key
-											FROM Ext_Contact
-											WHERE 1 = 1
-												AND Plus_ConnectedLiaison IS NOT NULL
-										UNION
-										SELECT AccountId AS Donor_Key
-											, COALESCE(CONVERT(NVARCHAR(100),Plus_ConnectedLiaison),''0'') AS User_Connected_Liaison_Key
-											FROM Ext_Account
-											WHERE 1 = 1
-												AND Plus_ConnectedLiaison IS NOT NULL
-										) B ON A.SystemUserId = B.User_Connected_Liaison_Key
+					
 				SELECT @TABLE_CNT312 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _User_Connected_Liaison_Dim)                                           
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_User_Connected_Liaison_Dim'', @Alpha_Step_Number = ''125G'', @Alpha_Step_Name = ''User Dim Table - Count'', @Alpha_Count = @TABLE_CNT312, @Alpha_Result = 1;                                              
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_User_Connected_Liaison_Dim'', @Alpha_Step_Number = ''125G'', @Alpha_Step_Name = ''User Dim Table - Load - End'', @Alpha_Result = 1;       
@@ -12045,274 +8820,6 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 	)
 	,
 -- --------------------------
--- _Appeal_Dim Table
--- --------------------------
-	('Dim' -- Dim_Object
-		, '_Appeal_Dim' -- Table_Name
-		, 'Appeal_Key NVARCHAR(100) PRIMARY KEY
-			, Appeal_Name NVARCHAR(100)
-			, Appeal_Code NVARCHAR(20)
-			, Campaign_Institutional_Hierarchy NVARCHAR(100)
-			, Campaign_Name NVARCHAR(128)
-			, Delivery_Type NVARCHAR(400)
-			, Communication_Type NVARCHAR(400)
-			, Scheduled_Start DATE
-			, Scheduled_End DATE
-			, Actual_Start DATE
-			, Actual_End DATE
-			, Appeal_Format INT
-			, Campaign_Type NVARCHAR(400)
-			, Campaign_Status INT
-			, Scope NVARCHAR(400)
-			, Requester NVARCHAR(100)
-			, Representing NVARCHAR(100)
-			, Department_Owner NVARCHAR(400)   
-			, Cause INT        
-			, Campaign_Notes NVARCHAR(4000)
-			, Budget_Allocated NVARCHAR(50)
-			, Estimated_Revenue NVARCHAR(50)
-			, Miscellaneous_Cost NVARCHAR(50)
-			, Total_Cost_Of_Campaign_Activity NVARCHAR(50)
-			, Total_Cost_Of_Campaign NVARCHAR(50)
-			, Cost_To_Raise_1_Dollar NVARCHAR(50)
-			, Total_Gift_Revenue_From_Campaign NVARCHAR(50)
-			, Campaign_Profit NVARCHAR(50)
-			, Appeal_Delivery_Type_Sort_Value INT
-			, Appeal_Long_Name NVARCHAR(200)
-			, Appeal_Reporting_Status NVARCHAR(100)
-			' -- Create_Table 
-		, 'Appeal_Key
-			, Appeal_Name
-			, Appeal_Code
-			, Campaign_Institutional_Hierarchy
-			, Campaign_Name
-			, Delivery_Type
-			, Communication_Type
-			, Scheduled_Start
-			, Scheduled_End
-			, Actual_Start
-			, Actual_End
-			, Appeal_Format
-			, Campaign_Type
-			, Campaign_Status
-			, Scope
-			, Requester
-			, Representing
-			, Department_Owner    
-			, Cause 
-			, Campaign_Notes
-			, Budget_Allocated
-			, Estimated_Revenue
-			, Miscellaneous_Cost
-			, Total_Cost_Of_Campaign_Activity
-			, Total_Cost_Of_Campaign
-			, Cost_To_Raise_1_Dollar
-			, Total_Gift_Revenue_From_Campaign
-			, Campaign_Profit
-			, Appeal_Delivery_Type_Sort_Value
-			, Appeal_Long_Name
-			, Appeal_Reporting_Status
-			' -- Insert_Fields
-		, ' ' -- From_Statement
-		, ' ' -- Where_Statement
-		, 'DECLARE @TABLE_NAME NVARCHAR(100)
-			SET @TABLE_NAME = ''_Appeal_Dim'' ; ------> HARDCODE <------
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''127D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1;                               
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''127D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_1
-		, 'DECLARE @SQL_1 NVARCHAR(MAX)
-			DECLARE @SQL_2 NVARCHAR(MAX)
-			DECLARE @TABLE_NAME_B NVARCHAR(100)
-			SET @TABLE_NAME_B = ''_Appeal_Bridge''
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''127E'', @Alpha_Step_Name = ''Bridge Table Creation - Begin'', @Alpha_Result = 1;
-			SET @SQL_2 = '' ''''LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + '''''', ''''U'''' ''
-			SET @SQL_1 = ''
-				IF OBJECT_ID('' + @SQL_2 + '') IS NOT NULL
-				DROP TABLE LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + ''                                               
-				CREATE TABLE LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + ''(ContactId UNIQUEIDENTIFIER, Appeal_Key INT PRIMARY KEY, Appeal_Group_Key INT)''                                               
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''127E'', @Alpha_Step_Name = ''Bridge Table Creation - Query'', @Alpha_Query = @SQL_1, @Alpha_Result = 1;                                        
-			EXEC(@SQL_1)
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''127E'', @Alpha_Step_Name = ''Bridge Table Creation - End'', @Alpha_Result = 1;
-			' -- Attribute_2
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''127F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''127F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_3
-		, 'BEGIN TRY       
-				DECLARE @TABLE_CNT112 AS VARCHAR(100)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Appeal_Dim'', @Alpha_Step_Number = ''127G'', @Alpha_Step_Name = ''Appeal Dim Table - Load - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Appeal_Dim 
-						(Appeal_Key
-						, Appeal_Name
-						, Appeal_Code
-						, Campaign_Institutional_Hierarchy
-						, Campaign_Name
-						, Delivery_Type
-						, Communication_Type
-						, Scheduled_Start
-						, Scheduled_End
-						, Actual_Start
-						, Actual_End
-						, Appeal_Format
-						, Campaign_Type
-						, Campaign_Status
-						, Scope
-						, Requester
-						, Representing
-						, Department_Owner    
-						, Cause 
-						, Campaign_Notes
-						, Budget_Allocated
-						, Estimated_Revenue
-						, Miscellaneous_Cost
-						, Total_Cost_Of_Campaign_Activity
-						, Total_Cost_Of_Campaign
-						, Cost_To_Raise_1_Dollar
-						, Total_Gift_Revenue_From_Campaign
-						, Campaign_Profit
-						, Appeal_Delivery_Type_Sort_Value
-						, Appeal_Long_Name
-						, Appeal_Reporting_Status
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ActivityId) AS Appeal_Key -- Will join to Plus_Appeal on New_Gift
-							--, B.Plus_AppealLongName AS Appeal_Name  /*Delete from source 5/15/17*/
-							, A.Subject AS Appeal_Name
-							, B.Plus_AppealCode AS Appeal_Code
-							, C.New_Name AS Campaign_Institutional_Hierarchy
-							, D.Name AS Campaign_Name
-							, CASE WHEN H.Column_Label = ''Other'' THEN ''General''
-									WHEN H.Column_Label = ''In Person'' THEN ''Face-To-Face'' 
-									WHEN H.Column_Label = ''Mail'' THEN ''Direct Mail''
-									WHEN H.Column_Label = ''Phone'' THEN ''Telefund''
-									ELSE H.Column_Label END AS Delivery_Type
-							--, H.Column_Label AS Delivery_Type
-							, E.Column_Label AS Communication_Type  --Picklist
-							, CONVERT(VARCHAR(10),A.ScheduledStart,101) AS Scheduled_Start
-							, CONVERT(VARCHAR(10),A.ScheduledEnd,101) AS Scheduled_End
-							, CONVERT(VARCHAR(10),A.ActualStart,101) AS Actual_Start
-							, CONVERT(VARCHAR(10),A.ActualEnd,101) AS Actual_End
-							, B.Plus_Format AS Appeal_Format                                                     
-							, H.Column_Label AS Campaign_Type
-							, D.StatusCode AS Campaign_Status
-							, F.Column_Label AS Scope -- Picklist
-							, NULL AS Requester
-							, CASE WHEN CONVERT(NVARCHAR(100),D.Plus_Affiliate) = ''100000000'' THEN CONVERT(NVARCHAR(100),I.New_Name)
-								WHEN CONVERT(NVARCHAR(100),D.Plus_Affiliate) = ''100000001'' THEN CONVERT(NVARCHAR(100),C.New_Name) END AS Representing
-							, G.Column_Label AS Department_Owner              --Picklist              
-							, D.Plus_Cause AS Cause                            
-							, D.Description AS Campaign_Notes
-							, D.BudgetedCost_Base AS Budget_Allocated
-							, D.ExpectedRevenue AS Estimated_Revenue
-							, D.OtherCost AS Miscellaneous_Cost
-							, D.TotalCampaignActivityActualCost AS Total_Cost_Of_Campaign_Activity
-							, D.TotalActualCost AS Total_Cost_Of_Campaign
-							, D.Plus_CostToRaise1_Base AS Cost_To_Raise_1_Dollar
-							, D.Plus_TotalGiftRevenueFromCampaign AS Total_Gift_Revenue_From_Campaign
-							, D.Plus_CampaignProfit_Base AS Campaign_Profit  
-							, CASE WHEN H.Column_Label = ''Mail'' THEN 1
-									WHEN H.Column_Label = ''Email'' THEN 2
-									WHEN H.Column_Label = ''In Person'' THEN 3
-									WHEN H.Column_Label = ''Phone'' THEN 4
-									WHEN H.Column_Label = ''Other'' THEN 5
-									WHEN H.Column_Label = ''Web'' THEN 6
-									ELSE 7 END AS Appeal_Delivery_Type_Sort_Value
-							, J.Appeal_Name AS Appeal_Long_Name
-							, J.Keep_Remove_Delete AS Appeal_Reporting_Status
-							FROM Ext_Activity_Pointer A
-								LEFT JOIN Ext_Campaign_Activity B ON A.ActivityId = B.ActivityId
-								LEFT JOIN Ext_Institution C ON B.Plus_InstitutionalHierarchy = C.New_InstitutionId
-								LEFT JOIN Ext_Campaign D ON A.RegardingObjectId = D.CampaignId
-								LEFT JOIN _Campaign_Activity_ E ON B.Plus_CommunicationType = E.Column_Value                               
-								LEFT JOIN _Affiliate_ F ON B.Plus_CommunicationType = F.Column_Value
-								LEFT JOIN _Department_Function_ G ON B.Plus_CommunicationType = G.Column_Value
-								LEFT JOIN _Channel_Type_Code_ H ON A.CampactChannelTypeCode = H.Column_Value
-								LEFT JOIN Ext_Association I ON D.Plus_Association = I.New_AssociationId
-								LEFT JOIN 
-									(SELECT A.Appeal_Code
-										, A.Appeal_Name
-										, B.Keep_Remove_Delete
-										FROM 
-											(SELECT DISTINCT Appeal_Code
-												, Appeal_Name
-												FROM LDSP_All_Appeals 
-											)A
-											LEFT JOIN 
-												(SELECT DISTINCT Appeal_Code
-													, Keep_Remove_Delete
-													FROM LDSP_All_Appeals
-													WHERE 1 = 1
-														AND Keep_Remove_Delete IS NOT NULL
-												) B ON A.Appeal_Code = B.Appeal_Code
-									) J ON B.Plus_AppealCode = J.Appeal_Code
-							WHERE 1 = 1
-								AND A.RegardingObjectTypeCode = 4400
-				SELECT @TABLE_CNT112 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Appeal_Dim)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Appeal_Dim'', @Alpha_Step_Number = ''127G'', @Alpha_Step_Name = ''Appeal Dim Table - Count'', @Alpha_Count = @TABLE_CNT112, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Appeal_Dim'', @Alpha_Step_Number = ''127G'', @Alpha_Step_Name = ''Appeal Dim Table - Load - End'', @Alpha_Result = 1;                                                 
-			END TRY             
-			BEGIN CATCH                                 
-				DECLARE @ERROR_NUMBER INT
-				DECLARE @ERROR_SEVERITY INT
-				DECLARE @ERROR_STATE INT
-				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
-				DECLARE @ERROR_LINE INT
-				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Appeal_Dim'', @Alpha_Step_Number = ''127X'', @Alpha_Step_Name = ''Appeal Dim Table - Load - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;      
-			END CATCH
-			' -- Attribute_4
-		, 'BEGIN TRY
-				MERGE INTO _Appeal_Dim T
-					USING (
-							SELECT DISTINCT CONVERT(NVARCHAR(100),C.ActivityId) AS Appeal_Key
-								FROM dbo._Gift_ A
-									LEFT JOIN dbo._Gift_Hist_ B ON A.New_GiftId = B.New_RelatedGift
-									LEFT JOIN Ext_Campaign_Activity C ON A.Plus_Appeal = C.ActivityId
-						) S ON T.Appeal_Key = S.Appeal_Key
-					WHEN NOT MATCHED BY SOURCE THEN 
-						DELETE
-					;
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Remove Non-Reporting Appeals'', @Alpha_Step_Number = ''127X'', @Alpha_Step_Name = ''Remove Non-Reporting Appeals - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_5
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''127H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
-			' -- Attribute_6
-		, ' ' -- Attribute_7
-		, ' ' -- Attribute_8
-		, ' ' -- Attribute_9
-		, ' ' -- Attribute_10
-		, ' ' -- Attribute_11
-		, ' ' -- Attribute_12
-		, ' ' -- Attribute_13
-		, ' ' -- Attribute_14
-		, ' ' -- Attribute_15
-		, ' ' -- Attribute_16
-		, ' ' -- Attribute_17
-		, ' ' -- Attribute_18
-		, ' ' -- Attribute_19
-		, ' ' -- Attribute_20
-		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Appeal_Dim''; ------> HARDCODE <------
-			' -- Attribute_21
-		, 1 -- Active
-		, GETDATE() -- Insert_Date
-		, NULL  -- Update_Date                
-	)
-	,
--- --------------------------
 -- _Expectancy_Dim Table
 -- --------------------------
 	('Dim' -- Dim_Object
@@ -12439,133 +8946,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY       
 				DECLARE @TABLE_CNT112 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Expectancy_Dim'', @Alpha_Step_Number = ''128F'', @Alpha_Step_Name = ''Expectancy Dim Table - Load - Begin'', @Alpha_Result = 1;
-					INSERT INTO _Expectancy_Dim 
-						(Expectancy_Key
-						, Plus_Kind
-						, Plus_TenderType
-						, Plus_GiftSource
-						, Plus_PlannedGift
-						, Plus_CheckNumber
-						, New_Confidential
-						, Plus_AcknowledgementInstructions
-						, Plus_NewAccountInstructions
-						, Plus_SpecialGiftInstructions
-						, Plus_TelefundRep
-						, Plus_PlannedGivingPaymentFrequency
-						, New_Bookable
-						, Plus_MatchExpected
-						, Plus_GiftRevocability
-						, Plus_RemainderBeneficiary
-						, New_Documentation
-						, Plus_Designation
-						, Plus_NameOfTrust
-						, plus_PlannedGivingType
-						, Plus_VehicleType
-						, Plus_VehicleSubType
-						, Plus_PayoutRate
-						, Plus_Duration
-						, Plus_LivesType
-						, Plus_Years
-						, Plus_Lives
-						, Plus_TermBeneficiaryLives
-						, Plus_TermBeneficiaryYears
-						, Plus_Cri
-						, Plus_GpsNotes
-						, New_PledgeNumber
-						, Status
-						, Status_Reason
-						, New_TotalPledged
-						, New_BalanceDue_Base
-						, New_TotalPaid_Base
-						, New_PaymentsToMake
-						, New_PaymentsReceived
-						, New_InstallmentAmount_Base
-						, Plus_FairMarketValue_Base
-						, Plus_PresentValue_Base
-						, Plus_PaymentAmount_Base
-						, Plus_AnnualAmount_Base
-						, New_BeginDate
-						, New_EndDate
-						, Plus_InstallmentDate
-						, New_SignatureDate
-						, New_NotificationDate
-						, Plus_FundingDate
-						, Plus_EstimatedMaturityDate
-						, Plus_PaymentStartDate
-						, Lds_ExpectancyType
-						)
-						SELECT DISTINCT CONVERT(NVARCHAR(100),A.New_PledgeId) AS Expectancy_Key
-							, B.Column_Label AS Plus_Kind
-							, C.Column_Label AS Plus_TenderType
-							, D.Column_Label AS Plus_GiftSource
-							, E.Column_Label AS Plus_PlannedGift
-							, A.Plus_CheckNumber
-							, F.Column_Label AS New_Confidential
-							, A.Plus_AcknowledgementInstructions
-							, A.Plus_NewAccountInstructions
-							, A.Plus_SpecialGiftInstructions
-							, CONVERT(NVARCHAR(100),A.Plus_TelefundRep) AS Plus_TelefundRep
-							, G.Column_Label AS Plus_PlannedGivingPaymentFrequency
-							, H.Column_Label AS New_Bookable
-							, I.Column_Label AS Plus_MatchExpected
-							, J.Column_Label AS Plus_GiftRevocability
-							, K.Column_Label AS Plus_RemainderBeneficiary
-							, L.Column_Label AS New_Documentation
-							, A.Plus_Designation
-							, A.Plus_NameOfTrust
-							, M.Column_Label AS plus_PlannedGivingType
-							, N.Column_Label AS Plus_VehicleType
-							, O.Column_Label AS Plus_VehicleSubType
-							, A.Plus_PayoutRate
-							, P.Column_Label AS Plus_Duration
-							, Q.Column_Label AS Plus_LivesType
-							, A.Plus_Years
-							, A.Plus_Lives
-							, A.Plus_TermBeneficiaryLives
-							, A.Plus_TermBeneficiaryYears
-							, A.Plus_Cri
-							, A.Plus_GpsNotes
-							, A.New_PledgeNumber
-							, R.Column_Value AS Status
-							, R.Column_Label AS Status_Reason
-							, A.New_TotalPledged
-							, A.New_BalanceDue_Base
-							, A.New_TotalPaid_Base
-							, A.New_PaymentsToMake
-							, A.New_PaymentsReceived
-							, A.New_InstallmentAmount_Base
-							, A.Plus_FairMarketValue_Base
-							, A.Plus_PresentValue_Base
-							, A.Plus_PaymentAmount_Base
-							, A.Plus_AnnualAmount_Base
-							, CONVERT(VARCHAR(10),A.New_BeginDate,101) AS New_BeginDate
-							, CONVERT(VARCHAR(10),A.New_EndDate,101) AS New_EndDate
-							, CONVERT(VARCHAR(10),A.Plus_InstallmentDate,101) AS Plus_InstallmentDate
-							, CONVERT(VARCHAR(10),A.New_SignatureDate,101) AS New_SignatureDate
-							, CONVERT(VARCHAR(10),A.New_NotificationDate,101) AS New_NotificationDate
-							, CONVERT(VARCHAR(10),A.Plus_FundingDate,101) AS Plus_FundingDate
-							, CONVERT(VARCHAR(10),A.Plus_EstimatedMaturityDate,101) AS Plus_EstimatedMaturityDate
-							, CONVERT(VARCHAR(10),A.Plus_PaymentStartDate,101) AS Plus_PaymentStartDate
-							, S.Column_Label AS Lds_ExpectancyType
-							FROM Ext_Pledge A
-								LEFT JOIN _Plus_Kind_ B ON A.Plus_Kind = B.Column_Value
-								LEFT JOIN _Plus_Tender_Type_ C ON A.Plus_TenderType = C.Column_Value
-								LEFT JOIN _Plus_Gift_Source_ D ON A.Plus_GiftSource = D.Column_Value
-								LEFT JOIN _Plus_Planned_Gift_ E ON A.Plus_PlannedGift = E.Column_Value
-								LEFT JOIN _New_Confidential_ F ON A.New_Confidential = F.Column_Value
-								LEFT JOIN _Plus_PlannedGivingPaymentFrequency_ G ON A.Plus_PlannedGivingPaymentFrequency = G.Column_Value
-								LEFT JOIN _New_Bookable_ H ON A.New_Bookable = H.Column_Value
-								LEFT JOIN _Plus_MatchExpected_ I ON A.Plus_MatchExpected = I.Column_Value
-								LEFT JOIN _Plus_GiftRevocability_ J ON A.Plus_GiftRevocability = J.Column_Value
-								LEFT JOIN _Plus_RemainderBeneficiary_ K ON A.Plus_RemainderBeneficiary = K.Column_Value
-								LEFT JOIN _New_Documentation_ L ON A.New_Documentation = L.Column_Value
-								LEFT JOIN _Plus_PlannedGivingType_ M ON A.plus_PlannedGivingType = M.Column_Value
-								LEFT JOIN _Plus_VehicleType_ N ON A.Plus_VehicleType = N.Column_Value
-								LEFT JOIN _Plus_VehicleSubType_ O ON A.Plus_VehicleSubType = O.Column_Value
-								LEFT JOIN _Plus_Duration_ P ON A.Plus_Duration = P.Column_Value
-								LEFT JOIN _Plus_LivesType_ Q ON A.Plus_LivesType = Q.Column_Value
-								LEFT JOIN _Pledge_Status_ R ON A.StatusCode = R.Column_Value
-								LEFT JOIN _Lds_ExpectancyType_ S ON A.Lds_ExpectancyType = S.Column_Value
+					
 				SELECT @TABLE_CNT112 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Expectancy_Dim)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Expectancy_Dim'', @Alpha_Step_Number = ''128F'', @Alpha_Step_Name = ''Expectancy Dim Table - Count'', @Alpha_Count = @TABLE_CNT112, @Alpha_Result = 1;
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Expectancy_Dim'', @Alpha_Step_Number = ''128F'', @Alpha_Step_Name = ''Expectancy Dim Table - Load - End'', @Alpha_Result = 1;                                                        
@@ -13035,7 +9416,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY
 				MERGE INTO _Donation_Fact T
 					USING (
-							SELECT ContactId AS Donor_Key
+							SELECT CONVERT(NVARCHAR(100),ContactId) AS Donor_Key
 								, COALESCE(CONVERT(NVARCHAR(100),Plus_CoordinatingLiaison),''0'') AS User_Coordinating_Liaison_Key
 								, COALESCE(CONVERT(NVARCHAR(100),Plus_PendingLiaison),''0'') AS User_Pending_Liaison_Key
 								, COALESCE(CONVERT(NVARCHAR(100),Plus_ConnectedLiaison),''0'') AS User_Connected_Liaison_Key
@@ -13046,7 +9427,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 											OR Plus_ConnectedLiaison IS NOT NULL
 										)
 							UNION
-							SELECT AccountId AS Donor_Key
+							SELECT CONVERT(NVARCHAR(100),AccountId) AS Donor_Key
 								, COALESCE(CONVERT(NVARCHAR(100),Plus_CoordinatingLiaison),''0'') AS User_Coordinating_Liaison_Key
 								, COALESCE(CONVERT(NVARCHAR(100),Plus_PendingLiaison),''0'') AS User_Pending_Liaison_Key
 								, COALESCE(CONVERT(NVARCHAR(100),Plus_ConnectedLiaison),''0'') AS User_Connected_Liaison_Key
@@ -17077,7 +13458,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE())-1 THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
 										, CASE WHEN D.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
 										FROM _Retention_Byu_Fact A
-											INNER JOIN _Donation_Fact B ON A.Donor_Key = B.Donor_Key 
+											INNER JOIN _Donation_Fact B ON CONVERT(NVARCHAR(100),A.Donor_Key) = B.Donor_Key 
 											INNER JOIN _Donation_Dim C ON B.Donation_Key = C.Donation_Key
 											LEFT JOIN
 												(SELECT A.Donor_Key
@@ -17501,7 +13882,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE())-1 THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
 										, CASE WHEN D.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
 										FROM _Retention_Byui_Fact A
-											INNER JOIN _Donation_Fact B ON A.Donor_Key = B.Donor_Key 
+											INNER JOIN _Donation_Fact B ON CONVERT(NVARCHAR(100),A.Donor_Key) = B.Donor_Key 
 											INNER JOIN _Donation_Dim C ON B.Donation_Key = C.Donation_Key
 											LEFT JOIN
 												(SELECT A.Donor_Key
@@ -17925,7 +14306,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE())-1 THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
 										, CASE WHEN D.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
 										FROM _Retention_Byuh_Fact A
-											INNER JOIN _Donation_Fact B ON A.Donor_Key = B.Donor_Key 
+											INNER JOIN _Donation_Fact B ON CONVERT(NVARCHAR(100),A.Donor_Key) = B.Donor_Key 
 											INNER JOIN _Donation_Dim C ON B.Donation_Key = C.Donation_Key
 											LEFT JOIN
 												(SELECT A.Donor_Key
@@ -18349,7 +14730,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE())-1 THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
 										, CASE WHEN D.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
 										FROM _Retention_Ldsbc_Fact A
-											INNER JOIN _Donation_Fact B ON A.Donor_Key = B.Donor_Key 
+											INNER JOIN _Donation_Fact B ON CONVERT(NVARCHAR(100),A.Donor_Key) = B.Donor_Key 
 											INNER JOIN _Donation_Dim C ON B.Donation_Key = C.Donation_Key
 											LEFT JOIN
 												(SELECT A.Donor_Key

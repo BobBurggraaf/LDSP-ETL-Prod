@@ -21,7 +21,7 @@ GO
 
 
 --CREATE PROCEDURE [dbo].[usp_Transform_Data]
-ALTER PROCEDURE [dbo].[usp_Transform_Data]
+CREATE OR ALTER PROCEDURE [dbo].[usp_Transform_Data]
 
 	@Transform_Data_Table_Name NVARCHAR(100) = NULL
 

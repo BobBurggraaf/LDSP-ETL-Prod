@@ -49,7 +49,7 @@ DECLARE @Todays_Date DATE
 	SET @Todays_Date = GETDATE()
 
 	DECLARE @Table_Name_Check NVARCHAR(100)
-	SET @Table_Name_Check = 'dbo._Psa_Dim'
+	SET @Table_Name_Check = 'dbo._Connection_Dim'
 	
 	DECLARE @Step_Date DATE
 		SELECT @Step_Date = (
@@ -108,9 +108,9 @@ IF @Step_Date = @Todays_Date
 						DECLARE @SQL_1 VARCHAR(MAX)
 						DECLARE @SQL_2 VARCHAR(MAX)
 
-						SELECT @TABLE_NAME = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim','_Expectancy_Fact','_Recurring_Gift_Fact') THEN 'Place_Holder' ELSE Table_Name END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM);
-						SELECT @CREATE_FIELDS = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim','_Expectancy_Fact','_Recurring_Gift_Fact') THEN 'Table_Key INT' ELSE Create_Fields END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM);
-						SELECT @INSERT_FIELDS = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim','_Expectancy_Fact','_Recurring_Gift_Fact') THEN 'Table_Key' ELSE Insert_Fields END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM);
+						SELECT @TABLE_NAME = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim','_Expectancy_Fact','_Recurring_Gift_Fact','_Award_Dim','_Phone_Dim','_Drop_Include_Dim','_Language_Dim','_Association_Dim','_Employment_Dim','_Connection_Dim','_Fund_Dim','_Student_Dim','_Id_Dim','_Interest_Dim','_All_Employment','_Soft_Credit','_User_Coordinating_Liaison_Dim','_User_Pending_Liaison_Dim','_User_Connected_Liaison_Dim','_Appeal_Dim','_Expectancy_Dim') THEN 'Place_Holder' ELSE Table_Name END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM);
+						SELECT @CREATE_FIELDS = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim','_Expectancy_Fact','_Recurring_Gift_Fact','_Award_Dim','_Phone_Dim','_Drop_Include_Dim','_Language_Dim','_Association_Dim','_Employment_Dim','_Connection_Dim','_Fund_Dim','_Student_Dim','_Id_Dim','_Interest_Dim','_All_Employment','_Soft_Credit','_User_Coordinating_Liaison_Dim','_User_Pending_Liaison_Dim','_User_Connected_Liaison_Dim','_Appeal_Dim','_Expectancy_Dim') THEN 'Table_Key INT' ELSE Create_Fields END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM);
+						SELECT @INSERT_FIELDS = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim','_Expectancy_Fact','_Recurring_Gift_Fact','_Award_Dim','_Phone_Dim','_Drop_Include_Dim','_Language_Dim','_Association_Dim','_Employment_Dim','_Connection_Dim','_Fund_Dim','_Student_Dim','_Id_Dim','_Interest_Dim','_All_Employment','_Soft_Credit','_User_Coordinating_Liaison_Dim','_User_Pending_Liaison_Dim','_User_Connected_Liaison_Dim','_Appeal_Dim','_Expectancy_Dim') THEN 'Table_Key' ELSE Insert_Fields END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM);
 
 						EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = '0A', @Alpha_Step_Name = 'Table Creation - Begin', @Alpha_Result = 1;
 
@@ -253,7 +253,7 @@ IF @Step_Date != @Todays_Date OR @Step_Date IS NULL
 		SET @Todays_Date_2 = GETDATE()
 
 		DECLARE @Table_Name_Check_2 NVARCHAR(100)
-		SET @Table_Name_Check_2 = 'dbo._Psa_Dim'
+		SET @Table_Name_Check_2 = 'dbo._Connection_Dim'
 		
 		DECLARE @Step_Date_2 DATE
 			SELECT @Step_Date_2 = (
@@ -311,10 +311,11 @@ IF @Step_Date != @Todays_Date OR @Step_Date IS NULL
 								DECLARE @SQL_1_2 VARCHAR(MAX)
 								DECLARE @SQL_2_2 VARCHAR(MAX)
 
-								SELECT @TABLE_NAME_2 = (SELECT Table_Name FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_2);
-								SELECT @CREATE_FIELDS_2 = (SELECT Create_Fields FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_2);
-								SELECT @INSERT_FIELDS_2 = (SELECT Insert_Fields FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_2);
+								SELECT @TABLE_NAME_2 = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim','_Expectancy_Fact','_Recurring_Gift_Fact','_Award_Dim','_Phone_Dim','_Drop_Include_Dim','_Language_Dim','_Association_Dim','_Employment_Dim','_Connection_Dim','_Appeal_Dim','_Expectancy_Dim') THEN 'Place_Holder' ELSE Table_Name END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_2);
+								SELECT @CREATE_FIELDS_2 = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim','_Expectancy_Fact','_Recurring_Gift_Fact','_Award_Dim','_Phone_Dim','_Drop_Include_Dim','_Language_Dim','_Association_Dim','_Employment_Dim','_Connection_Dim','_Appeal_Dim','_Expectancy_Dim') THEN 'Table_Key INT' ELSE Create_Fields END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_2);
+								SELECT @INSERT_FIELDS_2 = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim','_Expectancy_Fact','_Recurring_Gift_Fact','_Award_Dim','_Phone_Dim','_Drop_Include_Dim','_Language_Dim','_Association_Dim','_Employment_Dim','_Connection_Dim','_Appeal_Dim','_Expectancy_Dim') THEN 'Table_Key' ELSE Insert_Fields END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_2);
 
+						
 								EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_2, @Alpha_Step_Number = '0A', @Alpha_Step_Name = 'Table Creation - Begin', @Alpha_Result = 1;
 
 								SET @SQL_2_2 = ' ''LDSPhilanthropiesDW.dbo.' + @TABLE_NAME_2 + ''', ''U'' '
@@ -496,10 +497,23 @@ IF @Step_Date != @Todays_Date OR @Step_Date IS NULL
 								DECLARE @SQL_1_3 VARCHAR(MAX)
 								DECLARE @SQL_2_3 VARCHAR(MAX)
 
-								SELECT @TABLE_NAME_3 = (SELECT Table_Name FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
-								SELECT @CREATE_FIELDS_3 = (SELECT Create_Fields FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
-								SELECT @INSERT_FIELDS_3 = (SELECT Insert_Fields FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
+								SELECT @TABLE_NAME_3 = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim'
+																						,'_Expectancy_Fact','_Recurring_Gift_Fact','_Award_Dim','_Phone_Dim','_Drop_Include_Dim'
+																						,'_Language_Dim','_Association_Dim','_Employment_Dim','_Connection_Dim'
+																						,'_Id_Dim','_Interest_Dim','_Student_Dim','_All_Employment','_Soft_Credit','_Fund_Dim'
+																						,'_User_Coordinating_Liaison_Dim','_User_Pending_Liaison_Dim','_User_Connected_Liaison_Dim') THEN 'Place_Holder' ELSE Table_Name END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
+								SELECT @CREATE_FIELDS_3 = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim'
+																							,'_Expectancy_Fact','_Recurring_Gift_Fact','_Award_Dim','_Phone_Dim','_Drop_Include_Dim'
+																							,'_Language_Dim','_Association_Dim','_Employment_Dim','_Connection_Dim'
+																							,'_Id_Dim','_Interest_Dim','_Student_Dim','_All_Employment','_Soft_Credit','_Fund_Dim'
+																							,'_User_Coordinating_Liaison_Dim','_User_Pending_Liaison_Dim','_User_Connected_Liaison_Dim') THEN 'Table_Key INT' ELSE Create_Fields END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
+								SELECT @INSERT_FIELDS_3 = (SELECT CASE WHEN Table_Name IN ('_Email_Dim','_Psa_Dim','_Hier_Dim','_User_Dim','_User_Initiative_Liaison_Dim'
+																							,'_Expectancy_Fact','_Recurring_Gift_Fact','_Award_Dim','_Phone_Dim','_Drop_Include_Dim'
+																							,'_Language_Dim','_Association_Dim','_Employment_Dim','_Connection_Dim'
+																							,'_Id_Dim','_Interest_Dim','_Student_Dim','_All_Employment','_Soft_Credit','_Fund_Dim'
+																							,'_User_Coordinating_Liaison_Dim','_User_Pending_Liaison_Dim','_User_Connected_Liaison_Dim') THEN 'Table_Key' ELSE Insert_Fields END FROM LDSPhilanthropiesDW.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
 
+						
 								EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_3, @Alpha_Step_Number = '0A', @Alpha_Step_Name = 'Table Creation - Begin', @Alpha_Result = 1;
 
 								SET @SQL_2_3 = ' ''LDSPhilanthropiesDW.dbo.' + @TABLE_NAME_3 + ''', ''U'' '
@@ -646,7 +660,7 @@ SELECT @Email_Step1_Error_Cnt = (SELECT COUNT(Alpha_Result) FROM LDSPhilanthropi
 EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = 'Trans\Load Tables Email', @Alpha_Step_Number = 'Email_1A', @Alpha_Step_Name = 'Trans\Load - Email Error Count', @Alpha_Count = @Email_Step1_Error_Cnt, @Alpha_Result = 1;
 
 
-SET @Email_Body = 'The LDSP Trans\Load ETL has completed with ' + CONVERT(VARCHAR(12),@Email_Step1_Error_Cnt) + ' errors.'
+SET @Email_Body = '*PROD* LDSP Trans\Load completed with ' + CONVERT(VARCHAR(12),@Email_Step1_Error_Cnt) + ' errors.'  --<--------------------------------------------------------------
 
 
 CREATE TABLE #Prod_Summary (
@@ -686,7 +700,7 @@ CREATE TABLE #Prod_Summary (
 
 	EXEC msdb.dbo.sp_send_dbmail
 	@recipients = 'fams@LDSChurch.org' 
-	, @subject = 'NEW SERVER: LDSP Trans/Load Complete'  -->>>>>> EMAIL SUBJECT <<<<<<<--
+	, @subject = '*PROD* LDSP Trans/Load Completed'  -->>>>>> EMAIL SUBJECT <<<<<<<--                                 --<--------------------------------------------------------------
 	, @body = @body
 	, @body_format = 'HTML'
 	, @query = 'SELECT TOP 2500 * FROM LDSPhilanthropiesDW.dbo.Alpha_Table_2'  -- MAXES OUT MEMORY AND WON'T SEND EMAIL
