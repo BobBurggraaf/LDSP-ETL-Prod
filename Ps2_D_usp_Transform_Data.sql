@@ -214,8 +214,8 @@ BEGIN
 	SET @Transform_DateTime = (SELECT MAX(Alpha_DateTime) AS Alpha_DateTime FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = @Alpha_Stage_Table_Name)
 	SET @Transform_Table_Id = (SELECT Transform_Table_Id FROM Transform_Tables WHERE 1 = 1 AND Transform_Table_Name = @Alpha_Stage_Table_Name)             --*--
 	SET @Transform_Table_Name = @Alpha_Stage_Table_Name 
-	SET @Transform_Table_Count = (SELECT Alpha_Count FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = @Alpha_Stage_Table_Name AND Alpha_Step_Name = 'Stats') 
-	SET @Transform_Duration = (SELECT Alpha_Duration_In_Seconds FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = @Alpha_Stage_Table_Name AND Alpha_Step_Name = 'Stats')
+	SET @Transform_Table_Count = (SELECT DISTINCT Alpha_Count FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = @Alpha_Stage_Table_Name AND Alpha_Step_Name = 'Stats') 
+	SET @Transform_Duration = (SELECT DISTINCT Alpha_Duration_In_Seconds FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = @Alpha_Stage_Table_Name AND Alpha_Step_Name = 'Stats')
 	SET @Transform_Script_Dim_Object_Yesterday = (SELECT Transform_Script_Dim_Object_Today 
 													FROM Transform_Data
 													WHERE 1 = 1

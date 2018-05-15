@@ -220,7 +220,7 @@ IF @Step_Date = @Todays_Date
 					DECLARE @RECORD_CNT4A NVARCHAR(MAX) = N'SELECT @RECORD_CNT4 = (SELECT COUNT(*) FROM ' + @TABLE_NAME + ')'
 					EXEC sp_executesql @RECORD_CNT4A, N'@RECORD_CNT4 INT OUT', @RECORD_CNT4 OUT
 							
-					DECLARE @BEG_TIME4A NVARCHAR(MAX) = N'SELECT @BEG_TIME4 = (SELECT Alpha_DateTime FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME + ''' AND RIGHT(Alpha_Step_Number,1) = ''A'')'
+					DECLARE @BEG_TIME4A NVARCHAR(MAX) = N'SELECT @BEG_TIME4 = (SELECT MIN(Alpha_DateTime) FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME + ''' AND RIGHT(Alpha_Step_Number,1) = ''A'')'
 					EXEC sp_executesql @BEG_TIME4A, N'@BEG_TIME4 DATETIME OUT', @BEG_TIME4 OUT
 
 					DECLARE @END_TIME4A NVARCHAR(MAX) = N'SELECT @END_TIME4 = (SELECT Alpha_DateTime FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME + ''' AND RIGHT(Alpha_Step_Number,1) = ''H'')'
@@ -424,7 +424,7 @@ IF @Step_Date != @Todays_Date OR @Step_Date IS NULL
 							DECLARE @RECORD_CNT4A_2 NVARCHAR(MAX) = N'SELECT @RECORD_CNT4_2 = (SELECT COUNT(*) FROM ' + @TABLE_NAME_2 + ')'
 							EXEC sp_executesql @RECORD_CNT4A_2, N'@RECORD_CNT4_2 INT OUT', @RECORD_CNT4_2 OUT
 									
-							DECLARE @BEG_TIME4A_2 NVARCHAR(MAX) = N'SELECT @BEG_TIME4_2 = (SELECT Alpha_DateTime FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_2 + ''' AND RIGHT(Alpha_Step_Number,1) = ''A'')'
+							DECLARE @BEG_TIME4A_2 NVARCHAR(MAX) = N'SELECT @BEG_TIME4_2 = (SELECT MIN(Alpha_DateTime) FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_2 + ''' AND RIGHT(Alpha_Step_Number,1) = ''A'')'
 							EXEC sp_executesql @BEG_TIME4A_2, N'@BEG_TIME4_2 DATETIME OUT', @BEG_TIME4_2 OUT
 
 							DECLARE @END_TIME4A_2 NVARCHAR(MAX) = N'SELECT @END_TIME4_2 = (SELECT Alpha_DateTime FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_2 + ''' AND RIGHT(Alpha_Step_Number,1) = ''H'')'
@@ -622,7 +622,7 @@ IF @Step_Date != @Todays_Date OR @Step_Date IS NULL
 							DECLARE @RECORD_CNT4A_3 NVARCHAR(MAX) = N'SELECT @RECORD_CNT4_3 = (SELECT COUNT(*) FROM ' + @TABLE_NAME_3 + ')'
 							EXEC sp_executesql @RECORD_CNT4A_3, N'@RECORD_CNT4_3 INT OUT', @RECORD_CNT4_3 OUT
 									
-							DECLARE @BEG_TIME4A_3 NVARCHAR(MAX) = N'SELECT @BEG_TIME4_3 = (SELECT Alpha_DateTime FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_3 + ''' AND RIGHT(Alpha_Step_Number,1) = ''A'')'
+							DECLARE @BEG_TIME4A_3 NVARCHAR(MAX) = N'SELECT @BEG_TIME4_3 = (SELECT MIN(Alpha_DateTime) FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_3 + ''' AND RIGHT(Alpha_Step_Number,1) = ''A'')'
 							EXEC sp_executesql @BEG_TIME4A_3, N'@BEG_TIME4_3 DATETIME OUT', @BEG_TIME4_3 OUT
 
 							DECLARE @END_TIME4A_3 NVARCHAR(MAX) = N'SELECT @END_TIME4_3 = (SELECT Alpha_DateTime FROM Alpha_Table_2 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_3 + ''' AND RIGHT(Alpha_Step_Number,1) = ''H'')'

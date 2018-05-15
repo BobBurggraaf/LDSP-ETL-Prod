@@ -4047,4 +4047,6 @@ FUNCTION Insert-Alpha_Table_1
 		#---------------------------------------------
 		Stop-Transcript
 		
+		[System.Environment]::Exit(1)
+		
 Stop-Process $PID
