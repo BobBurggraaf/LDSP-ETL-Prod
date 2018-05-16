@@ -3716,6 +3716,110 @@ INSERT INTO dbo.Stage_To_Prod
 		, GETDATE()
 		, NULL
 	)
+	,
+-- --------------------------
+-- _Bio_Strat_Plan_Fact
+-- --------------------------
+	( 1 -- Tier
+		, 'dbo._Bio_Strat_Plan_Fact' -- Source_Table
+		, 'dbo._Bio_Strat_Plan_Fact' -- Destination_Table
+		,'Bio_Strat_Plan_Key INT 
+			, Donor_Key NVARCHAR(100) 
+			, Plus_ConstituentNoteId NVARCHAR(100)
+			, CreatedOn DATE
+			, CreatedBy NVARCHAR(100)
+			, ModifiedOn DATE
+			, ModifiedBy NVARCHAR(100)
+			' -- Dest_Create_Fields
+		, 'Bio_Strat_Plan_Key 
+			, Donor_Key 
+			, Plus_ConstituentNoteId
+			, CreatedOn
+			, CreatedBy
+			, ModifiedOn
+			, ModifiedBy
+			' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, GETDATE()
+		, NULL
+	)
+,
+-- --------------------------
+-- _Bio_Strat_Plan_CreatedBy_Dim
+-- --------------------------
+( 1 -- Tier
+	, 'dbo._Bio_Strat_Plan_CreatedBy_Dim' -- Source_Table
+	, 'dbo._Bio_Strat_Plan_CreatedBy_Dim' -- Destination_Table
+	,' Bio_Strat_Plan_CreatedBy_Key NVARCHAR(100) 
+		, Bio_Strat_Plan_CreatedBy_Full_Name NVARCHAR(200)
+		, Bio_Strat_Plan_CreatedBy_First_Name NVARCHAR(64)
+		, Bio_Strat_Plan_CreatedBy_Last_Name NVARCHAR(64)
+		, Bio_Strat_Plan_CreatedBy_Domain_Name NVARCHAR(1024)
+	' -- Dest_Create_Fields
+	, ' Bio_Strat_Plan_CreatedBy_Key
+		, Bio_Strat_Plan_CreatedBy_Full_Name
+		, Bio_Strat_Plan_CreatedBy_First_Name
+		, Bio_Strat_Plan_CreatedBy_Last_Name
+		, Bio_Strat_Plan_CreatedBy_Domain_Name
+	' -- Dest_Insert_Fields
+	, ' ' -- Dest_Where_Statement
+	, GETDATE()
+	, NULL
+)
+,
+-- --------------------------
+-- _Bio_Strat_Plan_ModifiedBy_Dim
+-- --------------------------
+( 1 -- Tier
+	, 'dbo._Bio_Strat_Plan_ModifiedBy_Dim' -- Source_Table
+	, 'dbo._Bio_Strat_Plan_ModifiedBy_Dim' -- Destination_Table
+	,' Bio_Strat_Plan_ModifiedBy_Key NVARCHAR(100) 
+		, Bio_Strat_Plan_ModifiedBy_Full_Name NVARCHAR(200)
+		, Bio_Strat_Plan_ModifiedBy_First_Name NVARCHAR(64)
+		, Bio_Strat_Plan_ModifiedBy_Last_Name NVARCHAR(64)
+		, Bio_Strat_Plan_ModifiedBy_Domain_Name NVARCHAR(1024)
+	' -- Dest_Create_Fields
+	, ' Bio_Strat_Plan_ModifiedBy_Key
+		, Bio_Strat_Plan_ModifiedBy_Full_Name
+		, Bio_Strat_Plan_ModifiedBy_First_Name
+		, Bio_Strat_Plan_ModifiedBy_Last_Name
+		, Bio_Strat_Plan_ModifiedBy_Domain_Name
+	' -- Dest_Insert_Fields
+	, ' ' -- Dest_Where_Statement
+	, GETDATE()
+	, NULL
+)
+,
+-- --------------------------
+-- _Bio_Strat_Plan_Dim
+-- --------------------------
+	( 1 -- Tier
+		, 'dbo._Bio_Strat_Plan_Dim' -- Source_Table
+		, 'dbo._Bio_Strat_Plan_Dim' -- Destination_Table
+		,'Bio_Strat_Plan_Key INT 
+			, Donor_Key NVARCHAR(100) 
+			, Plus_ConstituentNoteId NVARCHAR(100)
+			, Plus_Type NVARCHAR(400)
+			, Plus_ReasonForDrop NVARCHAR(400)
+			, Plus_CoordinatingLiaisonNeeded NVARCHAR(400)
+			, Plus_Subject NVARCHAR(200)
+			, Plus_Date DATE
+			, Plus_Note NVARCHAR(4000)
+			' -- Dest_Create_Fields
+		, 'Bio_Strat_Plan_Key 
+			, Donor_Key 
+			, Plus_ConstituentNoteId
+			, Plus_Type
+			, Plus_ReasonForDrop
+			, Plus_CoordinatingLiaisonNeeded
+			, Plus_Subject
+			, Plus_Date
+			, Plus_Note
+			' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, GETDATE()
+		, NULL
+	)
 ;	
 	
 	
