@@ -5911,7 +5911,9 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				UPDATE STATISTICS dbo._Numbered_ContactIds 
 
 			'
-		, 'DECLARE @Total_Loop_Num INT
+		, 'SET ANSI_WARNINGS OFF
+		
+			DECLARE @Total_Loop_Num INT
 			DECLARE @RowNum_Beg INT
 			DECLARE @RowNum_End INT
 				SELECT @Total_Loop_Num = (
@@ -6769,6 +6771,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					SET @LOOP_NUM = @LOOP_NUM + 1   
 				END
 			SET @LOOP_NUM = 0
+			SET ANSI_WARNINGS ON
 			'
 		, 'IF OBJECT_ID(''dbo._Donor_Dim_1'',''U'') IS NOT NULL
 			DROP TABLE dbo._Donor_Dim_1
