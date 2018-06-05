@@ -3560,193 +3560,6 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 	)
 	,             
 -- --------------------------
--- _Psa_Dim Table
--- --------------------------
-	('Dim' -- Dim_Object
-		, '_Psa_Dim' -- Table_Name
-		, 'ContactId  NVARCHAR(100) 
-			, Psa_Key  INT  PRIMARY KEY
-			, Psa_Group_Key  INT 
-			, Psa_Code  NVARCHAR(50) 
-			, Psa_Eff_From  DATE 
-			, Psa_Eff_Thru  DATE 
-			, Psa_Act_Src  NVARCHAR(100) 
-			, Psa_Entered_Dt  DATE 
-			, Psa_Change_Dt  DATE 
-			, Psa_Type  VARCHAR(100) 
-			, Psa_Text_Line  NVARCHAR(100)
-			' -- Create_Table
-		, 'ContactId 
-			, Psa_Key 
-			, Psa_Group_Key 
-			, Psa_Code 
-			, Psa_Eff_From 
-			, Psa_Eff_Thru 
-			, Psa_Act_Src 
-			, Psa_Entered_Dt 
-			, Psa_Change_Dt 
-			, Psa_Type 
-			, Psa_Text_Line
-			' -- Insert_Fields
-		, ' ' -- From_Statement
-		, ' ' -- Where_Statement
-		, 'DECLARE @TABLE_NAME NVARCHAR(100)
-			SET @TABLE_NAME = ''_Psa_Dim'' ; ------> HARDCODE <------
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''112D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1;
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''112D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_1
-		, 'DECLARE @SQL_1 NVARCHAR(MAX)
-			DECLARE @SQL_2 NVARCHAR(MAX)
-			DECLARE @TABLE_NAME_B NVARCHAR(100)
-			SET @TABLE_NAME_B = ''_Psa_Bridge''
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''112E'', @Alpha_Step_Name = ''Bridge Table Creation - Begin'', @Alpha_Result = 1;
-			SET @SQL_2 = '' ''''LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + '''''', ''''U'''' ''
-			SET @SQL_1 = ''
-				IF OBJECT_ID('' + @SQL_2 + '') IS NOT NULL
-				DROP TABLE LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + ''                                               
-				CREATE TABLE LDSPhilanthropiesDW.dbo.'' + @TABLE_NAME_B + ''(ContactId NVARCHAR(100), Psa_Key INT PRIMARY KEY, Psa_Group_Key INT)''                                                     
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''112E'', @Alpha_Step_Name = ''Bridge Table Creation - Query'', @Alpha_Query = @SQL_1, @Alpha_Result = 1;                                        
-			EXEC(@SQL_1)
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME_B, @Alpha_Step_Number = ''112E'', @Alpha_Step_Name = ''Bridge Table Creation - End'', @Alpha_Result = 1;
-			' -- Attribute_2
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''112F'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''112F'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_3
-		, '
-			BEGIN TRY
-				DECLARE @TABLE_CNT1 AS VARCHAR(100)
-				DECLARE @TABLE_CNT2 AS VARCHAR(100)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112G'', @Alpha_Step_Name = ''Dim Tables - Transform - Begin'', @Alpha_Result = 1;
-					
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112G'', @Alpha_Step_Name = ''Dim Table - Transform - End'', @Alpha_Result = 1;
-			END TRY 
-			BEGIN CATCH
-				DECLARE @ERROR_NUMBER INT
-				DECLARE @ERROR_SEVERITY INT
-				DECLARE @ERROR_STATE INT
-				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
-				DECLARE @ERROR_LINE INT
-				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112X'', @Alpha_Step_Name = ''Dim Table - Transform - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			BEGIN TRY 
-				DECLARE @TABLE_CNT3 AS VARCHAR(100)
-				DECLARE @TABLE_CNT4 AS VARCHAR(100)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112G'', @Alpha_Step_Name = ''Dim Tables - Load - Begin'', @Alpha_Result = 1;				
-					INSERT INTO _Psa_Bridge --> HARD CODED <--
-						(ContactId
-						, Psa_Key --> HARD CODED <--
-						, Psa_Group_Key --> HARD CODED <--
-						)
-						SELECT DISTINCT ContactId
-							, Psa_Key --> HARD CODED <--
-							, Psa_Group_Key --> HARD CODED <--  
-							FROM _Psa_Dim  --> HARD CODED <--
-				SELECT @TABLE_CNT3 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Psa_Dim)
-				SELECT @TABLE_CNT4 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Psa_Bridge)
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112G'', @Alpha_Step_Name = ''Dim Table - Count'', @Alpha_Count = @TABLE_CNT3, @Alpha_Result = 1;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112G'', @Alpha_Step_Name = ''Bridge Table - Count'', @Alpha_Count = @TABLE_CNT4, @Alpha_Result = 1;
-				IF @TABLE_CNT3 != @TABLE_CNT4 
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112G'', @Alpha_Step_Name = ''Dim Table - Load - COUNT Error'', @Alpha_Result = 0;
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112G'', @Alpha_Step_Name = ''Dim Tables - Load - End'', @Alpha_Result = 1;  
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112X'', @Alpha_Step_Name = ''Dim Table - Load - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_4
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112I'', @Alpha_Step_Name = ''Remove Prod Indexes - Begin'', @Alpha_Result = 1;
-				-- Prod Index
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo._Psa_Dim'') AND NAME =''IX_Psa_Code_Eff_From'') 
-				DROP INDEX IX_Psa_Code_Eff_From ON dbo._Psa_Dim; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo._Psa_Dim'') AND NAME =''IX_Psa_Code'') 
-				DROP INDEX IX_Psa_Code ON dbo._Psa_Dim; 
-				IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id(''dbo._Psa_Dim'') AND NAME =''IX_Psa_Eff_From'') 
-				DROP INDEX IX_Psa_Eff_From ON dbo._Psa_Dim; 
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112I'', @Alpha_Step_Name = ''Remove Prod Indexes - End'', @Alpha_Result = 1;
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112I'', @Alpha_Step_Name = ''Create Prod Indexes - Begin'', @Alpha_Result = 1;                                                                             
-			-- Prod Index
-			CREATE NONCLUSTERED INDEX IX_Psa_Code_Eff_From 
-			ON _Psa_Dim(Psa_Code, Psa_Eff_From ASC)
-				INCLUDE (
-					ContactId 
-					, Psa_Key 
-					, Psa_Group_Key 
-					, Psa_Eff_Thru 
-					, Psa_Act_Src 
-					, Psa_Entered_Dt 
-					, Psa_Change_Dt 
-					, Psa_Type 
-					, Psa_Text_Line
-				);
-			CREATE NONCLUSTERED INDEX IX_Psa_Code
-			ON _Psa_Dim(Psa_Code ASC)
-				INCLUDE (
-					ContactId 
-					, Psa_Key 
-					, Psa_Group_Key 
-					, Psa_Eff_From
-					, Psa_Eff_Thru 
-					, Psa_Act_Src 
-					, Psa_Entered_Dt 
-					, Psa_Change_Dt 
-					, Psa_Type 
-					, Psa_Text_Line
-				);
-			CREATE NONCLUSTERED INDEX IX_Psa_Eff_From
-			ON _Psa_Dim(Psa_Eff_From ASC)
-				INCLUDE (
-					ContactId 
-					, Psa_Key 
-					, Psa_Group_Key 
-					, Psa_Code
-					, Psa_Eff_Thru 
-					, Psa_Act_Src 
-					, Psa_Entered_Dt 
-					, Psa_Change_Dt 
-					, Psa_Type 
-					, Psa_Text_Line
-				);
-			UPDATE STATISTICS dbo._Psa_Dim
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Psa_Dim'', @Alpha_Step_Number = ''112I'', @Alpha_Step_Name = ''Create Prod Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_5
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''112H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1;
-			' -- Attribute_6
-		, ' ' -- Attribute_7
-		, ' ' -- Attribute_8
-		, ' ' -- Attribute_9
-		, ' ' -- Attribute_10
-		, ' ' -- Attribute_11
-		, ' ' -- Attribute_12
-		, ' ' -- Attribute_13
-		, ' ' -- Attribute_14
-		, ' ' -- Attribute_15
-		, ' ' -- Attribute_16
-		, ' ' -- Attribute_17
-		, ' ' -- Attribute_18
-		, ' ' -- Attribute_19
-		, ' ' -- Attribute_20
-		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Psa_Dim''; ------> HARDCODE <------
-			' -- Attribute_21
-		, 1 -- Active
-		, GETDATE() -- Insert_Date
-		, NULL  -- Update_Date                
-	)
-	,
--- --------------------------
 -- _Connection_Dim Table
 -- --------------------------
 	('Dim' -- Dim_Object
@@ -9769,7 +9582,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				INSERT INTO [LDSPhilanthropiesDW].[dbo]._Email_Bridge
 					VALUES(NULL,0,0);
 				INSERT INTO [LDSPhilanthropiesDW].[dbo]._Employment_Dim
-					VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+					VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,''Y'',''N'',''BYU'',''Current'');
 				INSERT INTO [LDSPhilanthropiesDW].[dbo]._Employment_Bridge
 					VALUES(NULL,0,0);
 				INSERT INTO [LDSPhilanthropiesDW].[dbo]._Language_Dim
@@ -9779,10 +9592,6 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				INSERT INTO [LDSPhilanthropiesDW].[dbo]._Phone_Dim
 					VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 				INSERT INTO [LDSPhilanthropiesDW].[dbo]._Phone_Bridge
-					VALUES(NULL,0,0);
-				INSERT INTO [LDSPhilanthropiesDW].[dbo]._Psa_Dim
-					VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-				INSERT INTO [LDSPhilanthropiesDW].[dbo]._Psa_Bridge
 					VALUES(NULL,0,0);
 				INSERT INTO [LDSPhilanthropiesDW].[dbo]._Connection_Dim
 					VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
@@ -13177,1702 +12986,6 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, ' ' -- Attribute_19
 		, ' ' -- Attribute_20
 		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Weekly_Appeal_Report''; ------> HARDCODE <------
-			' -- Attribute_21
-		, 1 -- Active
-		, GETDATE() -- Insert_Date
-		, NULL  -- Update_Date                
-	)
- 	,
--- --------------------------
--- _Retention_Byu_Fact
--- --------------------------
-	('Fact' -- Dim_Object
-		, '_Retention_Byu_Fact' -- Table_Name
-		, '	Donor_Key UNIQUEIDENTIFIER
-			, Donor_Retention_Type_Key INT
-			, Retention_Year INT
-			, Retention_Donated_In_Year INT
-			, Retention_Donated_This_Year INT
-			, Retention_Donated_Last_Year INT
-			, Retention_Donated_Cnt_Last_Year_Ytd INT
-			' -- Create_Table
-		, '	Donor_Key
-			, Donor_Retention_Type_Key
-			, Retention_Year
-			, Retention_Donated_In_Year
-			, Retention_Donated_This_Year
-			, Retention_Donated_Last_Year
-			, Retention_Donated_Cnt_Last_Year_Ytd
-			' -- Insert_Fields
-		, ' ' -- From_Statement
-		, ' ' -- Where_Statement
-		, 'DECLARE @TABLE_NAME NVARCHAR(100)
-			SET @TABLE_NAME = ''_Retention_Byu_Fact'' ; ------> HARDCODE <------
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''141D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1; 
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''141D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_1
-		, ' ' -- Attribute_2
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''141E'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1; 
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''141E'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_3
-		, 'BEGIN TRY
-				INSERT INTO _Retention_Byu_Fact (
-					Donor_Key
-					, Donor_Retention_Type_Key
-					, Retention_Year
-					, Retention_Donated_In_Year
-					, Retention_Donated_This_Year
-					, Retention_Donated_Last_Year
-					, Retention_Donated_Cnt_Last_Year_Ytd
-				)
-				SELECT A.Donor_Key
-					, B.Donor_Retention_Type_Key
-					, A.Retention_Year
-					, CASE WHEN C.Primary_Donation > 0 THEN 1 ELSE 0 END AS Retention_Donated_In_Year 
-					, CASE WHEN C.Primary_Donation > 0 AND A.Retention_Year = YEAR(GETDATE()) THEN 1 ELSE 0 END AS Retention_Donated_This_Year
-					, CASE WHEN C.Primary_Donation > 0 AND A.Retention_Year = (YEAR(GETDATE()) - 1) THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
-					, CASE WHEN C.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
-					FROM
-						(SELECT A.ContactId AS Donor_Key
-							, YEAR(A.Psa_Eff_From) AS Retention_Year
-							, MIN(SUBSTRING(A.Psa_Code,4,2)) AS Donor_Type
-							FROM _Psa_Dim A
-							WHERE 1 = 1 
-								AND EXISTS 
-									(SELECT *
-										FROM _Psa_Dim B
-										WHERE 1 = 1
-											AND A.Psa_Key = B.Psa_Key
-											AND SUBSTRING(B.Psa_Code,1,3) = ''DT1'' -- BYU
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT2'' -- BYUH
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT6'' -- BYUI
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT5'' -- LDSBC
-											AND (SUBSTRING(B.Psa_Code,4,2) = ''A0''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A1''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A6''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B0''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B1''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B6''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C6''
-												)
-									)
-								AND NOT EXISTS
-									(SELECT *
-										FROM _Psa_Dim C
-										WHERE 1 = 1
-											AND A.Psa_Key = C.Psa_Key
-											AND ContactId IS NULL
-									)
-							GROUP BY ContactId 
-								, YEAR(Psa_Eff_From)
-						) A
-						LEFT JOIN
-							(SELECT Donor_Retention_Type_Key
-								, Donor_Retention_Type_Code
-								FROM dbo._Donor_Retention_Type_Dim
-							) B ON A.Donor_Type = B.Donor_Retention_Type_Code
-						LEFT JOIN
-							(SELECT A.Donor_Key
-								, YEAR(B.New_ReceiptDate) AS Retention_Year
-								, SUM(A.Donation_Credit_Amt) AS Primary_Donation
-								, SUM(CASE WHEN CONVERT(DATE,B.New_ReceiptDate,112) BETWEEN CONVERT(DATE,DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE())-1,0),112)
-																		AND CONVERT(DATE, GETDATE()-365,112) THEN 1 ELSE 0 END) AS Retention_Donated_Cnt_Last_Year_Ytd
-								FROM _Donation_Fact A
-									INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
-									INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
-								WHERE 1 = 1
-									AND B.StatusCode = ''Posted''
-									AND C.New_Inst = ''BYU''
-									--AND C.New_Inst = ''BYUI''
-									--AND C.New_Inst = ''BYUH''
-									--AND C.New_Inst = ''LDSBC''
-								GROUP BY A.Donor_Key
-									, YEAR(B.New_ReceiptDate)
-								HAVING SUM(A.Donation_Credit_Amt) > 0
-							) C ON A.Donor_Key = C.Donor_Key AND A.Retention_Year = C.Retention_Year
-			END TRY 
-			BEGIN CATCH
-				DECLARE @ERROR_NUMBER INT
-				DECLARE @ERROR_SEVERITY INT
-				DECLARE @ERROR_STATE INT
-				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
-				DECLARE @ERROR_LINE INT
-				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byu_Fact'', @Alpha_Step_Number = ''141X'', @Alpha_Step_Name = ''_Retention_Byu_Fact - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_4
-		, 'BEGIN TRY
-				MERGE INTO _Retention_Byu_Fact T
-					USING (
-							SELECT  Donor_Key
-								, 10020 AS Donor_Retention_Type_Key
-								, Retention_Year
-								, 0 AS Retention_Donated_In_Year
-								, 0 AS Retention_Donated_This_Year
-								, 0 AS Retention_Donated_Last_Year
-								, 0 AS Retention_Donated_Cnt_Last_Year_Ytd
-								FROM
-									(SELECT ContactId AS Donor_Key
-										, CASE WHEN YEAR(Byu_Affiliated_Date) <= YEAR(GETDATE()) 
-												AND (YEAR(Byu_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 0
-													OR Byu_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 0 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 0
-												ELSE NULL END AS D1_0
-										, CASE WHEN YEAR(Byu_Affiliated_Date)  <= YEAR(GETDATE()) - 1
-												AND ((YEAR(Byu_Donor_Affiliated_Date) >= YEAR(Byu_Affiliated_Date) AND YEAR(Byu_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 1)
-													OR Byu_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 1 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 1
-												ELSE NULL END AS D1_1
-										, CASE WHEN YEAR(Byu_Affiliated_Date)  <= YEAR(GETDATE()) - 2
-												AND ((YEAR(Byu_Donor_Affiliated_Date) >= YEAR(Byu_Affiliated_Date) AND YEAR(Byu_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 2)
-													OR Byu_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 2 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 2
-												ELSE NULL END AS D1_2
-										, CASE WHEN YEAR(Byu_Affiliated_Date) <= YEAR(GETDATE()) - 3
-												AND ((YEAR(Byu_Donor_Affiliated_Date) >= YEAR(Byu_Affiliated_Date) AND YEAR(Byu_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 3)
-													OR Byu_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 3 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 3
-												ELSE NULL END AS D1_3
-										, CASE WHEN YEAR(Byu_Affiliated_Date)  <= YEAR(GETDATE()) - 4
-												AND ((YEAR(Byu_Donor_Affiliated_Date) >= YEAR(Byu_Affiliated_Date) AND YEAR(Byu_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 4)
-													OR Byu_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 4 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 4
-												ELSE NULL END AS D1_4
-										, CASE WHEN YEAR(Byu_Affiliated_Date)  <= YEAR(GETDATE()) - 5
-												AND ((YEAR(Byu_Donor_Affiliated_Date) >= YEAR(Byu_Affiliated_Date) AND YEAR(Byu_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 5)
-													OR Byu_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 5 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 5
-												ELSE NULL END AS D1_5
-										, CASE WHEN YEAR(Byu_Affiliated_Date)  <= YEAR(GETDATE()) - 6
-												AND ((YEAR(Byu_Donor_Affiliated_Date) >= YEAR(Byu_Affiliated_Date) AND YEAR(Byu_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 6)
-													OR Byu_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 6 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 6
-												ELSE NULL END AS D1_6
-										, CASE WHEN YEAR(Byu_Affiliated_Date)  <= YEAR(GETDATE()) - 7
-												AND ((YEAR(Byu_Donor_Affiliated_Date) >= YEAR(Byu_Affiliated_Date) AND YEAR(Byu_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 7)
-													OR Byu_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 7 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 7
-												ELSE NULL END AS D1_7
-										, CASE WHEN YEAR(Byu_Affiliated_Date)  <= YEAR(GETDATE()) - 8
-												AND ((YEAR(Byu_Donor_Affiliated_Date) >= YEAR(Byu_Affiliated_Date) AND YEAR(Byu_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 8)
-													OR Byu_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 8 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 8
-												ELSE NULL END AS D1_8
-										, CASE WHEN YEAR(Byu_Affiliated_Date)  <= YEAR(GETDATE()) - 9
-												AND ((YEAR(Byu_Donor_Affiliated_Date) >= YEAR(Byu_Affiliated_Date) AND YEAR(Byu_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 9)
-													OR Byu_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 9 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 9
-												ELSE NULL END AS D1_9
-										, CASE WHEN YEAR(Byu_Affiliated_Date)  <= YEAR(GETDATE()) - 10
-												AND ((YEAR(Byu_Donor_Affiliated_Date) >= YEAR(Byu_Affiliated_Date) AND YEAR(Byu_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 10)
-													OR Byu_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 10 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 10
-												ELSE NULL END AS D1_10	
-										FROM
-											(SELECT A.ContactId
-												, A.Byu_Affiliated_Date
-												, A.Byu_Donor_Affiliated_Date
-												, B.Donor_Deceased_Dt
-												FROM _Affiliated_Dim A
-													LEFT JOIN _Donor_Dim B ON A.ContactId = B.Donor_Key
-												WHERE 1 = 1
-													AND A.Byu_Affiliated_Date IS NOT NULL
-											) A
-									) A
-								UNPIVOT
-									(
-										Retention_Year
-										FOR [Year_Columns] IN (D1_0,D1_1,D1_2,D1_3,D1_4,D1_5,D1_6,D1_7,D1_8,D1_9,D1_10)
-									) AS A
-						) S ON T.Donor_Key = S.Donor_Key AND T.Retention_Year = S.Retention_Year
-					WHEN NOT MATCHED THEN 
-						INSERT (
-							Donor_Key
-							, Donor_Retention_Type_Key
-							, Retention_Year
-							, Retention_Donated_In_Year
-							, Retention_Donated_This_Year
-							, Retention_Donated_Last_Year
-							, Retention_Donated_Cnt_Last_Year_Ytd
-						)
-						VALUES (
-							S.Donor_Key
-							, S.Donor_Retention_Type_Key
-							, S.Retention_Year
-							, S.Retention_Donated_In_Year
-							, S.Retention_Donated_This_Year
-							, S.Retention_Donated_Last_Year
-							, S.Retention_Donated_Cnt_Last_Year_Ytd
-						)
-				;
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byu_Fact_M1'', @Alpha_Step_Number = ''141X'', @Alpha_Step_Name = ''_Retention_Byu_Fact_M1 - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH 
-			' -- Attribute_5
-		, 'BEGIN TRY
-				MERGE INTO _Retention_Byu_Fact T
-					USING (			
-							SELECT DISTINCT A.Donor_Key
-								, A.Retention_Year
-								, A.Retention_Donated_In_Year
-								, A.Retention_Donated_This_Year
-								, A.Retention_Donated_Last_Year
-								, A.Retention_Donated_Cnt_Last_Year_Ytd
-								FROM
-									(SELECT A.Donor_Key
-										, A.Retention_Year
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) THEN 1 ELSE 0 END AS Retention_Donated_In_Year
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE()) THEN 1 ELSE 0 END AS Retention_Donated_This_Year  
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE())-1 THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
-										, CASE WHEN D.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
-										FROM _Retention_Byu_Fact A
-											INNER JOIN _Donation_Fact B ON CONVERT(NVARCHAR(100),A.Donor_Key) = B.Donor_Key 
-											INNER JOIN _Donation_Dim C ON B.Donation_Key = C.Donation_Key
-											LEFT JOIN
-												(SELECT A.Donor_Key
-													, YEAR(B.New_ReceiptDate) AS Retention_Year
-													, SUM(A.Donation_Credit_Amt) AS Primary_Donation
-													, SUM(CASE WHEN CONVERT(DATE,B.New_ReceiptDate,112) BETWEEN CONVERT(DATE,DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE())-1,0),112)
-																							AND CONVERT(DATE, GETDATE()-365,112) THEN 1 ELSE 0 END) AS Retention_Donated_Cnt_Last_Year_Ytd
-													FROM _Donation_Fact A
-														INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
-														INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
-													WHERE 1 = 1
-														AND B.StatusCode = ''Posted''
-														AND C.New_Inst = ''BYU''
-														--AND C.New_Inst = ''BYUI''
-														--AND C.New_Inst = ''BYUH''
-														--AND C.New_Inst = ''LDSBC''
-													GROUP BY A.Donor_Key
-														, YEAR(B.New_ReceiptDate)
-													HAVING SUM(A.Donation_Credit_Amt) > 0
-												) D ON A.Donor_Key = D.Donor_Key AND A.Retention_Year = D.Retention_Year
-										WHERE 1 = 1
-											AND C.StatusCode = ''Posted''
-											AND A.Donor_Retention_Type_Key = 10020
-											AND B.Donation_Credit_Amt IS NOT NULL
-									) A
-								WHERE 1 = 1
-									AND (Retention_Donated_In_Year = 1
-										OR Retention_Donated_This_Year = 1
-										OR Retention_Donated_Last_Year = 1
-										)
-							) S ON T.Donor_Key = S.Donor_Key AND T.Retention_Year = S.Retention_Year
-						WHEN MATCHED THEN
-							UPDATE
-								SET T.Retention_Donated_In_Year = S.Retention_Donated_In_Year
-								, T.Retention_Donated_This_Year = S.Retention_Donated_This_Year
-								, T.Retention_Donated_Last_Year = S.Retention_Donated_Last_Year
-								, T.Retention_Donated_Cnt_Last_Year_Ytd = S.Retention_Donated_Cnt_Last_Year_Ytd
-							;
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byu_Fact_M2'', @Alpha_Step_Number = ''141X'', @Alpha_Step_Name = ''_Retention_Byu_Fact_M2 - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH 
-			' -- Attribute_6
-		, '	BEGIN TRY
-				MERGE INTO _Donor_Dim T
-					USING (
-							SELECT Donor_Key
-								, Donor_Retention_Type_Code_Byu
-								FROM
-									(SELECT Donor_Key
-										, Donor_Retention_Type_Code_Byu
-										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byu) AS RowNum
-										FROM
-											(SELECT A.Donor_Key
-												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byu
-												FROM
-													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
-														FROM Ext_Donor_Score A
-															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
-														WHERE 1 = 1
-															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-															AND B.New_Inst = ''BYU''
-															AND A.StatusCode = 1 -- Active
-														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
-													) A
-													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
-																						AND A.ModifiedOn = B.ModifiedOn
-													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
-												WHERE 1 = 1
-													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-													AND C.New_Inst = ''BYU''
-													AND B.StatusCode = 1 -- Active
-											) A
-									) A
-								WHERE 1 = 1
-									AND RowNum = 1
-							) S ON T.Donor_Key = S.Donor_Key
-						WHEN MATCHED THEN 
-							UPDATE
-								SET T.Donor_Retention_Type_Code_Byu = S.Donor_Retention_Type_Code_Byu
-								;						
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Donor_Retention_Type_Code_Byu'', @Alpha_Step_Number = ''141X'', @Alpha_Step_Name = ''Donor_Retention_Type_Code_Byu - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH	
-			' -- Attribute_7
-		, '
-			' -- Attribute_8
-		, '
-			' -- Attribute_9		
-		, '
-			' -- Attribute_10
-		, '
-			' -- Attribute_11
-		, '
-			' -- Attribute_12
-		, '
-			' -- Attribute_13
-		, '
-			' -- Attribute_14
-		, '
-			' -- Attribute_15
-		, '
-			' -- Attribute_16
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byu_Fact'', @Alpha_Step_Number = ''141H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1;
-		' -- Attribute_17
-		, ' ' -- Attribute_18
-		, ' ' -- Attribute_19
-		, ' ' -- Attribute_20
-		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Retention_Byu_Fact''; ------> HARDCODE <------
-			' -- Attribute_21
-		, 1 -- Active
-		, GETDATE() -- Insert_Date
-		, NULL  -- Update_Date                
-	)
- 	,
--- --------------------------
--- _Retention_Byui_Fact
--- --------------------------
-	('Fact' -- Dim_Object
-		, '_Retention_Byui_Fact' -- Table_Name
-		, '	Donor_Key UNIQUEIDENTIFIER
-			, Donor_Retention_Type_Key INT
-			, Retention_Year INT
-			, Retention_Donated_In_Year INT
-			, Retention_Donated_This_Year INT
-			, Retention_Donated_Last_Year INT
-			, Retention_Donated_Cnt_Last_Year_Ytd INT
-			' -- Create_Table
-		, '	Donor_Key
-			, Donor_Retention_Type_Key
-			, Retention_Year
-			, Retention_Donated_In_Year
-			, Retention_Donated_This_Year
-			, Retention_Donated_Last_Year
-			, Retention_Donated_Cnt_Last_Year_Ytd
-			' -- Insert_Fields
-		, ' ' -- From_Statement
-		, ' ' -- Where_Statement
-		, 'DECLARE @TABLE_NAME NVARCHAR(100)
-			SET @TABLE_NAME = ''_Retention_Byui_Fact'' ; ------> HARDCODE <------
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''142D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1; 
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''142D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_1
-		, ' ' -- Attribute_2
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''142E'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1; 
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''142E'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_3
-		, 'BEGIN TRY
-				INSERT INTO _Retention_Byui_Fact (
-					Donor_Key
-					, Donor_Retention_Type_Key
-					, Retention_Year
-					, Retention_Donated_In_Year
-					, Retention_Donated_This_Year
-					, Retention_Donated_Last_Year
-					, Retention_Donated_Cnt_Last_Year_Ytd
-				)
-				SELECT A.Donor_Key
-					, B.Donor_Retention_Type_Key
-					, A.Retention_Year
-					, CASE WHEN C.Primary_Donation > 0 THEN 1 ELSE 0 END AS Retention_Donated_In_Year 
-					, CASE WHEN C.Primary_Donation > 0 AND A.Retention_Year = YEAR(GETDATE()) THEN 1 ELSE 0 END AS Retention_Donated_This_Year
-					, CASE WHEN C.Primary_Donation > 0 AND A.Retention_Year = (YEAR(GETDATE()) - 1) THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
-					, CASE WHEN C.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
-					FROM
-						(SELECT A.ContactId AS Donor_Key
-							, YEAR(A.Psa_Eff_From) AS Retention_Year
-							, MIN(SUBSTRING(A.Psa_Code,4,2)) AS Donor_Type
-							FROM _Psa_Dim A
-							WHERE 1 = 1 
-								AND EXISTS 
-									(SELECT *
-										FROM _Psa_Dim B
-										WHERE 1 = 1
-											AND A.Psa_Key = B.Psa_Key
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT1'' -- BYU
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT2'' -- BYUH
-											AND SUBSTRING(B.Psa_Code,1,3) = ''DT6'' -- BYUI
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT5'' -- LDSBC
-											AND (SUBSTRING(B.Psa_Code,4,2) = ''A0''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A1''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A6''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B0''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B1''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B6''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C6''
-												)
-									)
-								AND NOT EXISTS
-									(SELECT *
-										FROM _Psa_Dim C
-										WHERE 1 = 1
-											AND A.Psa_Key = C.Psa_Key
-											AND ContactId IS NULL
-									)
-							GROUP BY ContactId 
-								, YEAR(Psa_Eff_From)
-						) A
-						LEFT JOIN
-							(SELECT Donor_Retention_Type_Key
-								, Donor_Retention_Type_Code
-								FROM dbo._Donor_Retention_Type_Dim
-							) B ON A.Donor_Type = B.Donor_Retention_Type_Code
-						LEFT JOIN
-							(SELECT A.Donor_Key
-								, YEAR(B.New_ReceiptDate) AS Retention_Year
-								, SUM(A.Donation_Credit_Amt) AS Primary_Donation
-								, SUM(CASE WHEN CONVERT(DATE,B.New_ReceiptDate,112) BETWEEN CONVERT(DATE,DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE())-1,0),112)
-																		AND CONVERT(DATE, GETDATE()-365,112) THEN 1 ELSE 0 END) AS Retention_Donated_Cnt_Last_Year_Ytd
-								FROM _Donation_Fact A
-									INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
-									INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
-								WHERE 1 = 1
-									AND B.StatusCode = ''Posted''
-									--AND C.New_Inst = ''BYU''
-									AND C.New_Inst = ''BYUI''
-									--AND C.New_Inst = ''BYUH''
-									--AND C.New_Inst = ''LDSBC''
-								GROUP BY A.Donor_Key
-									, YEAR(B.New_ReceiptDate)
-								HAVING SUM(A.Donation_Credit_Amt) > 0
-							) C ON A.Donor_Key = C.Donor_Key AND A.Retention_Year = C.Retention_Year
-			END TRY 
-			BEGIN CATCH
-				DECLARE @ERROR_NUMBER INT
-				DECLARE @ERROR_SEVERITY INT
-				DECLARE @ERROR_STATE INT
-				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
-				DECLARE @ERROR_LINE INT
-				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byui_Fact'', @Alpha_Step_Number = ''142X'', @Alpha_Step_Name = ''_Retention_Byui_Fact - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_4
-		, 'BEGIN TRY
-				MERGE INTO _Retention_Byui_Fact T
-					USING (
-							SELECT  Donor_Key
-								, 10020 AS Donor_Retention_Type_Key
-								, Retention_Year
-								, 0 AS Retention_Donated_In_Year
-								, 0 AS Retention_Donated_This_Year
-								, 0 AS Retention_Donated_Last_Year
-								, 0 AS Retention_Donated_Cnt_Last_Year_Ytd
-								FROM
-									(SELECT ContactId AS Donor_Key
-										, CASE WHEN YEAR(Byui_Affiliated_Date) <= YEAR(GETDATE()) 
-												AND (YEAR(Byui_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 0
-													OR Byui_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 0 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 0
-												ELSE NULL END AS D1_0
-										, CASE WHEN YEAR(Byui_Affiliated_Date)  <= YEAR(GETDATE()) - 1
-												AND ((YEAR(Byui_Donor_Affiliated_Date) >= YEAR(Byui_Affiliated_Date) AND YEAR(Byui_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 1)
-													OR Byui_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 1 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 1
-												ELSE NULL END AS D1_1
-										, CASE WHEN YEAR(Byui_Affiliated_Date)  <= YEAR(GETDATE()) - 2
-												AND ((YEAR(Byui_Donor_Affiliated_Date) >= YEAR(Byui_Affiliated_Date) AND YEAR(Byui_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 2)
-													OR Byui_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 2 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 2
-												ELSE NULL END AS D1_2
-										, CASE WHEN YEAR(Byui_Affiliated_Date) <= YEAR(GETDATE()) - 3
-												AND ((YEAR(Byui_Donor_Affiliated_Date) >= YEAR(Byui_Affiliated_Date) AND YEAR(Byui_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 3)
-													OR Byui_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 3 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 3
-												ELSE NULL END AS D1_3
-										, CASE WHEN YEAR(Byui_Affiliated_Date)  <= YEAR(GETDATE()) - 4
-												AND ((YEAR(Byui_Donor_Affiliated_Date) >= YEAR(Byui_Affiliated_Date) AND YEAR(Byui_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 4)
-													OR Byui_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 4 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 4
-												ELSE NULL END AS D1_4
-										, CASE WHEN YEAR(Byui_Affiliated_Date)  <= YEAR(GETDATE()) - 5
-												AND ((YEAR(Byui_Donor_Affiliated_Date) >= YEAR(Byui_Affiliated_Date) AND YEAR(Byui_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 5)
-													OR Byui_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 5 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 5
-												ELSE NULL END AS D1_5
-										, CASE WHEN YEAR(Byui_Affiliated_Date)  <= YEAR(GETDATE()) - 6
-												AND ((YEAR(Byui_Donor_Affiliated_Date) >= YEAR(Byui_Affiliated_Date) AND YEAR(Byui_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 6)
-													OR Byui_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 6 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 6
-												ELSE NULL END AS D1_6
-										, CASE WHEN YEAR(Byui_Affiliated_Date)  <= YEAR(GETDATE()) - 7
-												AND ((YEAR(Byui_Donor_Affiliated_Date) >= YEAR(Byui_Affiliated_Date) AND YEAR(Byui_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 7)
-													OR Byui_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 7 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 7
-												ELSE NULL END AS D1_7
-										, CASE WHEN YEAR(Byui_Affiliated_Date)  <= YEAR(GETDATE()) - 8
-												AND ((YEAR(Byui_Donor_Affiliated_Date) >= YEAR(Byui_Affiliated_Date) AND YEAR(Byui_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 8)
-													OR Byui_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 8 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 8
-												ELSE NULL END AS D1_8
-										, CASE WHEN YEAR(Byui_Affiliated_Date)  <= YEAR(GETDATE()) - 9
-												AND ((YEAR(Byui_Donor_Affiliated_Date) >= YEAR(Byui_Affiliated_Date) AND YEAR(Byui_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 9)
-													OR Byui_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 9 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 9
-												ELSE NULL END AS D1_9
-										, CASE WHEN YEAR(Byui_Affiliated_Date)  <= YEAR(GETDATE()) - 10
-												AND ((YEAR(Byui_Donor_Affiliated_Date) >= YEAR(Byui_Affiliated_Date) AND YEAR(Byui_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 10)
-													OR Byui_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 10 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 10
-												ELSE NULL END AS D1_10	
-										FROM
-											(SELECT A.ContactId
-												, A.Byui_Affiliated_Date
-												, A.Byui_Donor_Affiliated_Date
-												, B.Donor_Deceased_Dt
-												FROM _Affiliated_Dim A
-													LEFT JOIN _Donor_Dim B ON A.ContactId = B.Donor_Key
-												WHERE 1 = 1
-													AND A.Byui_Affiliated_Date IS NOT NULL
-											) A
-									) A
-								UNPIVOT
-									(
-										Retention_Year
-										FOR [Year_Columns] IN (D1_0,D1_1,D1_2,D1_3,D1_4,D1_5,D1_6,D1_7,D1_8,D1_9,D1_10)
-									) AS A
-						) S ON T.Donor_Key = S.Donor_Key AND T.Retention_Year = S.Retention_Year
-					WHEN NOT MATCHED THEN 
-						INSERT (
-							Donor_Key
-							, Donor_Retention_Type_Key
-							, Retention_Year
-							, Retention_Donated_In_Year
-							, Retention_Donated_This_Year
-							, Retention_Donated_Last_Year
-							, Retention_Donated_Cnt_Last_Year_Ytd
-						)
-						VALUES (
-							S.Donor_Key
-							, S.Donor_Retention_Type_Key
-							, S.Retention_Year
-							, S.Retention_Donated_In_Year
-							, S.Retention_Donated_This_Year
-							, S.Retention_Donated_Last_Year
-							, S.Retention_Donated_Cnt_Last_Year_Ytd
-						)
-				;
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byui_Fact_M1'', @Alpha_Step_Number = ''142X'', @Alpha_Step_Name = ''_Retention_Byui_Fact_M1 - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH  
-			' -- Attribute_5
-		, 'BEGIN TRY
-				MERGE INTO _Retention_Byui_Fact T
-					USING (			
-							SELECT DISTINCT A.Donor_Key
-								, A.Retention_Year
-								, A.Retention_Donated_In_Year
-								, A.Retention_Donated_This_Year
-								, A.Retention_Donated_Last_Year
-								, A.Retention_Donated_Cnt_Last_Year_Ytd
-								FROM
-									(SELECT A.Donor_Key
-										, A.Retention_Year
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) THEN 1 ELSE 0 END AS Retention_Donated_In_Year
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE()) THEN 1 ELSE 0 END AS Retention_Donated_This_Year  
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE())-1 THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
-										, CASE WHEN D.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
-										FROM _Retention_Byui_Fact A
-											INNER JOIN _Donation_Fact B ON CONVERT(NVARCHAR(100),A.Donor_Key) = B.Donor_Key 
-											INNER JOIN _Donation_Dim C ON B.Donation_Key = C.Donation_Key
-											LEFT JOIN
-												(SELECT A.Donor_Key
-													, YEAR(B.New_ReceiptDate) AS Retention_Year
-													, SUM(A.Donation_Credit_Amt) AS Primary_Donation
-													, SUM(CASE WHEN CONVERT(DATE,B.New_ReceiptDate,112) BETWEEN CONVERT(DATE,DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE())-1,0),112)
-																							AND CONVERT(DATE, GETDATE()-365,112) THEN 1 ELSE 0 END) AS Retention_Donated_Cnt_Last_Year_Ytd
-													FROM _Donation_Fact A
-														INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
-														INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
-													WHERE 1 = 1
-														AND B.StatusCode = ''Posted''
-														--AND C.New_Inst = ''BYU''
-														AND C.New_Inst = ''BYUI''
-														--AND C.New_Inst = ''BYUH''
-														--AND C.New_Inst = ''LDSBC''
-													GROUP BY A.Donor_Key
-														, YEAR(B.New_ReceiptDate)
-													HAVING SUM(A.Donation_Credit_Amt) > 0
-												) D ON A.Donor_Key = D.Donor_Key AND A.Retention_Year = D.Retention_Year
-										WHERE 1 = 1
-											AND C.StatusCode = ''Posted''
-											AND A.Donor_Retention_Type_Key = 10020
-											AND B.Donation_Credit_Amt IS NOT NULL
-									) A
-								WHERE 1 = 1
-									AND (Retention_Donated_In_Year = 1
-										OR Retention_Donated_This_Year = 1
-										OR Retention_Donated_Last_Year = 1
-										)
-							) S ON T.Donor_Key = S.Donor_Key AND T.Retention_Year = S.Retention_Year
-						WHEN MATCHED THEN
-							UPDATE
-								SET T.Retention_Donated_In_Year = S.Retention_Donated_In_Year
-								, T.Retention_Donated_This_Year = S.Retention_Donated_This_Year
-								, T.Retention_Donated_Last_Year = S.Retention_Donated_Last_Year
-								, T.Retention_Donated_Cnt_Last_Year_Ytd = S.Retention_Donated_Cnt_Last_Year_Ytd
-							;
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byui_Fact_M2'', @Alpha_Step_Number = ''142X'', @Alpha_Step_Name = ''_Retention_Byui_Fact_M2 - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH 
-			' -- Attribute_6
-		, '	BEGIN TRY
-				MERGE INTO _Donor_Dim T
-					USING (
-							SELECT Donor_Key
-								, Donor_Retention_Type_Code_Byui
-								FROM
-									(SELECT Donor_Key
-										, Donor_Retention_Type_Code_Byui
-										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byui) AS RowNum
-										FROM
-											(SELECT A.Donor_Key
-												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byui
-												FROM
-													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
-														FROM Ext_Donor_Score A
-															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
-														WHERE 1 = 1
-															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-															AND B.New_Inst = ''BYUI''
-															AND A.StatusCode = 1 -- Active
-														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
-													) A
-													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
-																						AND A.ModifiedOn = B.ModifiedOn
-													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
-												WHERE 1 = 1
-													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-													AND C.New_Inst = ''BYUI''
-													AND B.StatusCode = 1 -- Active
-											) A
-									) A
-								WHERE 1 = 1
-									AND RowNum = 1
-							) S ON T.Donor_Key = S.Donor_Key
-						WHEN MATCHED THEN 
-							UPDATE
-								SET T.Donor_Retention_Type_Code_Byui = S.Donor_Retention_Type_Code_Byui
-								;						
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Donor_Retention_Type_Code_Byui'', @Alpha_Step_Number = ''142X'', @Alpha_Step_Name = ''Donor_Retention_Type_Code_Byui - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_7
-		, '
-			' -- Attribute_8
-		, '
-			' -- Attribute_9		
-		, '
-			' -- Attribute_10
-		, '
-			' -- Attribute_11
-		, '
-			' -- Attribute_12
-		, '
-			' -- Attribute_13
-		, '
-			' -- Attribute_14
-		, '
-			' -- Attribute_15
-		, '
-			' -- Attribute_16
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byui_Fact'', @Alpha_Step_Number = ''142H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1;
-		' -- Attribute_17
-		, ' ' -- Attribute_18
-		, ' ' -- Attribute_19
-		, ' ' -- Attribute_20
-		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Retention_Byui_Fact''; ------> HARDCODE <------
-			' -- Attribute_21
-		, 1 -- Active
-		, GETDATE() -- Insert_Date
-		, NULL  -- Update_Date                
-	)	
- 	,
--- --------------------------
--- _Retention_Byuh_Fact
--- --------------------------
-	('Fact' -- Dim_Object
-		, '_Retention_Byuh_Fact' -- Table_Name
-		, '	Donor_Key UNIQUEIDENTIFIER
-			, Donor_Retention_Type_Key INT
-			, Retention_Year INT
-			, Retention_Donated_In_Year INT
-			, Retention_Donated_This_Year INT
-			, Retention_Donated_Last_Year INT
-			, Retention_Donated_Cnt_Last_Year_Ytd INT
-			' -- Create_Table
-		, '	Donor_Key
-			, Donor_Retention_Type_Key
-			, Retention_Year
-			, Retention_Donated_In_Year
-			, Retention_Donated_This_Year
-			, Retention_Donated_Last_Year
-			, Retention_Donated_Cnt_Last_Year_Ytd
-			' -- Insert_Fields
-		, ' ' -- From_Statement
-		, ' ' -- Where_Statement
-		, 'DECLARE @TABLE_NAME NVARCHAR(100)
-			SET @TABLE_NAME = ''_Retention_Byuh_Fact'' ; ------> HARDCODE <------
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''143D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1; 
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''143D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_1
-		, ' ' -- Attribute_2
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''143E'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1; 
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''143E'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_3
-		, 'BEGIN TRY
-				INSERT INTO _Retention_Byuh_Fact (
-					Donor_Key
-					, Donor_Retention_Type_Key
-					, Retention_Year
-					, Retention_Donated_In_Year
-					, Retention_Donated_This_Year
-					, Retention_Donated_Last_Year
-					, Retention_Donated_Cnt_Last_Year_Ytd
-				)
-				SELECT A.Donor_Key
-					, B.Donor_Retention_Type_Key
-					, A.Retention_Year
-					, CASE WHEN C.Primary_Donation > 0 THEN 1 ELSE 0 END AS Retention_Donated_In_Year 
-					, CASE WHEN C.Primary_Donation > 0 AND A.Retention_Year = YEAR(GETDATE()) THEN 1 ELSE 0 END AS Retention_Donated_This_Year
-					, CASE WHEN C.Primary_Donation > 0 AND A.Retention_Year = (YEAR(GETDATE()) - 1) THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
-					, CASE WHEN C.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
-					FROM
-						(SELECT A.ContactId AS Donor_Key
-							, YEAR(A.Psa_Eff_From) AS Retention_Year
-							, MIN(SUBSTRING(A.Psa_Code,4,2)) AS Donor_Type
-							FROM _Psa_Dim A
-							WHERE 1 = 1 
-								AND EXISTS 
-									(SELECT *
-										FROM _Psa_Dim B
-										WHERE 1 = 1
-											AND A.Psa_Key = B.Psa_Key
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT1'' -- BYU
-											AND SUBSTRING(B.Psa_Code,1,3) = ''DT2'' -- BYUH
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT6'' -- BYUI
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT5'' -- LDSBC
-											AND (SUBSTRING(B.Psa_Code,4,2) = ''A0''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A1''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A6''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B0''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B1''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B6''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C6''
-												)
-									)
-								AND NOT EXISTS
-									(SELECT *
-										FROM _Psa_Dim C
-										WHERE 1 = 1
-											AND A.Psa_Key = C.Psa_Key
-											AND ContactId IS NULL
-									)
-							GROUP BY ContactId 
-								, YEAR(Psa_Eff_From)
-						) A
-						LEFT JOIN
-							(SELECT Donor_Retention_Type_Key
-								, Donor_Retention_Type_Code
-								FROM dbo._Donor_Retention_Type_Dim
-							) B ON A.Donor_Type = B.Donor_Retention_Type_Code
-						LEFT JOIN
-							(SELECT A.Donor_Key
-								, YEAR(B.New_ReceiptDate) AS Retention_Year
-								, SUM(A.Donation_Credit_Amt) AS Primary_Donation
-								, SUM(CASE WHEN CONVERT(DATE,B.New_ReceiptDate,112) BETWEEN CONVERT(DATE,DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE())-1,0),112)
-																		AND CONVERT(DATE, GETDATE()-365,112) THEN 1 ELSE 0 END) AS Retention_Donated_Cnt_Last_Year_Ytd
-								FROM _Donation_Fact A
-									INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
-									INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
-								WHERE 1 = 1
-									AND B.StatusCode = ''Posted''
-									--AND C.New_Inst = ''BYU''
-									--AND C.New_Inst = ''BYUI''
-									AND C.New_Inst = ''BYUH''
-									--AND C.New_Inst = ''LDSBC''
-								GROUP BY A.Donor_Key
-									, YEAR(B.New_ReceiptDate)
-								HAVING SUM(A.Donation_Credit_Amt) > 0
-							) C ON A.Donor_Key = C.Donor_Key AND A.Retention_Year = C.Retention_Year
-			END TRY 
-			BEGIN CATCH
-				DECLARE @ERROR_NUMBER INT
-				DECLARE @ERROR_SEVERITY INT
-				DECLARE @ERROR_STATE INT
-				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
-				DECLARE @ERROR_LINE INT
-				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byuh_Fact'', @Alpha_Step_Number = ''143X'', @Alpha_Step_Name = ''_Retention_Byuh_Fact - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_4
-		, 'BEGIN TRY
-				MERGE INTO _Retention_Byuh_Fact T
-					USING (
-							SELECT  Donor_Key
-								, 10020 AS Donor_Retention_Type_Key
-								, Retention_Year
-								, 0 AS Retention_Donated_In_Year
-								, 0 AS Retention_Donated_This_Year
-								, 0 AS Retention_Donated_Last_Year
-								, 0 AS Retention_Donated_Cnt_Last_Year_Ytd
-								FROM
-									(SELECT ContactId AS Donor_Key
-										, CASE WHEN YEAR(Byuh_Affiliated_Date) <= YEAR(GETDATE()) 
-												AND (YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 0
-													OR Byuh_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 0 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 0
-												ELSE NULL END AS D1_0
-										, CASE WHEN YEAR(Byuh_Affiliated_Date)  <= YEAR(GETDATE()) - 1
-												AND ((YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(Byuh_Affiliated_Date) AND YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 1)
-													OR Byuh_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 1 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 1
-												ELSE NULL END AS D1_1
-										, CASE WHEN YEAR(Byuh_Affiliated_Date)  <= YEAR(GETDATE()) - 2
-												AND ((YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(Byuh_Affiliated_Date) AND YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 2)
-													OR Byuh_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 2 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 2
-												ELSE NULL END AS D1_2
-										, CASE WHEN YEAR(Byuh_Affiliated_Date) <= YEAR(GETDATE()) - 3
-												AND ((YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(Byuh_Affiliated_Date) AND YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 3)
-													OR Byuh_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 3 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 3
-												ELSE NULL END AS D1_3
-										, CASE WHEN YEAR(Byuh_Affiliated_Date)  <= YEAR(GETDATE()) - 4
-												AND ((YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(Byuh_Affiliated_Date) AND YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 4)
-													OR Byuh_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 4 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 4
-												ELSE NULL END AS D1_4
-										, CASE WHEN YEAR(Byuh_Affiliated_Date)  <= YEAR(GETDATE()) - 5
-												AND ((YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(Byuh_Affiliated_Date) AND YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 5)
-													OR Byuh_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 5 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 5
-												ELSE NULL END AS D1_5
-										, CASE WHEN YEAR(Byuh_Affiliated_Date)  <= YEAR(GETDATE()) - 6
-												AND ((YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(Byuh_Affiliated_Date) AND YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 6)
-													OR Byuh_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 6 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 6
-												ELSE NULL END AS D1_6
-										, CASE WHEN YEAR(Byuh_Affiliated_Date)  <= YEAR(GETDATE()) - 7
-												AND ((YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(Byuh_Affiliated_Date) AND YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 7)
-													OR Byuh_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 7 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 7
-												ELSE NULL END AS D1_7
-										, CASE WHEN YEAR(Byuh_Affiliated_Date)  <= YEAR(GETDATE()) - 8
-												AND ((YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(Byuh_Affiliated_Date) AND YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 8)
-													OR Byuh_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 8 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 8
-												ELSE NULL END AS D1_8
-										, CASE WHEN YEAR(Byuh_Affiliated_Date)  <= YEAR(GETDATE()) - 9
-												AND ((YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(Byuh_Affiliated_Date) AND YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 9)
-													OR Byuh_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 9 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 9
-												ELSE NULL END AS D1_9
-										, CASE WHEN YEAR(Byuh_Affiliated_Date)  <= YEAR(GETDATE()) - 10
-												AND ((YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(Byuh_Affiliated_Date) AND YEAR(Byuh_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 10)
-													OR Byuh_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 10 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 10
-												ELSE NULL END AS D1_10	
-										FROM
-											(SELECT A.ContactId
-												, A.Byuh_Affiliated_Date
-												, A.Byuh_Donor_Affiliated_Date
-												, B.Donor_Deceased_Dt
-												FROM _Affiliated_Dim A
-													LEFT JOIN _Donor_Dim B ON A.ContactId = B.Donor_Key
-												WHERE 1 = 1
-													AND A.Byuh_Affiliated_Date IS NOT NULL
-											) A
-									) A
-								UNPIVOT
-									(
-										Retention_Year
-										FOR [Year_Columns] IN (D1_0,D1_1,D1_2,D1_3,D1_4,D1_5,D1_6,D1_7,D1_8,D1_9,D1_10)
-									) AS A
-						) S ON T.Donor_Key = S.Donor_Key AND T.Retention_Year = S.Retention_Year
-					WHEN NOT MATCHED THEN 
-						INSERT (
-							Donor_Key
-							, Donor_Retention_Type_Key
-							, Retention_Year
-							, Retention_Donated_In_Year
-							, Retention_Donated_This_Year
-							, Retention_Donated_Last_Year
-							, Retention_Donated_Cnt_Last_Year_Ytd
-						)
-						VALUES (
-							S.Donor_Key
-							, S.Donor_Retention_Type_Key
-							, S.Retention_Year
-							, S.Retention_Donated_In_Year
-							, S.Retention_Donated_This_Year
-							, S.Retention_Donated_Last_Year
-							, S.Retention_Donated_Cnt_Last_Year_Ytd
-						)
-				;
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byuh_Fact_M1'', @Alpha_Step_Number = ''143X'', @Alpha_Step_Name = ''_Retention_Byuh_Fact_M1 - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH 
-			' -- Attribute_5
-		, 'BEGIN TRY
-				MERGE INTO _Retention_Byuh_Fact T
-					USING (			
-							SELECT DISTINCT A.Donor_Key
-								, A.Retention_Year
-								, A.Retention_Donated_In_Year
-								, A.Retention_Donated_This_Year
-								, A.Retention_Donated_Last_Year
-								, A.Retention_Donated_Cnt_Last_Year_Ytd
-								FROM
-									(SELECT A.Donor_Key
-										, A.Retention_Year
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) THEN 1 ELSE 0 END AS Retention_Donated_In_Year
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE()) THEN 1 ELSE 0 END AS Retention_Donated_This_Year  
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE())-1 THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
-										, CASE WHEN D.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
-										FROM _Retention_Byuh_Fact A
-											INNER JOIN _Donation_Fact B ON CONVERT(NVARCHAR(100),A.Donor_Key) = B.Donor_Key 
-											INNER JOIN _Donation_Dim C ON B.Donation_Key = C.Donation_Key
-											LEFT JOIN
-												(SELECT A.Donor_Key
-													, YEAR(B.New_ReceiptDate) AS Retention_Year
-													, SUM(A.Donation_Credit_Amt) AS Primary_Donation
-													, SUM(CASE WHEN CONVERT(DATE,B.New_ReceiptDate,112) BETWEEN CONVERT(DATE,DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE())-1,0),112)
-																							AND CONVERT(DATE, GETDATE()-365,112) THEN 1 ELSE 0 END) AS Retention_Donated_Cnt_Last_Year_Ytd
-													FROM _Donation_Fact A
-														INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
-														INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
-													WHERE 1 = 1
-														AND B.StatusCode = ''Posted''
-														--AND C.New_Inst = ''BYU''
-														--AND C.New_Inst = ''BYUI''
-														AND C.New_Inst = ''BYUH''
-														--AND C.New_Inst = ''LDSBC''
-													GROUP BY A.Donor_Key
-														, YEAR(B.New_ReceiptDate)
-													HAVING SUM(A.Donation_Credit_Amt) > 0
-												) D ON A.Donor_Key = D.Donor_Key AND A.Retention_Year = D.Retention_Year
-										WHERE 1 = 1
-											AND C.StatusCode = ''Posted''
-											AND A.Donor_Retention_Type_Key = 10020
-											AND B.Donation_Credit_Amt IS NOT NULL
-									) A
-								WHERE 1 = 1
-									AND (Retention_Donated_In_Year = 1
-										OR Retention_Donated_This_Year = 1
-										OR Retention_Donated_Last_Year = 1
-										)
-							) S ON T.Donor_Key = S.Donor_Key AND T.Retention_Year = S.Retention_Year
-						WHEN MATCHED THEN
-							UPDATE
-								SET T.Retention_Donated_In_Year = S.Retention_Donated_In_Year
-								, T.Retention_Donated_This_Year = S.Retention_Donated_This_Year
-								, T.Retention_Donated_Last_Year = S.Retention_Donated_Last_Year
-								, T.Retention_Donated_Cnt_Last_Year_Ytd = S.Retention_Donated_Cnt_Last_Year_Ytd
-							;
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byuh_Fact_M2'', @Alpha_Step_Number = ''143X'', @Alpha_Step_Name = ''_Retention_Byuh_Fact_M2 - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH 
-			' -- Attribute_6
-		, '	BEGIN TRY
-				MERGE INTO _Donor_Dim T
-					USING (
-							SELECT Donor_Key
-								, Donor_Retention_Type_Code_Byuh
-								FROM
-									(SELECT Donor_Key
-										, Donor_Retention_Type_Code_Byuh
-										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byuh) AS RowNum
-										FROM
-											(SELECT A.Donor_Key
-												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byuh
-												FROM
-													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
-														FROM Ext_Donor_Score A
-															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
-														WHERE 1 = 1
-															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-															AND B.New_Inst = ''BYUH''
-															AND A.StatusCode = 1 -- Active
-														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
-													) A
-													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
-																						AND A.ModifiedOn = B.ModifiedOn
-													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
-												WHERE 1 = 1
-													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-													AND C.New_Inst = ''BYUH''
-													AND B.StatusCode = 1 -- Active
-											) A
-									) A
-								WHERE 1 = 1
-									AND RowNum = 1
-							) S ON T.Donor_Key = S.Donor_Key
-						WHEN MATCHED THEN 
-							UPDATE
-								SET T.Donor_Retention_Type_Code_Byuh = S.Donor_Retention_Type_Code_Byuh
-								;						
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Donor_Retention_Type_Code_Byuh'', @Alpha_Step_Number = ''143X'', @Alpha_Step_Name = ''Donor_Retention_Type_Code_Byuh - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_7
-		, '
-			' -- Attribute_8
-		, '
-			' -- Attribute_9		
-		, '
-			' -- Attribute_10
-		, '
-			' -- Attribute_11
-		, '
-			' -- Attribute_12
-		, '
-			' -- Attribute_13
-		, '
-			' -- Attribute_14
-		, '
-			' -- Attribute_15
-		, '
-			' -- Attribute_16
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Byuh_Fact'', @Alpha_Step_Number = ''143H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1;
-		' -- Attribute_17
-		, ' ' -- Attribute_18
-		, ' ' -- Attribute_19
-		, ' ' -- Attribute_20
-		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Retention_Byuh_Fact''; ------> HARDCODE <------
-			' -- Attribute_21
-		, 1 -- Active
-		, GETDATE() -- Insert_Date
-		, NULL  -- Update_Date                
-	)
- 	,
--- --------------------------
--- _Retention_Ldsbc_Fact
--- --------------------------
-	('Fact' -- Dim_Object
-		, '_Retention_Ldsbc_Fact' -- Table_Name
-		, '	Donor_Key UNIQUEIDENTIFIER
-			, Donor_Retention_Type_Key INT
-			, Retention_Year INT
-			, Retention_Donated_In_Year INT
-			, Retention_Donated_This_Year INT
-			, Retention_Donated_Last_Year INT
-			, Retention_Donated_Cnt_Last_Year_Ytd INT
-			' -- Create_Table
-		, '	Donor_Key
-			, Donor_Retention_Type_Key
-			, Retention_Year
-			, Retention_Donated_In_Year
-			, Retention_Donated_This_Year
-			, Retention_Donated_Last_Year
-			, Retention_Donated_Cnt_Last_Year_Ytd
-			' -- Insert_Fields
-		, ' ' -- From_Statement
-		, ' ' -- Where_Statement
-		, 'DECLARE @TABLE_NAME NVARCHAR(100)
-			SET @TABLE_NAME = ''_Retention_Ldsbc_Fact'' ; ------> HARDCODE <------
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''144D'', @Alpha_Step_Name = ''Remove Indexes - Begin'', @Alpha_Result = 1; 
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''144D'', @Alpha_Step_Name = ''Remove Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_1
-		, ' ' -- Attribute_2
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''144E'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1; 
-			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''144E'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
-			' -- Attribute_3
-		, 'BEGIN TRY
-				INSERT INTO _Retention_Ldsbc_Fact (
-					Donor_Key
-					, Donor_Retention_Type_Key
-					, Retention_Year
-					, Retention_Donated_In_Year
-					, Retention_Donated_This_Year
-					, Retention_Donated_Last_Year
-					, Retention_Donated_Cnt_Last_Year_Ytd
-				)
-				SELECT A.Donor_Key
-					, B.Donor_Retention_Type_Key
-					, A.Retention_Year
-					, CASE WHEN C.Primary_Donation > 0 THEN 1 ELSE 0 END AS Retention_Donated_In_Year 
-					, CASE WHEN C.Primary_Donation > 0 AND A.Retention_Year = YEAR(GETDATE()) THEN 1 ELSE 0 END AS Retention_Donated_This_Year
-					, CASE WHEN C.Primary_Donation > 0 AND A.Retention_Year = (YEAR(GETDATE()) - 1) THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
-					, CASE WHEN C.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
-					FROM
-						(SELECT A.ContactId AS Donor_Key
-							, YEAR(A.Psa_Eff_From) AS Retention_Year
-							, MIN(SUBSTRING(A.Psa_Code,4,2)) AS Donor_Type
-							FROM _Psa_Dim A
-							WHERE 1 = 1 
-								AND EXISTS 
-									(SELECT *
-										FROM _Psa_Dim B
-										WHERE 1 = 1
-											AND A.Psa_Key = B.Psa_Key
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT1'' -- BYU
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT2'' -- BYUH
-											--AND SUBSTRING(B.Psa_Code,1,3) = ''DT6'' -- BYUI
-											AND SUBSTRING(B.Psa_Code,1,3) = ''DT5'' -- LDSBC
-											AND (SUBSTRING(B.Psa_Code,4,2) = ''A0''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A1''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''A6''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B0''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B1''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''B6''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C2''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C3''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C4''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C5''
-													OR SUBSTRING(B.Psa_Code,4,2) = ''C6''
-												)
-									)
-								AND NOT EXISTS
-									(SELECT *
-										FROM _Psa_Dim C
-										WHERE 1 = 1
-											AND A.Psa_Key = C.Psa_Key
-											AND ContactId IS NULL
-									)
-							GROUP BY ContactId 
-								, YEAR(Psa_Eff_From)
-						) A
-						LEFT JOIN
-							(SELECT Donor_Retention_Type_Key
-								, Donor_Retention_Type_Code
-								FROM dbo._Donor_Retention_Type_Dim
-							) B ON A.Donor_Type = B.Donor_Retention_Type_Code
-						LEFT JOIN
-							(SELECT A.Donor_Key
-								, YEAR(B.New_ReceiptDate) AS Retention_Year
-								, SUM(A.Donation_Credit_Amt) AS Primary_Donation
-								, SUM(CASE WHEN CONVERT(DATE,B.New_ReceiptDate,112) BETWEEN CONVERT(DATE,DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE())-1,0),112)
-																		AND CONVERT(DATE, GETDATE()-365,112) THEN 1 ELSE 0 END) AS Retention_Donated_Cnt_Last_Year_Ytd
-								FROM _Donation_Fact A
-									INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
-									INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
-								WHERE 1 = 1
-									AND B.StatusCode = ''Posted''
-									--AND C.New_Inst = ''BYU''
-									--AND C.New_Inst = ''BYUI''
-									--AND C.New_Inst = ''BYUH''
-									AND C.New_Inst = ''LDSBC''
-								GROUP BY A.Donor_Key
-									, YEAR(B.New_ReceiptDate)
-								HAVING SUM(A.Donation_Credit_Amt) > 0
-							) C ON A.Donor_Key = C.Donor_Key AND A.Retention_Year = C.Retention_Year
-			END TRY 
-			BEGIN CATCH
-				DECLARE @ERROR_NUMBER INT
-				DECLARE @ERROR_SEVERITY INT
-				DECLARE @ERROR_STATE INT
-				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
-				DECLARE @ERROR_LINE INT
-				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Ldsbc_Fact'', @Alpha_Step_Number = ''144X'', @Alpha_Step_Name = ''_Retention_Ldsbc_Fact - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_4
-		, 'BEGIN TRY
-				MERGE INTO _Retention_Ldsbc_Fact T
-					USING (
-							SELECT  Donor_Key
-								, 10020 AS Donor_Retention_Type_Key
-								, Retention_Year
-								, 0 AS Retention_Donated_In_Year
-								, 0 AS Retention_Donated_This_Year
-								, 0 AS Retention_Donated_Last_Year
-								, 0 AS Retention_Donated_Cnt_Last_Year_Ytd
-								FROM
-									(SELECT ContactId AS Donor_Key
-										, CASE WHEN YEAR(Ldsbc_Affiliated_Date) <= YEAR(GETDATE()) 
-												AND (YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 0
-													OR Ldsbc_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 0 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 0
-												ELSE NULL END AS D1_0
-										, CASE WHEN YEAR(Ldsbc_Affiliated_Date)  <= YEAR(GETDATE()) - 1
-												AND ((YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(Ldsbc_Affiliated_Date) AND YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 1)
-													OR Ldsbc_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 1 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 1
-												ELSE NULL END AS D1_1
-										, CASE WHEN YEAR(Ldsbc_Affiliated_Date)  <= YEAR(GETDATE()) - 2
-												AND ((YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(Ldsbc_Affiliated_Date) AND YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 2)
-													OR Ldsbc_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 2 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 2
-												ELSE NULL END AS D1_2
-										, CASE WHEN YEAR(Ldsbc_Affiliated_Date) <= YEAR(GETDATE()) - 3
-												AND ((YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(Ldsbc_Affiliated_Date) AND YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 3)
-													OR Ldsbc_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 3 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 3
-												ELSE NULL END AS D1_3
-										, CASE WHEN YEAR(Ldsbc_Affiliated_Date)  <= YEAR(GETDATE()) - 4
-												AND ((YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(Ldsbc_Affiliated_Date) AND YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 4)
-													OR Ldsbc_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 4 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 4
-												ELSE NULL END AS D1_4
-										, CASE WHEN YEAR(Ldsbc_Affiliated_Date)  <= YEAR(GETDATE()) - 5
-												AND ((YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(Ldsbc_Affiliated_Date) AND YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 5)
-													OR Ldsbc_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 5 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 5
-												ELSE NULL END AS D1_5
-										, CASE WHEN YEAR(Ldsbc_Affiliated_Date)  <= YEAR(GETDATE()) - 6
-												AND ((YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(Ldsbc_Affiliated_Date) AND YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 6)
-													OR Ldsbc_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 6 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 6
-												ELSE NULL END AS D1_6
-										, CASE WHEN YEAR(Ldsbc_Affiliated_Date)  <= YEAR(GETDATE()) - 7
-												AND ((YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(Ldsbc_Affiliated_Date) AND YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 7)
-													OR Ldsbc_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 7 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 7
-												ELSE NULL END AS D1_7
-										, CASE WHEN YEAR(Ldsbc_Affiliated_Date)  <= YEAR(GETDATE()) - 8
-												AND ((YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(Ldsbc_Affiliated_Date) AND YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 8)
-													OR Ldsbc_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 8 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 8
-												ELSE NULL END AS D1_8
-										, CASE WHEN YEAR(Ldsbc_Affiliated_Date)  <= YEAR(GETDATE()) - 9
-												AND ((YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(Ldsbc_Affiliated_Date) AND YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 9)
-													OR Ldsbc_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 9 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 9
-												ELSE NULL END AS D1_9
-										, CASE WHEN YEAR(Ldsbc_Affiliated_Date)  <= YEAR(GETDATE()) - 10
-												AND ((YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(Ldsbc_Affiliated_Date) AND YEAR(Ldsbc_Donor_Affiliated_Date) >= YEAR(GETDATE()) - 10)
-													OR Ldsbc_Donor_Affiliated_Date IS NULL)
-												AND (YEAR(Donor_Deceased_Dt) >= YEAR(GETDATE()) - 10 
-													OR Donor_Deceased_Dt IS NULL)
-												THEN YEAR(GETDATE()) - 10
-												ELSE NULL END AS D1_10	
-										FROM
-											(SELECT A.ContactId
-												, A.Ldsbc_Affiliated_Date
-												, A.Ldsbc_Donor_Affiliated_Date
-												, B.Donor_Deceased_Dt
-												FROM _Affiliated_Dim A
-													LEFT JOIN _Donor_Dim B ON A.ContactId = B.Donor_Key
-												WHERE 1 = 1
-													AND A.Ldsbc_Affiliated_Date IS NOT NULL
-											) A
-									) A
-								UNPIVOT
-									(
-										Retention_Year
-										FOR [Year_Columns] IN (D1_0,D1_1,D1_2,D1_3,D1_4,D1_5,D1_6,D1_7,D1_8,D1_9,D1_10)
-									) AS A
-						) S ON T.Donor_Key = S.Donor_Key AND T.Retention_Year = S.Retention_Year
-					WHEN NOT MATCHED THEN 
-						INSERT (
-							Donor_Key
-							, Donor_Retention_Type_Key
-							, Retention_Year
-							, Retention_Donated_In_Year
-							, Retention_Donated_This_Year
-							, Retention_Donated_Last_Year
-							, Retention_Donated_Cnt_Last_Year_Ytd
-						)
-						VALUES (
-							S.Donor_Key
-							, S.Donor_Retention_Type_Key
-							, S.Retention_Year
-							, S.Retention_Donated_In_Year
-							, S.Retention_Donated_This_Year
-							, S.Retention_Donated_Last_Year
-							, S.Retention_Donated_Cnt_Last_Year_Ytd
-						)
-				;
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Ldsbc_Fact_M1'', @Alpha_Step_Number = ''144X'', @Alpha_Step_Name = ''_Retention_Ldsbc_Fact_M1 - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH 
-			' -- Attribute_5
-		, 'BEGIN TRY
-				MERGE INTO _Retention_Ldsbc_Fact T
-					USING (			
-							SELECT DISTINCT A.Donor_Key
-								, A.Retention_Year
-								, A.Retention_Donated_In_Year
-								, A.Retention_Donated_This_Year
-								, A.Retention_Donated_Last_Year
-								, A.Retention_Donated_Cnt_Last_Year_Ytd
-								FROM
-									(SELECT A.Donor_Key
-										, A.Retention_Year
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) THEN 1 ELSE 0 END AS Retention_Donated_In_Year
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE()) THEN 1 ELSE 0 END AS Retention_Donated_This_Year  
-										, CASE WHEN A.Retention_Year = YEAR(C.New_ReceiptDate) AND YEAR(C.New_ReceiptDate) = YEAR(GETDATE())-1 THEN 1 ELSE 0 END AS Retention_Donated_Last_Year
-										, CASE WHEN D.Retention_Donated_Cnt_Last_Year_Ytd > 0 THEN 1 ELSE 0 END AS Retention_Donated_Cnt_Last_Year_Ytd
-										FROM _Retention_Ldsbc_Fact A
-											INNER JOIN _Donation_Fact B ON CONVERT(NVARCHAR(100),A.Donor_Key) = B.Donor_Key 
-											INNER JOIN _Donation_Dim C ON B.Donation_Key = C.Donation_Key
-											LEFT JOIN
-												(SELECT A.Donor_Key
-													, YEAR(B.New_ReceiptDate) AS Retention_Year
-													, SUM(A.Donation_Credit_Amt) AS Primary_Donation
-													, SUM(CASE WHEN CONVERT(DATE,B.New_ReceiptDate,112) BETWEEN CONVERT(DATE,DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE())-1,0),112)
-																							AND CONVERT(DATE, GETDATE()-365,112) THEN 1 ELSE 0 END) AS Retention_Donated_Cnt_Last_Year_Ytd
-													FROM _Donation_Fact A
-														INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
-														INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
-													WHERE 1 = 1
-														AND B.StatusCode = ''Posted''
-														--AND C.New_Inst = ''BYU''
-														--AND C.New_Inst = ''BYUI''
-														--AND C.New_Inst = ''BYUH''
-														AND C.New_Inst = ''LDSBC''
-													GROUP BY A.Donor_Key
-														, YEAR(B.New_ReceiptDate)
-													HAVING SUM(A.Donation_Credit_Amt) > 0
-												) D ON A.Donor_Key = D.Donor_Key AND A.Retention_Year = D.Retention_Year
-										WHERE 1 = 1
-											AND C.StatusCode = ''Posted''
-											AND A.Donor_Retention_Type_Key = 10020
-											AND B.Donation_Credit_Amt IS NOT NULL
-									) A
-								WHERE 1 = 1
-									AND (Retention_Donated_In_Year = 1
-										OR Retention_Donated_This_Year = 1
-										OR Retention_Donated_Last_Year = 1
-										)
-							) S ON T.Donor_Key = S.Donor_Key AND T.Retention_Year = S.Retention_Year
-						WHEN MATCHED THEN
-							UPDATE
-								SET T.Retention_Donated_In_Year = S.Retention_Donated_In_Year
-								, T.Retention_Donated_This_Year = S.Retention_Donated_This_Year
-								, T.Retention_Donated_Last_Year = S.Retention_Donated_Last_Year
-								, T.Retention_Donated_Cnt_Last_Year_Ytd = S.Retention_Donated_Cnt_Last_Year_Ytd
-							;
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Ldsbc_Fact_M2'', @Alpha_Step_Number = ''144X'', @Alpha_Step_Name = ''_Retention_Ldsbc_Fact_M2 - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_6
-		, '	BEGIN TRY
-				MERGE INTO _Donor_Dim T
-					USING (
-							SELECT Donor_Key
-								, Donor_Retention_Type_Code_Ldsbc
-								FROM
-									(SELECT Donor_Key
-										, Donor_Retention_Type_Code_Ldsbc
-										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Ldsbc) AS RowNum
-										FROM
-											(SELECT A.Donor_Key
-												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Ldsbc
-												FROM
-													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
-														FROM Ext_Donor_Score A
-															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
-														WHERE 1 = 1
-															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-															AND B.New_Inst = ''LDSBC''
-															AND A.StatusCode = 1 -- Active
-														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
-													) A
-													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
-																						AND A.ModifiedOn = B.ModifiedOn
-													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
-												WHERE 1 = 1
-													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-													AND C.New_Inst = ''LDSBC''
-													AND B.StatusCode = 1 -- Active
-											) A
-									) A
-								WHERE 1 = 1
-									AND RowNum = 1
-							) S ON T.Donor_Key = S.Donor_Key
-						WHEN MATCHED THEN 
-							UPDATE
-								SET T.Donor_Retention_Type_Code_Ldsbc = S.Donor_Retention_Type_Code_Ldsbc
-								;						
-			END TRY 
-			BEGIN CATCH
-				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
-				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
-				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
-				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
-				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
-				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
-				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Donor_Retention_Type_Code_Ldsbc'', @Alpha_Step_Number = ''144X'', @Alpha_Step_Name = ''Donor_Retention_Type_Code_Ldsbc - Error'', @Alpha_Result = 0
-				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
-			END CATCH
-			' -- Attribute_7
-		, '
-			' -- Attribute_8
-		, '
-			' -- Attribute_9		
-		, '
-			' -- Attribute_10
-		, '
-			' -- Attribute_11
-		, '
-			' -- Attribute_12
-		, '
-			' -- Attribute_13
-		, '
-			' -- Attribute_14
-		, '
-			' -- Attribute_15
-		, '
-			' -- Attribute_16
-		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Retention_Ldsbc_Fact'', @Alpha_Step_Number = ''144H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1;
-		' -- Attribute_17
-		, ' ' -- Attribute_18
-		, ' ' -- Attribute_19
-		, ' ' -- Attribute_20
-		, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Retention_Ldsbc_Fact''; ------> HARDCODE <------
 			' -- Attribute_21
 		, 1 -- Active
 		, GETDATE() -- Insert_Date
@@ -22320,6 +20433,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 			END CATCH 
 			' -- Attribute_4
 		, 'BEGIN TRY
+				SET ANSI_WARNINGS OFF
 				MERGE INTO _Initiative_Fact T
 					USING (
 							SELECT A.Initiative_Fact_Key
@@ -22360,6 +20474,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					UPDATE
 						SET T.User_Coordinating_Liaison_Key = S.User_Coordinating_Liaison_Key
 				;
+				SET ANSI_WARNINGS ON
 			END TRY 
 			BEGIN CATCH
 				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -22461,7 +20576,8 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''160E'', @Alpha_Step_Name = ''Create Indexes - Begin'', @Alpha_Result = 1;                                                                             
 			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''160E'', @Alpha_Step_Name = ''Create Indexes - End'', @Alpha_Result = 1;
 			' -- Attribute_3
-		, 'BEGIN TRY       
+		, 'BEGIN TRY
+				SET ANSI_WARNINGS OFF
 				DECLARE @TABLE_CNT112 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Initiative_Dim'', @Alpha_Step_Number = ''160F'', @Alpha_Step_Name = ''Initiative Dim Table - Load - Begin'', @Alpha_Result = 1;
 					INSERT INTO _Initiative_Dim (
@@ -22660,7 +20776,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 								LEFT JOIN _Opportunity_StatusCode_ G ON A.StatusCode = G.Column_Value
 								LEFT JOIN _Opportunity_ProposalStatus_ H ON A.Plus_ProposalStatus = H.Column_Value
 								LEFT JOIN _Opportunity_Plus_NewAccount_ I ON A.Plus_NewAccount = I.Column_Value
-								
+						SET ANSI_WARNINGS ON		
 				SELECT @TABLE_CNT112 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Initiative_Dim)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Initiative_Dim'', @Alpha_Step_Number = ''160F'', @Alpha_Step_Name = ''Initiative Dim Table - Count'', @Alpha_Count = @TABLE_CNT112, @Alpha_Result = 1;
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Initiative_Dim'', @Alpha_Step_Number = ''160F'', @Alpha_Step_Name = ''Initiative Dim Table - Load - End'', @Alpha_Result = 1;                                                        
@@ -22683,6 +20799,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 			END CATCH 
 			' -- Attribute_4
 		, 'BEGIN TRY
+				SET ANSI_WARNINGS OFF
 				MERGE INTO _Initiative_Dim T
 					USING (
 							SELECT DISTINCT A.OpportunityId AS Initiative_Key
@@ -22694,6 +20811,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 						UPDATE
 							SET T.Initiative_Coordinating_Liaison = S.Initiative_Coordinating_Liaison
 							;
+				SET ANSI_WARNINGS ON
 			END TRY 
 			BEGIN CATCH
 				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -22707,6 +20825,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 			END CATCH
 			' -- Attribute_5
 		, 'BEGIN TRY
+				SET ANSI_WARNINGS OFF
 				MERGE INTO _Initiative_Dim T
 					USING (
 							SELECT A.Initiative_Key
@@ -22741,6 +20860,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 							SET T.Initiative_Primary_Initiative = S.Initiative_Primary_Initiative
 							, T.Initiative_Parent_Initiative = S.Initiative_Parent_Initiative
 						;
+				SET ANSI_WARNINGS ON
 			END TRY 
 			BEGIN CATCH
 				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -23195,33 +21315,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY       
 				DECLARE @TABLE_CNT112 AS VARCHAR(100)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Recurring_Gift_Dim'', @Alpha_Step_Number = ''163F'', @Alpha_Step_Name = ''Recurring Gift Fact Table - Load - Begin'', @Alpha_Result = 1;					
-					INSERT INTO _Recurring_Gift_Dim(
-						Recurring_Gift_Key
-						, Recurring_Gift_Status_Code
-						, Recurring_Gift_State_Code
-						, Recurring_Gift_Type
-						, Recurring_Gift_Amt
-						, Recurring_Gift_Frequency
-						, Recurring_Gift_Payment_Start_Date
-						, Recurring_Gift_Payment_Stop_Date
-						, Recurring_Gift_Group
-					)
-					SELECT CONVERT(NVARCHAR(100),A.Plus_RecurringGiftRulesId) AS Recurring_Gift_Key
-						, E.Column_Label AS Recurring_Gift_Status_Code
-						, F.Column_Label AS Recurring_Gift_State_Code
-						, C.Column_Label AS Recurring_Gift_Type
-						, A.Plus_Amount AS Recurring_Gift_Amt
-						, D.Column_Label AS Recurring_Gift_Frequency
-						, CONVERT(NVARCHAR(10),A.Plus_PaymentStart,110) AS Recurring_Gift_Payment_Start_Date
-						, CONVERT(NVARCHAR(10),A.Plus_PaymentStop,110) AS Recurring_Gift_Payment_Stop_Date
-						, B.Plus_Name AS Recurring_Gift_Group
-						FROM Ext_Recurring_Gift_Rules A
-							LEFT JOIN Ext_Payroll_Group B ON A.Plus_Group = B.Plus_PayrollGroupId
-							LEFT JOIN _Recurring_Gift_Type_ C ON A.Plus_Type = C.Column_Value
-							LEFT JOIN _Recurring_Frequency_ D ON A.Plus_Frequency = D.Column_Value
-							LEFT JOIN _Recurring_StateCode_ E ON A.StateCode = E.Column_Value
-							LEFT JOIN _Recurring_StatusCode_ F ON A.StatusCode = F.Column_Value
-																
+																	
 				SELECT @TABLE_CNT112 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Recurring_Gift_Dim)
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Recurring_Gift_Dim'', @Alpha_Step_Number = ''163F'', @Alpha_Step_Name = ''_Recurring_Gift_Dim Table - Count'', @Alpha_Count = @TABLE_CNT112, @Alpha_Result = 1;
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Recurring_Gift_Dim'', @Alpha_Step_Number = ''163F'', @Alpha_Step_Name = ''_Recurring_Gift_Dim Table - Load - End'', @Alpha_Result = 1;                                                        
@@ -23291,6 +21385,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		' -- Attribute_3
 	, '
 		BEGIN TRY
+			SET ANSI_WARNINGS OFF
 			MERGE INTO _Donor_Dim T
 				USING (
 						SELECT Donor_Key
@@ -23507,6 +21602,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					UPDATE
 						SET T.Donor_Pledge_Reminder_Email_Content_Ldsbc = S.Donor_Pledge_Reminder_Email_Content_Ldsbc
 						;
+			SET ANSI_WARNINGS ON
 		END TRY 
 		BEGIN CATCH
 			DECLARE @ERROR_NUMBER INT
@@ -23526,6 +21622,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		END CATCH
 		' -- Attribute_4
 	, 'BEGIN TRY
+			SET ANSI_WARNINGS OFF
 			MERGE INTO _Donor_Dim T
 				USING (
 						SELECT Donor_Key
@@ -23585,6 +21682,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 							, T.Plus_ConnectedLiaison_DomainName = S.Plus_ConnectedLiaison_DomainName
 							, T.Plus_PendingLiaison_DomainName = S.Plus_PendingLiaison_DomainName
 						;
+			SET ANSI_WARNINGS ON
 		END TRY 
 		BEGIN CATCH
 			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -23598,6 +21696,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		END CATCH 
 		' -- Attribute_5
 	, 'BEGIN TRY
+			SET ANSI_WARNINGS OFF
 			MERGE INTO _Donor_Dim T
 				USING (
 						SELECT A.Donor_Key
@@ -23745,6 +21844,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					UPDATE
 						SET T.Donor_First_Recurring_Rule_Date_Ldsbc = S.Donor_First_Recurring_Rule_Date_Ldsbc
 						;
+			SET ANSI_WARNINGS ON
 		END TRY 
 		BEGIN CATCH
 			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -23758,6 +21858,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		END CATCH 
 		' -- Attribute_6
 	, 'BEGIN TRY
+			SET ANSI_WARNINGS OFF
 			MERGE INTO _Donor_Dim T
 				USING (
 						SELECT COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor) AS Donor_Key
@@ -23910,6 +22011,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					UPDATE
 						SET T.Donor_Recurring_Total_Month_Before_Last_Ldsbc = S.Donor_Recurring_Total_Month_Before_Last_Ldsbc
 						;
+			SET ANSI_WARNINGS ON
 		END TRY 
 		BEGIN CATCH
 			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -23923,6 +22025,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		END CATCH
 		' -- Attribute_7
 	, 'BEGIN TRY
+			SET ANSI_WARNINGS OFF
 			MERGE INTO _Donor_Dim T
 				USING (
 						SELECT Donor_Key
@@ -23967,6 +22070,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					UPDATE
 						SET T.Donor_Recurring_Gift_Upgrade_Ldsbc = S.Donor_Recurring_Gift_Upgrade_Ldsbc
 						;
+			SET ANSI_WARNINGS ON
 		END TRY 
 		BEGIN CATCH
 			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -23980,6 +22084,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		END CATCH  
 		' -- Attribute_8
 	, 'BEGIN TRY
+			SET ANSI_WARNINGS OFF
 			MERGE INTO _Donor_Dim T
 				USING (
 						SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
@@ -24088,6 +22193,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					UPDATE
 						SET T.Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt = S.Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt
 						;
+			SET ANSI_WARNINGS ON
 		END TRY 
 		BEGIN CATCH
 			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -24101,6 +22207,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		END CATCH 
 		' -- Attribute_9
 	, 'BEGIN TRY
+			SET ANSI_WARNINGS OFF
 			MERGE INTO _Donor_Dim T
 				USING (
 						SELECT Donor_Key
@@ -24861,6 +22968,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					UPDATE
 						SET T.Donor_Retention_Type_Code_Ldsbc_Minus_5 = S.Donor_Retention_Type_Code_Ldsbc_Minus_5
 						;
+			SET ANSI_WARNINGS ON
 		END TRY 
 		BEGIN CATCH
 			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -24874,6 +22982,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		END CATCH
 		' -- Attribute_10
 	, 'BEGIN TRY
+			SET ANSI_WARNINGS OFF
 			MERGE INTO _Donor_Dim T
 				USING (
 						SELECT A.Donor_Key
@@ -24981,6 +23090,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					UPDATE
 						SET T.Donor_First_Gift_To_Ldsp_Amt = S.Donor_First_Gift_To_Ldsp_Amt
 						;
+			SET ANSI_WARNINGS ON
 		END TRY 
 		BEGIN CATCH
 			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -24994,6 +23104,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		END CATCH 
 		' -- Attribute_11
 	, 'BEGIN TRY
+			SET ANSI_WARNINGS OFF
 			MERGE INTO _Donor_Dim T
 				USING (
 						SELECT A.Donor_Key
@@ -25094,6 +23205,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					UPDATE
 						SET T.Donor_First_Gift_Date_Ldsp = S.Donor_First_Gift_Date_Ldsp
 						;
+			SET ANSI_WARNINGS ON
 		END TRY 
 		BEGIN CATCH
 			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -25107,6 +23219,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		END CATCH 
 		' -- Attribute_12
 	, 'BEGIN TRY
+			SET ANSI_WARNINGS OFF
 			MERGE INTO _Donor_Dim T
 				USING (
 						SELECT COALESCE(New_RelatedConstituent, New_OrganizationId) AS Donor_Key 
@@ -25197,6 +23310,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 					UPDATE
 						SET T.Donor_Total_Giving_Current_Year_Minus_5_With_Matching = S.Donor_Total_Giving_Current_Year_Minus_5_With_Matching
 						;
+			SET ANSI_WARNINGS ON
 		END TRY 
 		BEGIN CATCH
 			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
@@ -25209,12 +23323,244 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
 		END CATCH  
 		' -- Attribute_13
-	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Merge_Into_Donor_Dim_2'', @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+	, 'BEGIN TRY
+				SET ANSI_WARNINGS OFF
+				MERGE INTO _Donor_Dim T
+					USING (
+							SELECT Donor_Key
+								, Donor_Retention_Type_Code_Byu
+								FROM
+									(SELECT Donor_Key
+										, Donor_Retention_Type_Code_Byu
+										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byu) AS RowNum
+										FROM
+											(SELECT A.Donor_Key
+												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byu
+												FROM
+													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+														FROM Ext_Donor_Score A
+															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+														WHERE 1 = 1
+															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+															AND B.New_Inst = ''BYU''
+															AND A.StatusCode = 1 -- Active
+														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+													) A
+													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																						AND A.ModifiedOn = B.ModifiedOn
+													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+												WHERE 1 = 1
+													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+													AND C.New_Inst = ''BYU''
+													AND B.StatusCode = 1 -- Active
+											) A
+									) A
+								WHERE 1 = 1
+									AND RowNum = 1
+							) S ON T.Donor_Key = S.Donor_Key
+						WHEN MATCHED THEN 
+							UPDATE
+								SET T.Donor_Retention_Type_Code_Byu = S.Donor_Retention_Type_Code_Byu
+								;
+				SET ANSI_WARNINGS ON
+			END TRY 
+			BEGIN CATCH
+				DECLARE @ERROR_NUMBER INT
+				DECLARE @ERROR_SEVERITY INT
+				DECLARE @ERROR_STATE INT
+				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
+				DECLARE @ERROR_LINE INT
+				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
+				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Donor_Retention_Type_Code_Byu'', @Alpha_Step_Number = ''141X'', @Alpha_Step_Name = ''Donor_Retention_Type_Code_Byu - Error'', @Alpha_Result = 0
+				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+			END CATCH 
 		' -- Attribute_14
-	, ' ' -- Attribute_15
-	, ' ' -- Attribute_16
-	, ' ' -- Attribute_17
-	, ' ' -- Attribute_18
+	, 'BEGIN TRY
+				SET ANSI_WARNINGS OFF
+				MERGE INTO _Donor_Dim T
+					USING (
+							SELECT Donor_Key
+								, Donor_Retention_Type_Code_Byui
+								FROM
+									(SELECT Donor_Key
+										, Donor_Retention_Type_Code_Byui
+										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byui) AS RowNum
+										FROM
+											(SELECT A.Donor_Key
+												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byui
+												FROM
+													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+														FROM Ext_Donor_Score A
+															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+														WHERE 1 = 1
+															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+															AND B.New_Inst = ''BYUI''
+															AND A.StatusCode = 1 -- Active
+														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+													) A
+													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																						AND A.ModifiedOn = B.ModifiedOn
+													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+												WHERE 1 = 1
+													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+													AND C.New_Inst = ''BYUI''
+													AND B.StatusCode = 1 -- Active
+											) A
+									) A
+								WHERE 1 = 1
+									AND RowNum = 1
+							) S ON T.Donor_Key = S.Donor_Key
+						WHEN MATCHED THEN 
+							UPDATE
+								SET T.Donor_Retention_Type_Code_Byui = S.Donor_Retention_Type_Code_Byui
+								;
+				SET ANSI_WARNINGS ON
+			END TRY 
+			BEGIN CATCH
+				DECLARE @ERROR_NUMBER INT
+				DECLARE @ERROR_SEVERITY INT
+				DECLARE @ERROR_STATE INT
+				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
+				DECLARE @ERROR_LINE INT
+				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
+				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Donor_Retention_Type_Code_Byui'', @Alpha_Step_Number = ''142X'', @Alpha_Step_Name = ''Donor_Retention_Type_Code_Byui - Error'', @Alpha_Result = 0
+				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+			END CATCH 
+		' -- Attribute_15
+	, 'BEGIN TRY
+				SET ANSI_WARNINGS OFF
+				MERGE INTO _Donor_Dim T
+					USING (
+							SELECT Donor_Key
+								, Donor_Retention_Type_Code_Byuh
+								FROM
+									(SELECT Donor_Key
+										, Donor_Retention_Type_Code_Byuh
+										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byuh) AS RowNum
+										FROM
+											(SELECT A.Donor_Key
+												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byuh
+												FROM
+													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+														FROM Ext_Donor_Score A
+															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+														WHERE 1 = 1
+															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+															AND B.New_Inst = ''BYUH''
+															AND A.StatusCode = 1 -- Active
+														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+													) A
+													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																						AND A.ModifiedOn = B.ModifiedOn
+													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+												WHERE 1 = 1
+													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+													AND C.New_Inst = ''BYUH''
+													AND B.StatusCode = 1 -- Active
+											) A
+									) A
+								WHERE 1 = 1
+									AND RowNum = 1
+							) S ON T.Donor_Key = S.Donor_Key
+						WHEN MATCHED THEN 
+							UPDATE
+								SET T.Donor_Retention_Type_Code_Byuh = S.Donor_Retention_Type_Code_Byuh
+								;
+				SET ANSI_WARNINGS ON
+			END TRY 
+			BEGIN CATCH
+				DECLARE @ERROR_NUMBER INT
+				DECLARE @ERROR_SEVERITY INT
+				DECLARE @ERROR_STATE INT
+				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
+				DECLARE @ERROR_LINE INT
+				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
+				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Donor_Retention_Type_Code_Byuh'', @Alpha_Step_Number = ''143X'', @Alpha_Step_Name = ''Donor_Retention_Type_Code_Byuh - Error'', @Alpha_Result = 0
+				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+			END CATCH 
+		' -- Attribute_16
+	, 'BEGIN TRY
+				SET ANSI_WARNINGS OFF
+				MERGE INTO _Donor_Dim T
+					USING (
+							SELECT Donor_Key
+								, Donor_Retention_Type_Code_Ldsbc
+								FROM
+									(SELECT Donor_Key
+										, Donor_Retention_Type_Code_Ldsbc
+										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Ldsbc) AS RowNum
+										FROM
+											(SELECT A.Donor_Key
+												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Ldsbc
+												FROM
+													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+														FROM Ext_Donor_Score A
+															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+														WHERE 1 = 1
+															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+															AND B.New_Inst = ''LDSBC''
+															AND A.StatusCode = 1 -- Active
+														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+													) A
+													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																						AND A.ModifiedOn = B.ModifiedOn
+													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+												WHERE 1 = 1
+													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+													AND C.New_Inst = ''LDSBC''
+													AND B.StatusCode = 1 -- Active
+											) A
+									) A
+								WHERE 1 = 1
+									AND RowNum = 1
+							) S ON T.Donor_Key = S.Donor_Key
+						WHEN MATCHED THEN 
+							UPDATE
+								SET T.Donor_Retention_Type_Code_Ldsbc = S.Donor_Retention_Type_Code_Ldsbc
+								;
+				SET ANSI_WARNINGS ON
+			END TRY 
+			BEGIN CATCH
+				DECLARE @ERROR_NUMBER INT
+				DECLARE @ERROR_SEVERITY INT
+				DECLARE @ERROR_STATE INT
+				DECLARE @ERROR_PROCEDURE NVARCHAR(500)
+				DECLARE @ERROR_LINE INT
+				DECLARE @ERROR_MESSAGE NVARCHAR(MAX)
+				SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+				SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+				SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+				SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+				SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+				SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Donor_Retention_Type_Code_Ldsbc'', @Alpha_Step_Number = ''144X'', @Alpha_Step_Name = ''Donor_Retention_Type_Code_Ldsbc - Error'', @Alpha_Result = 0
+				, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+			END CATCH 
+		' -- Attribute_17
+	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Merge_Into_Donor_Dim_2'', @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+		' -- Attribute_18
 	, ' ' -- Attribute_19
 	, ' ' -- Attribute_20
 	, 'EXEC dbo.usp_Transform_Data @Transform_Data_Table_Name = ''_Merge_Into_Donor_Dim_2''; ------> HARDCODE <------
