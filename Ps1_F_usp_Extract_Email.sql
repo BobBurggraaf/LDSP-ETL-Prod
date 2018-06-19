@@ -26,7 +26,7 @@ DECLARE @Email_Body VARCHAR(MAX)
 SELECT @Email_Step1_Error_Cnt = (SELECT COUNT(Alpha_Result) FROM LDSPhilanthropiesDW.Oa_Extract.Alpha_Table_1 WHERE Alpha_Result = '0'); 
 
 
-SET @Email_Body = '*DEV* LDSP Extract completed with ' + CONVERT(VARCHAR(12),@Email_Step1_Error_Cnt) + ' errors.'
+SET @Email_Body = '*PROD* LDSP Extract completed with ' + CONVERT(VARCHAR(12),@Email_Step1_Error_Cnt) + ' errors.'
 
 
 CREATE TABLE #Ext_Summary (
@@ -103,7 +103,7 @@ CREATE TABLE #Ext_Summary (
 
 	EXEC msdb.dbo.sp_send_dbmail
 	@recipients = 'fams@LDSChurch.org' 
-	, @subject = '*DEV* LDSP Extract Completed'  -->>>>>> EMAIL SUBJECT <<<<<<<--
+	, @subject = '*PROD* LDSP Extract Completed'  -->>>>>> EMAIL SUBJECT <<<<<<<--
 	, @body = @body
 	, @body_format = 'HTML'
 	, @query = 'SELECT TOP 500 * FROM LDSPhilanthropiesDW.Oa_Extract.Alpha_Table_1'  -- MAXES OUT MEMORY AND WON'T SEND EMAIL
