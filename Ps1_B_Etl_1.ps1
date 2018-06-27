@@ -4118,7 +4118,7 @@ FUNCTION Insert-Alpha_Table_1
 					}				
 					
 			
-			} UNTIL ($Tables_To_Process_Tier_9 -eq 0 -OR $Total_Processing_Time -gt '01:59:00')
+			} UNTIL ($Tables_To_Process_Tier_9 -eq 0 -OR $Total_Processing_Time -gt '02:14:00')
 			
 			
 
