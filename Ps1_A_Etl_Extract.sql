@@ -29535,12 +29535,12 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 	)
 	,
 -- --------------------------
--- _Accounting_Tender_Type_Dim
+-- _Accounting_Tender_Type_
 -- --------------------------
 	( 7 -- Tier
 		, ' ' -- Source_Table
 		, ' ' -- Destination_Table
-		, '_Accounting_Tender_Type_Dim' -- Ext_Table
+		, '_Accounting_Tender_Type_' -- Ext_Table
 		, '	' -- Dest_Create_Fields
 		, '	' -- Dest_Insert_Fields
 		, ' ' -- Dest_Where_Statement
@@ -29602,7 +29602,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				) B ON A.Accounting_Tender_Type_Id = B.Accounting_Tender_Type_Id																
 			' -- Ext_From_Statement
 		, ' AND Accounting_Tender_Type_Key IS NOT NULL		
-			INSERT INTO [LDSPhilanthropiesDW].[dbo]._Accounting_Tender_Type_Dim
+			INSERT INTO [LDSPhilanthropiesDW].[dbo]._Accounting_Tender_Type_
 				VALUES(0,NULL,NULL,NULL,NULL);
 			' -- Ext_Where_Statement
 		, NULL -- Tier_3_Stage
@@ -29664,12 +29664,12 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 	)
 	,
 -- --------------------------
--- _Accounting_Kind_Dim
+-- _Accounting_Kind_
 -- --------------------------
 	( 7 -- Tier
 		, ' ' -- Source_Table
 		, ' ' -- Destination_Table
-		, '_Accounting_Kind_Dim' -- Ext_Table
+		, '_Accounting_Kind_' -- Ext_Table
 		, '	' -- Dest_Create_Fields
 		, '	' -- Dest_Insert_Fields
 		, ' ' -- Dest_Where_Statement
@@ -29734,7 +29734,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				) B ON A.Accounting_Kind_Id = B.Accounting_Kind_Id																
 			' -- Ext_From_Statement
 		, ' AND Accounting_Kind_Key IS NOT NULL
-			INSERT INTO [LDSPhilanthropiesDW].[dbo]._Accounting_Kind_Dim
+			INSERT INTO [LDSPhilanthropiesDW].[dbo]._Accounting_Kind_
 				VALUES(0,NULL,NULL,NULL,NULL);
 			' -- Ext_Where_Statement
 		, NULL -- Tier_3_Stage
@@ -29796,12 +29796,12 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 	)
 	,
 -- --------------------------
--- _Accounting_Transmitted_Dim
+-- _Accounting_Transmitted_
 -- --------------------------
 	( 7 -- Tier
 		, ' ' -- Source_Table
 		, ' ' -- Destination_Table
-		, '_Accounting_Transmitted_Dim' -- Ext_Table
+		, '_Accounting_Transmitted_' -- Ext_Table
 		, '	' -- Dest_Create_Fields
 		, '	' -- Dest_Insert_Fields
 		, ' ' -- Dest_Where_Statement
@@ -29863,7 +29863,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				) B ON A.Accounting_Transmitted_Id = B.Accounting_Transmitted_Id																
 			' -- Ext_From_Statement
 		, 'AND B.Accounting_Transmitted_Key IS NOT NULL 
-			INSERT INTO [LDSPhilanthropiesDW].[dbo]._Accounting_Transmitted_Dim
+			INSERT INTO [LDSPhilanthropiesDW].[dbo]._Accounting_Transmitted_
 				VALUES(0,NULL,NULL,NULL,NULL);
 			' -- Ext_Where_Statement
 		, NULL -- Tier_3_Stage
@@ -29925,12 +29925,12 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 	)
 	,
 -- --------------------------
--- _Accounting_Text_Dim
+-- _Accounting_Text_
 -- --------------------------
 	( 7 -- Tier
 		, ' ' -- Source_Table
 		, ' ' -- Destination_Table
-		, '_Accounting_Text_Dim' -- Ext_Table
+		, '_Accounting_Text_' -- Ext_Table
 		, '	' -- Dest_Create_Fields
 		, '	' -- Dest_Insert_Fields
 		, ' ' -- Dest_Where_Statement
@@ -29979,7 +29979,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 						)
 			) A																
 			' -- Ext_From_Statement
-		, '	INSERT INTO [LDSPhilanthropiesDW].[dbo]._Accounting_Text_Dim
+		, '	INSERT INTO [LDSPhilanthropiesDW].[dbo]._Accounting_Text_
 					VALUES(0,NULL,NULL,NULL,NULL,NULL);
 			' -- Ext_Where_Statement
 		, NULL -- Tier_3_Stage
@@ -32373,6 +32373,345 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 	)
 	,
 -- --------------------------
+-- _Accounting_Tender_Type_Dim
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Accounting_Tender_Type_Dim' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Accounting_Tender_Type_Key INT
+			, Accounting_Tender_Type_Id INT
+			, Accounting_Tender_Type_Desc NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, '	Accounting_Tender_Type_Key
+			, Accounting_Tender_Type_Id
+			, Accounting_Tender_Type_Desc
+			' -- Ext_Insert_Fields
+		, ' DISTINCT Accounting_Tender_Type_Key
+			, Accounting_Tender_Type_Id
+			, Accounting_Tender_Type_Desc
+			' -- Ext_Select_Statement
+		, '	_Accounting_Tender_Type_ 															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '															
+			' -- Ext_From_Statement_3
+		, '
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Extra_1
+		, NULL -- Extra_2
+		, NULL -- Extra_3
+		, NULL -- Extra_4
+		, NULL -- Extra_5
+		, NULL -- Extra_6
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Accounting_Kind_Dim
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Accounting_Kind_Dim' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Accounting_Kind_Key INT
+			, Accounting_Kind_Id INT
+			, Accounting_Kind_Desc NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, '	Accounting_Kind_Key
+			, Accounting_Kind_Id
+			, Accounting_Kind_Desc
+			' -- Ext_Insert_Fields
+		, ' DISTINCT Accounting_Kind_Key
+			, Accounting_Kind_Id
+			, Accounting_Kind_Desc
+			' -- Ext_Select_Statement
+		, ' _Accounting_Kind_																	
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '															
+			' -- Ext_From_Statement_3
+		, '
+			' -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Extra_1
+		, NULL -- Extra_2
+		, NULL -- Extra_3
+		, NULL -- Extra_4
+		, NULL -- Extra_5
+		, NULL -- Extra_6
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Accounting_Transmitted_Dim
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Accounting_Transmitted_Dim' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Accounting_Transmitted_Key INT
+			, Accounting_Transmitted_Id INT
+			, Accounting_Transmitted_Desc NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, '	Accounting_Transmitted_Key
+			, Accounting_Transmitted_Id
+			, Accounting_Transmitted_Desc
+			' -- Ext_Insert_Fields
+		, ' DISTINCT Accounting_Transmitted_Key
+			, Accounting_Transmitted_Id
+			, Accounting_Transmitted_Desc
+			' -- Ext_Select_Statement
+		, '	_Accounting_Transmitted_																
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '															
+			' -- Ext_From_Statement_3
+		, '
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Extra_1
+		, NULL -- Extra_2
+		, NULL -- Extra_3
+		, NULL -- Extra_4
+		, NULL -- Extra_5
+		, NULL -- Extra_6
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Accounting_Text_Dim
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Accounting_Text_Dim' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Accounting_Text_Key INT
+			, Accounting_Text_Description_Text NVARCHAR(4000)
+			, Accounting_Text_Receipt_Text NVARCHAR(4000)
+			, Accounting_Text_Gift_Adjustment_Text NVARCHAR(4000)
+			' -- Ext_Create_Fields
+		, '	Accounting_Text_Key
+			, Accounting_Text_Description_Text
+			, Accounting_Text_Receipt_Text
+			, Accounting_Text_Gift_Adjustment_Text
+			' -- Ext_Insert_Fields
+		, ' Accounting_Text_Key
+			, Accounting_Text_Description_Text
+			, Accounting_Text_Receipt_Text
+			, Accounting_Text_Gift_Adjustment_Text
+			' -- Ext_Select_Statement
+		, '	_Accounting_Text_															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '															
+			' -- Ext_From_Statement_3
+		, '
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Extra_1
+		, NULL -- Extra_2
+		, NULL -- Extra_3
+		, NULL -- Extra_4
+		, NULL -- Extra_5
+		, NULL -- Extra_6
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
 -- _Initiative_Fact
 -- --------------------------
 	( 8 -- Tier
@@ -32976,10 +33315,10 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 							AND B.StatusCode != 1
 					) C ON A.Donation_Key = C.Donation_Key
 				LEFT JOIN _Accounting_Dim D ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(D.Donation_Key,D.Accounting_Key)
-				LEFT JOIN _Accounting_Tender_Type_Dim E ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(E.Donation_Key,E.Accounting_Key)
-				LEFT JOIN _Accounting_Kind_Dim F ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(F.Donation_Key,F.Accounting_Key)
-				LEFT JOIN _Accounting_Transmitted_Dim G ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(G.Donation_Key,G.Accounting_Key)
-				LEFT JOIN _Accounting_Text_Dim H ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(H.Donation_Key,H.Accounting_Key)
+				LEFT JOIN _Accounting_Tender_Type_ E ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(E.Donation_Key,E.Accounting_Key)
+				LEFT JOIN _Accounting_Kind_ F ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(F.Donation_Key,F.Accounting_Key)
+				LEFT JOIN _Accounting_Transmitted_ G ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(G.Donation_Key,G.Accounting_Key)
+				LEFT JOIN _Accounting_Text_ H ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(H.Donation_Key,H.Accounting_Key)
 				LEFT JOIN Uf_Reporting_Group_Key() I ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(I.Donation_Key,I.Accounting_Key)
 				LEFT JOIN _Accounting_Week J ON A.New_AccountingDate = J.Accounting_Week_Date
 				LEFT JOIN _Donation_Fact K ON A.Donation_Key = K.Donation_Key AND K.Plus_Type = [Hard]															
