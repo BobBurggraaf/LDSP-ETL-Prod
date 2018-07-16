@@ -9930,6 +9930,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, Initiative_Proposal_Amt MONEY
 		, Initiative_Total_Committed_Amt MONEY
 		, Initiative_Total_Given_Amt MONEY
+		, Initiative_Has_Expectancy NVARCHAR(1)
 		' -- Create_Table
 	, ' Donor_Ldsp_Id
 		, Initiative_Key
@@ -9956,6 +9957,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 		, Initiative_Proposal_Amt
 		, Initiative_Total_Committed_Amt
 		, Initiative_Total_Given_Amt
+		, Initiative_Has_Expectancy
 		' -- Insert_Fields
 	, ' ' -- From_Statement
 	, ' ' -- Where_Statement
@@ -9997,6 +9999,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				, Initiative_Proposal_Amt
 				, Initiative_Total_Committed_Amt
 				, Initiative_Total_Given_Amt
+				, Initiative_Has_Expectancy
 			)
 			SELECT C.Donor_Ldsp_Id
 				, A.Initiative_Key
@@ -10023,6 +10026,7 @@ INSERT INTO LDSPhilanthropiesDW.dbo.Create_Trans_Load_Tables
 				, B.Initiative_Proposal_Amt
 				, B.Initiative_Total_Committed_Amt
 				, B.Initiative_Total_Given_Amt
+				, A.Initiative_Has_Expectancy
 				FROM _Initiative_Dim A
 					INNER JOIN _Initiative_Fact B ON A.Initiative_Key = B.Initiative_Key
 					INNER JOIN _Donor_Dim C ON B.Donor_Key = C.Donor_Key
