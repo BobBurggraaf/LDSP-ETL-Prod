@@ -29107,7 +29107,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				, A.New_AssociatedPledge AS Expectancy_Key
 				, [Zero]
 				FROM
-					(SELECT A.ContactId
+					(SELECT A.Donor_Key AS ContactId
 						, New_ConstituentDonor
 						, New_OrganizationDonor
 						, B.New_FundAccount
@@ -29130,7 +29130,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 						, COALESCE(B.[Zero],C.[Zero]) AS [Zero]
 						, COALESCE(B.[Y],C.[Y]) AS [Y]
 						, COALESCE(B.[N],C.[N]) AS [N]
-						FROM dbo._Numbered_ContactIds A
+						FROM dbo._All_Donors_ A
 							LEFT JOIN 
 								(SELECT CONVERT(NVARCHAR(100),COALESCE(New_ConstituentDonor,New_OrganizationDonor)) AS ContactId
 									, New_ConstituentDonor
