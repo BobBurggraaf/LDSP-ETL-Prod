@@ -29151,7 +29151,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 									FROM dbo._Gift_ A
 									WHERE 1 = 1
 										AND StatusCode != 100000003 -- i5 Deleted
-								) B ON A.ContactId = B.ContactId
+								) B ON A.Donor_Key = B.ContactId
 							LEFT JOIN 
 								(SELECT New_RelatedConstituent
 									, New_OrganizationId
