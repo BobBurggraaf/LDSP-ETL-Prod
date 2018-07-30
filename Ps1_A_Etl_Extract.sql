@@ -25571,6 +25571,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Period NVARCHAR(1) DEFAULT ''.''
 			, Blank_Space NVARCHAR(1) DEFAULT ''''
 			, Hard NVARCHAR(4) DEFAULT ''Hard''
+			, History NVARCHAR(10) DEFAULT ''History''
 			' -- Ext_Create_Fields
 		, '	ContactId
 			, Accounting_Key
@@ -29358,7 +29359,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, A.Accounting_Post_Date
 			, A.Accounting_Gift_Number
 			, A.Accounting_Related_Gift_Number
-			, A.[Zero] AS Accounting_Fact_Key
+			, C.Accounting_Fact_Key
 			, A.Accounting_Gift_Source
 			, A.Accounting_Adjustment_Yn
 			, A.Accounting_Same_Month_Adj_Yn
@@ -29373,13 +29374,21 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				, A.Plus_GiftNumber AS Accounting_Gift_Number
 				, B.New_GiftNumber AS Accounting_Related_Gift_Number
 				, B.Plus_GiftSource AS Accounting_Gift_Source
-				, A.[N] AS Accounting_Adjustment_Yn
+				, CASE WHEN C.Donation_Key IS NOT NULL THEN A.[Y] ELSE A.[N] END AS Accounting_Adjustment_Yn
 				, A.[N] AS Accounting_Same_Month_Adj_Yn
 				, A.[N] AS Accounting_Current_Year_Adj_Yn
 				, NULL AS Accounting_Recognition_Credit_Recipients
 				, A.[Zero]
 				FROM dbo._Gift_Hist_ A
 					LEFT JOIN _Donation_Dim B ON A.New_RelatedGift = B.Donation_Key
+					LEFT JOIN 
+						(SELECT Donation_Key, COUNT(*) AS Cnt
+							FROM _Accounting_Fact_Prep_ A
+							WHERE 1 = 1
+								AND Table_Source = [History]
+							GROUP BY Donation_Key
+							HAVING COUNT(*) > 1						
+						) C ON A.New_RelatedGift = C.Donation_Key
 			UNION ALL
 			SELECT CONVERT(NVARCHAR(100), A.New_GiftId) AS Donation_Key  
 				, [Zero] AS Accounting_Key
@@ -29397,7 +29406,8 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				FROM dbo._Gift_ A
 					LEFT JOIN _Donation_GiftSource_ C ON A.Plus_GiftSource = C.Column_Value
 			) A 
-			LEFT JOIN Uf_Accounting_Recognition_Credit_Recipients() B ON A.Donation_Key = B.Donation_Key																
+			LEFT JOIN Uf_Accounting_Recognition_Credit_Recipients() B ON A.Donation_Key = B.Donation_Key
+			LEFT JOIN _Accounting_Fact_Prep_ C ON CONCAT(A.Donation_Key,A.Accounting_Key) = CONCAT(C.Donation_Key,C.Accounting_Key)
 			' -- Ext_From_Statement
 		, ' MERGE INTO _Accounting_Dim T
 				USING (
