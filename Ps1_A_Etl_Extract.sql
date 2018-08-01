@@ -29398,13 +29398,21 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				, NULL AS Accounting_Gift_Number
 				, A.New_GiftNumber AS Accounting_Related_Gift_Number
 				, C.Column_Label AS Accounting_Gift_Source
-				, A.[N] AS Accounting_Adjustment_Yn
+				, CASE WHEN D.Donation_Key IS NOT NULL THEN A.[Y] ELSE A.[N] END AS Accounting_Adjustment_Yn
 				, A.[N] AS Accounting_Same_Month_Adj_Yn
 				, A.[N] AS Accounting_Current_Year_Adj_Yn
 				, NULL AS Accounting_Recognition_Credit_Recipients
 				, A.[Zero]
 				FROM dbo._Gift_ A
 					LEFT JOIN _Donation_GiftSource_ C ON A.Plus_GiftSource = C.Column_Value
+					LEFT JOIN 
+						(SELECT Donation_Key, COUNT(*) AS Cnt
+							FROM _Accounting_Fact_Prep_ A
+							WHERE 1 = 1
+								AND Table_Source = [History]
+							GROUP BY Donation_Key
+							HAVING COUNT(*) > 1						
+						) D ON A.New_GiftId = D.Donation_Key
 			) A 
 			LEFT JOIN Uf_Accounting_Recognition_Credit_Recipients() B ON A.Donation_Key = B.Donation_Key
 			LEFT JOIN _Accounting_Fact_Prep_ C ON CONCAT(A.Donation_Key,A.Accounting_Key) = CONCAT(C.Donation_Key,C.Accounting_Key)
