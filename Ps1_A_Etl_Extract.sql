@@ -252,6 +252,10 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, ModifiedOn DATETIME
 			, StateCode INT
 			, StatusCode INT
+			, Annual_and_Monthly NVARCHAR(25) DEFAULT ''Annual and Monthly''
+			, Annual NVARCHAR(25) DEFAULT ''Annual''
+			, Monthly NVARCHAR(25) DEFAULT ''Monthly''
+			, None NVARCHAR(25) DEFAULT ''None''
 			' -- Ext_Create_Fields
 		, 'AccountId
 			, New_LdspId
@@ -1670,6 +1674,10 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, CreatedOn DATETIME
 			, ModifiedOn DATETIME
 			, StateCode INT
+			, Annual_and_Monthly NVARCHAR(25) DEFAULT ''Annual and Monthly''
+			, Annual NVARCHAR(25) DEFAULT ''Annual''
+			, Monthly NVARCHAR(25) DEFAULT ''Monthly''
+			, None NVARCHAR(25) DEFAULT ''None''
 			' -- Ext_Create_Fields
 		, 'ContactId
 			, New_Ldspid
@@ -2004,6 +2012,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, ModifiedOn DATETIME
 			, StateCode INT
 			, StatusCode INT
+			, Lds_OneAccordConstituent UNIQUEIDENTIFIER
+			, Lds_OneAccordOrganization UNIQUEIDENTIFIER
+			, Lds_ConstituentMatchedBy UNIQUEIDENTIFIER
 			' -- Dest_Create_Fields
 		, 'Lds_WebSubscriptionId
 			, Lds_AddressMatch
@@ -2042,6 +2053,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, ModifiedOn
 			, StateCode
 			, StatusCode
+			, Lds_OneAccordConstituent
+			, Lds_OneAccordOrganization
+			, Lds_ConstituentMatchedBy
 			' -- Dest_Insert_Fields
 		, ' ' -- Dest_Where_Statement
 		, 'Lds_WebSubscriptionId UNIQUEIDENTIFIER
@@ -2081,6 +2095,12 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, ModifiedOn DATETIME
 			, StateCode INT
 			, StatusCode INT
+			, Lds_OneAccordConstituent UNIQUEIDENTIFIER
+			, Lds_OneAccordOrganization UNIQUEIDENTIFIER
+			, Lds_ConstituentMatchedBy UNIQUEIDENTIFIER
+			, Y NVARCHAR(1) DEFAULT ''Y''
+			, N NVARCHAR(1) DEFAULT ''N''
+			, Zero NVARCHAR(1) DEFAULT ''0''
 			' -- Ext_Create_Fields
 		, 'Lds_WebSubscriptionId
 			, Lds_AddressMatch
@@ -2119,6 +2139,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, ModifiedOn
 			, StateCode
 			, StatusCode
+			, Lds_OneAccordConstituent
+			, Lds_OneAccordOrganization
+			, Lds_ConstituentMatchedBy
 			' -- Ext_Insert_Fields
 		, 'Lds_WebSubscriptionId
 			, Lds_AddressMatch
@@ -2163,6 +2186,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 					ELSE DATEADD(hh,-7,A.ModifiedOn) END AS ModifiedOn
 			, StateCode
 			, StatusCode
+			, Lds_OneAccordConstituent
+			, Lds_OneAccordOrganization
+			, Lds_ConstituentMatchedBy
 			' -- Ext_Select_Statement
 		, 'Oa_Extract.Lds_WebSubscriptionBase A
 				LEFT JOIN dbo._MDT_Conversion_Dim B ON YEAR(A.Lds_NextPaymentDate) = B.Date_Year
@@ -4206,60 +4232,60 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, ModifiedOn
 			, StateCode
 			' -- Ext_Insert_Fields
-		, 'New_ConstituentDonor
-			, New_OrganizationDonor
-			, New_FundAccount
-			, New_InstitutionalHierarchyId
-			, New_AssociatedPledge
-			, New_GiftAmount
-			, New_BatchNumber
-			, New_GiftId
-			, OwnerId
-			, New_GiftNumber
-			, StatusCode
-			, CONVERT(NVARCHAR(4000),SUBSTRING(Plus_ReceiptText,1,4000)) AS Plus_ReceiptText
-			, CONVERT(NVARCHAR(4000),SUBSTRING(Plus_SpecialGiftInstructions,1,4000)) AS Plus_SpecialGiftInstructions
-			, Plus_CheckNumber
-			, Plus_GiftSource
-			, Plus_Kind
-			, New_TenderType
+		, 'A.New_ConstituentDonor
+			, A.New_OrganizationDonor
+			, A.New_FundAccount
+			, A.New_InstitutionalHierarchyId
+			, A.New_AssociatedPledge
+			, A.New_GiftAmount
+			, A.New_BatchNumber
+			, A.New_GiftId
+			, A.OwnerId
+			, A.New_GiftNumber
+			, A.StatusCode
+			, CONVERT(NVARCHAR(4000),SUBSTRING(A.Plus_ReceiptText,1,4000)) AS Plus_ReceiptText
+			, CONVERT(NVARCHAR(4000),SUBSTRING(A.Plus_SpecialGiftInstructions,1,4000)) AS Plus_SpecialGiftInstructions
+			, A.Plus_CheckNumber
+			, A.Plus_GiftSource
+			, A.Plus_Kind
+			, A.New_TenderType
 			, CASE WHEN DATENAME(dy,A.New_AccountingDate) BETWEEN B.Mdt_Begin_Date_Number AND B.Mdt_End_Date_Number THEN DATEADD(hh,-6,A.New_AccountingDate)
 					ELSE DATEADD(hh,-7,A.New_AccountingDate) END AS New_AccountingDate
 			, CASE WHEN DATENAME(dy,A.New_ReceiptDate) BETWEEN C.Mdt_Begin_Date_Number AND C.Mdt_End_Date_Number THEN DATEADD(hh,-6,A.New_ReceiptDate)
 					ELSE DATEADD(hh,-7,A.New_ReceiptDate) END AS New_ReceiptDate
 			, CASE WHEN DATENAME(dy,A.New_PostDate) BETWEEN D.Mdt_Begin_Date_Number AND D.Mdt_End_Date_Number THEN DATEADD(hh,-6,A.New_PostDate)
 					ELSE DATEADD(hh,-7,A.New_PostDate) END AS New_PostDate
-			, Plus_PlannedGift
-			, New_Transmitted
-			, Plus_AnonymousGift
-			, Plus_ReceiptDeliveryMethod
-			, CONVERT(NVARCHAR(4000),SUBSTRING(Plus_GiftInstructions,1,4000)) AS Plus_GiftInstructions
-			, CONVERT(NVARCHAR(4000),SUBSTRING(Plus_AcknowledgementInstructions,1,4000)) AS Plus_AcknowledgementInstructions
-			, Plus_ExcludeFromReport
-			, Plus_IncludeOnYearEndReceipt
-			, Plus_GoodsServicesProvided
-			, Plus_EntitledBenefitValue
-			, Plus_AcknowledgeContact
-			, Plus_ContactRole
-			, Plus_Salutation
-			, Plus_Signer
-			, Plus_NoAcknowledgement
-			, CASE WHEN Plus_ParentGift IS NOT NULL THEN New_GiftNumber ELSE NULL END AS Match_Gift_Number
-			, Plus_Appeal
-			, Plus_MatchExpected
-			, New_Batch
-			, CONVERT(NVARCHAR(4000),SUBSTRING(Plus_Description,1,4000)) AS Plus_Description
-			, Lds_RecurringGiftRule
-			, Lds_RecurringGiftGroup
-			, Plus_DonorType
-			, Lds_TelefundGift
-			, Plus_Cid
-			, Plus_Cde2
+			, A.Plus_PlannedGift
+			, A.New_Transmitted
+			, A.Plus_AnonymousGift
+			, A.Plus_ReceiptDeliveryMethod
+			, CONVERT(NVARCHAR(4000),SUBSTRING(A.Plus_GiftInstructions,1,4000)) AS Plus_GiftInstructions
+			, CONVERT(NVARCHAR(4000),SUBSTRING(A.Plus_AcknowledgementInstructions,1,4000)) AS Plus_AcknowledgementInstructions
+			, A.Plus_ExcludeFromReport
+			, A.Plus_IncludeOnYearEndReceipt
+			, A.Plus_GoodsServicesProvided
+			, A.Plus_EntitledBenefitValue
+			, A.Plus_AcknowledgeContact
+			, A.Plus_ContactRole
+			, A.Plus_Salutation
+			, A.Plus_Signer
+			, A.Plus_NoAcknowledgement
+			, G.New_GiftNumber AS Match_Gift_Number
+			, A.Plus_Appeal
+			, A.Plus_MatchExpected
+			, A.New_Batch
+			, CONVERT(NVARCHAR(4000),SUBSTRING(A.Plus_Description,1,4000)) AS Plus_Description
+			, A.Lds_RecurringGiftRule
+			, A.Lds_RecurringGiftGroup
+			, A.Plus_DonorType
+			, A.Lds_TelefundGift
+			, A.Plus_Cid
+			, A.Plus_Cde2
 			, CASE WHEN DATENAME(dy,A.CreatedOn) BETWEEN E.Mdt_Begin_Date_Number AND E.Mdt_End_Date_Number THEN DATEADD(hh,-6,A.CreatedOn)
 					ELSE DATEADD(hh,-7,A.CreatedOn) END AS CreatedOn
 			, CASE WHEN DATENAME(dy,A.ModifiedOn) BETWEEN F.Mdt_Begin_Date_Number AND F.Mdt_End_Date_Number THEN DATEADD(hh,-6,A.ModifiedOn)
 					ELSE DATEADD(hh,-7,A.ModifiedOn) END AS ModifiedOn
-			, StateCode
+			, A.StateCode
 			' -- Ext_Select_Statement
 		, 'Oa_Extract.New_GiftBase A
 				LEFT JOIN dbo._MDT_Conversion_Dim B ON YEAR(A.New_AccountingDate) = B.Date_Year
@@ -4268,6 +4294,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				
 				LEFT JOIN dbo._MDT_Conversion_Dim E ON YEAR(A.CreatedOn) = E.Date_Year
 				LEFT JOIN dbo._MDT_Conversion_Dim F ON YEAR(A.ModifiedOn) = F.Date_Year
+				LEFT JOIN Oa_Extract.New_GiftBase G ON A.Plus_ParentGift = G.New_GiftId
 			' -- Ext_From_Statement
 		, ' ' -- Ext_Where_Statement
 		, NULL -- Tier_3_Stage
@@ -8398,6 +8425,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, StatusCode INT
 			, CreatedOn DATETIME
 			, ModifiedOn DATETIME
+			, Plus_OneAccordConstituent UNIQUEIDENTIFIER
+			, Lds_OneAccordOrganization UNIQUEIDENTIFIER
+			, ModifiedBy UNIQUEIDENTIFIER
 			' -- Dest_Create_Fields
 		, ' Plus_WebTransactionId
 			, Plus_TransactionId
@@ -8439,6 +8469,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, StatusCode
 			, CreatedOn
 			, ModifiedOn
+			, Plus_OneAccordConstituent
+			, Lds_OneAccordOrganization
+			, ModifiedBy
 			' -- Dest_Insert_Fields
 		, ' ' -- Dest_Where_Statement
 		, ' Plus_WebTransactionId UNIQUEIDENTIFIER
@@ -8481,6 +8514,12 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, StatusCode INT
 			, CreatedOn DATETIME
 			, ModifiedOn DATETIME
+			, Plus_OneAccordConstituent UNIQUEIDENTIFIER
+			, Lds_OneAccordOrganization UNIQUEIDENTIFIER
+			, ModifiedBy UNIQUEIDENTIFIER
+			, Y NVARCHAR(1) DEFAULT ''Y''
+			, N NVARCHAR(1) DEFAULT ''N''
+			, Zero NVARCHAR(1) DEFAULT ''0''
 			' -- Ext_Create_Fields
 		, ' Plus_WebTransactionId
 			, Plus_TransactionId
@@ -8522,6 +8561,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, StatusCode
 			, CreatedOn
 			, ModifiedOn
+			, Plus_OneAccordConstituent
+			, Lds_OneAccordOrganization
+			, ModifiedBy
 			' -- Ext_Insert_Fields
 		, ' Plus_WebTransactionId
 			, Plus_TransactionId
@@ -8566,6 +8608,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 					ELSE DATEADD(hh,-7,A.CreatedOn) END AS CreatedOn
 			, CASE WHEN DATENAME(dy,A.ModifiedOn) BETWEEN D.Mdt_Begin_Date_Number AND D.Mdt_End_Date_Number THEN DATEADD(hh,-6,A.ModifiedOn)
 					ELSE DATEADD(hh,-7,A.ModifiedOn) END AS ModifiedOn
+			, Plus_OneAccordConstituent
+			, Lds_OneAccordOrganization
+			, ModifiedBy
 			' -- Ext_Select_Statement
 		, 'Oa_Extract.Plus_WebTransactionBase A
 				LEFT JOIN dbo._MDT_Conversion_Dim B ON YEAR(A.Plus_ReceiptDate) = B.Date_Year
@@ -9050,6 +9095,17 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Plus_ConstituentNote NVARCHAR(100) DEFAULT ''Plus_ConstituentNote''
 			, Plus_CoordinatingLiaisonNeeded NVARCHAR(100) DEFAULT ''Plus_CoordinatingLiaisonNeeded''
 			, Plus_ReasonForDrop NVARCHAR(100) DEFAULT ''Plus_ReasonForDrop''
+			, Lds_WebSubscription NVARCHAR(100) DEFAULT ''Lds_WebSubscription''
+			, Lds_AddressMatch NVARCHAR(100) DEFAULT ''Lds_AddressMatch''
+			, Lds_ConstituentMatchStatus NVARCHAR(100) DEFAULT ''Lds_ConstituentMatchStatus''
+			, Lds_DataEntryStatus NVARCHAR(100) DEFAULT ''Lds_DataEntryStatus''
+			, Lds_DonorType NVARCHAR(100) DEFAULT ''Lds_DonorType''
+			, Lds_OptIntoEmailCommunication NVARCHAR(100) DEFAULT ''Lds_OptIntoEmailCommunication''
+			, Lds_PaymentType NVARCHAR(100) DEFAULT ''Lds_PaymentType''
+			, Lds_TenderName NVARCHAR(100) DEFAULT ''Lds_TenderName''
+			, Lds_TypeOfDonation NVARCHAR(100) DEFAULT ''Lds_TypeOfDonation''
+			, StateCode NVARCHAR(100) DEFAULT ''StateCode''
+			, Account NVARCHAR(100) DEFAULT ''Account''
 			' -- Ext_Create_Fields
 		, 'Physical_Table_Name
 			, Column_Name
@@ -9183,6 +9239,107 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Plus_ConstituentNote NVARCHAR(100) DEFAULT ''Plus_ConstituentNote''
 			, Plus_CoordinatingLiaisonNeeded NVARCHAR(100) DEFAULT ''Plus_CoordinatingLiaisonNeeded''
 			, Plus_ReasonForDrop NVARCHAR(100) DEFAULT ''Plus_ReasonForDrop''
+			' -- Ext_Create_Fields
+		, 'Physical_Table_Name
+			, Column_Name
+			, Column_Label
+			, Column_Value
+			' -- Ext_Insert_Fields
+		, ' DISTINCT  UPPER(B.PhysicalName) AS Physical_Table_Name
+			, UPPER(A.AttributeName) AS Column_Name
+			, CONVERT(NVARCHAR(400),A.Value) AS Column_Label
+			, A.AttributeValue AS Column_Value
+			' -- Ext_Select_Statement
+		, ' Ext_String_Map A
+				INNER JOIN Ext_Entity B ON A.ObjectTypeCode = B.ObjectTypeCode
+			' -- Ext_From_Statement
+		, 'AND LangId = 1033
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10		
+	)
+	,
+-- --------------------------
+-- Picklist Table 4
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Picklist_4' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Physical_Table_Name NVARCHAR(64)
+			, Column_Name NVARCHAR(100)
+			, Column_Label NVARCHAR(400)
+			, Column_Value INT
+			, Plus_WebTransaction NVARCHAR(100) DEFAULT ''PLUS_WEBTRANSACTION''
+			, Lds_DataEntryStatus NVARCHAR(100) DEFAULT ''Lds_DataEntryStatus''
+			, Plus_AddressMatch NVARCHAR(100) DEFAULT ''Plus_AddressMatch''
+			, Plus_InMemoriamFlag NVARCHAR(100) DEFAULT ''Plus_InMemoriamFlag''
+			, Plus_InMemoryOfType NVARCHAR(100) DEFAULT ''Plus_InMemoryOfType''
+			, Plus_NotifyByCardFlag NVARCHAR(100) DEFAULT ''Plus_NotifyByCardFlag''
+			, Plus_NotifyByEmailFlag NVARCHAR(100) DEFAULT ''Plus_NotifyByEmailFlag''
+			, Plus_NotifyFamilyFriendsFlag NVARCHAR(100) DEFAULT ''Plus_NotifyFamilyFriendsFlag''
+			, Plus_NotifyPersonFlag NVARCHAR(100) DEFAULT ''Plus_NotifyPersonFlag''
+			, Plus_OptIntoEmailCommunication NVARCHAR(100) DEFAULT ''Plus_OptIntoEmailCommunication''
+			, Plus_PaymentType NVARCHAR(100) DEFAULT ''Plus_PaymentType''
+			, Plus_RecurredDonationStatus NVARCHAR(100) DEFAULT ''Plus_RecurredDonationStatus''
+			, Plus_TenderName NVARCHAR(100) DEFAULT ''Plus_TenderName''
+			, Plus_TypeOfDonation NVARCHAR(100) DEFAULT ''Plus_TypeOfDonation''
+			, StateCode NVARCHAR(100) DEFAULT ''StateCode''
+			, StatusCode NVARCHAR(100) DEFAULT ''StatusCode''
 			' -- Ext_Create_Fields
 		, 'Physical_Table_Name
 			, Column_Name
@@ -9430,6 +9587,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 		, ' ' -- Dest_Insert_Fields
 		, ' ' -- Dest_Where_Statement
 		, 'Donor_Key NVARCHAR(100)
+			, Y NVARCHAR(1) DEFAULT ''Y''
+			, N NVARCHAR(1) DEFAULT ''N''
+			, None NVARCHAR(5) DEFAULT ''None''
 			' -- Ext_Create_Fields
 		, 'Donor_Key
 			' -- Ext_Insert_Fields
@@ -18148,6 +18308,2268 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 	)
 ,
 -- --------------------------
+-- _Lds_AddressMatch_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Lds_AddressMatch_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [LDS_WEBSUBSCRIPTION] AND Column_Name = [LDS_ADDRESSMATCH]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Lds_ConstituentMatchStatus_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Lds_ConstituentMatchStatus_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [LDS_WEBSUBSCRIPTION] AND Column_Name = [Lds_ConstituentMatchStatus]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Lds_DataEntryStatus_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Lds_DataEntryStatus_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [LDS_WEBSUBSCRIPTION] AND Column_Name = [Lds_DataEntryStatus]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Lds_DonorType_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Lds_DonorType_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [LDS_WEBSUBSCRIPTION] AND Column_Name = [Lds_DonorType]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Lds_OptIntoEmailCommunication_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Lds_OptIntoEmailCommunication_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [LDS_WEBSUBSCRIPTION] AND Column_Name = [Lds_OptIntoEmailCommunication]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,	
+-- --------------------------
+-- _Lds_PaymentType_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Lds_PaymentType_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [LDS_WEBSUBSCRIPTION] AND Column_Name = [Lds_PaymentType]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Lds_TenderName_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Lds_TenderName_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [LDS_WEBSUBSCRIPTION] AND Column_Name = [Lds_TenderName]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Lds_TypeOfDonation_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Lds_TypeOfDonation_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [LDS_WEBSUBSCRIPTION] AND Column_Name = [Lds_TypeOfDonation]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _WebSubscription_StateCode_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebSubscription_StateCode_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [LDS_WEBSUBSCRIPTION] AND Column_Name = [StateCode]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _WebSubscription_StatusCode_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebSubscription_StatusCode_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [LDS_WEBSUBSCRIPTION] AND Column_Name = [StatusCode]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Contact_StateCode_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Contact_StateCode_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [CONTACT] AND Column_Name = [StateCode]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Contact_StatusCode_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Contact_StatusCode_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [Contact] AND Column_Name = [StatusCode]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Account_StateCode_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Account_StateCode_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [ACCOUNT] AND Column_Name = [StateCode]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Account_StatusCode_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Account_StatusCode_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_2
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [ACCOUNT] AND Column_Name = [StatusCode]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _WebTransaction_DataEntryStatus_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_DataEntryStatus_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Lds_DataEntryStatus]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_AddressMatch_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_AddressMatch_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_AddressMatch]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_InMemoriamFlag_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_InMemoriamFlag_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_InMemoriamFlag]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_InMemoryOfType_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_InMemoryOfType_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_InMemoryOfType]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_NotifyByCardFlag_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_NotifyByCardFlag_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_NotifyByCardFlag]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_NotifyByEmailFlag_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_NotifyByEmailFlag_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_NotifyByEmailFlag]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_NotifyFamilyFriendsFlag_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_NotifyFamilyFriendsFlag_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_NotifyFamilyFriendsFlag]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_NotifyPersonFlag_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_NotifyPersonFlag_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_NotifyPersonFlag]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_OptIntoEmailCommunication_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_OptIntoEmailCommunication_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_OptIntoEmailCommunication]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_PaymentType_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_PaymentType_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_PaymentType]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_RecurredDonationStatus_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_RecurredDonationStatus_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_RecurredDonationStatus]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_TenderName_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_TenderName_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_TenderName]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_Plus_TypeOfDonation_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_Plus_TypeOfDonation_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [Plus_TypeOfDonation]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_StateCode_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_StateCode_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [StateCode]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
+-- _WebTransaction_StatusCode_
+-- --------------------------
+	( 2 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_WebTransaction_StatusCode_' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Column_Value INT
+			, Column_Label  NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Insert_Fields
+		, 'Column_Value
+			, Column_Label
+			' -- Ext_Select_Statement
+		, '_Picklist_4
+			' -- Ext_From_Statement
+		, 'AND Physical_Table_Name = [PLUS_WEBTRANSACTION] AND Column_Name = [StatusCode]
+			' -- Ext_Where_Statement	
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL  
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,	
+-- --------------------------
 -- Gift Rules - _Gift_
 -- --------------------------
 	( 3 -- Tier
@@ -18824,6 +21246,13 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Hier_Association_Usage_Yn  NVARCHAR(1) 
 			, Hier_Donation_Usage_Yn  NVARCHAR(1)
 			, New_Inst NVARCHAR(100)
+			, BYU NVARCHAR(5) DEFAULT ''BYU''
+			, BYUI NVARCHAR(5) DEFAULT ''BYUI''
+			, BYUH NVARCHAR(5) DEFAULT ''BYUH''
+			, LDSBC NVARCHAR(5) DEFAULT ''LDSBC''
+			, Church NVARCHAR(10) DEFAULT ''Church''
+			, PCC NVARCHAR(5) DEFAULT ''PCC''
+			, CES NVARCHAR(5) DEFAULT ''CES''			
 			' -- Ext_Create_Fields
 		, 'Hier_Key 
 			, Hier_Name
@@ -18868,7 +21297,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 		, 'Ext_Institution A 
 			' -- Ext_From_Statement
 		, 'INSERT INTO _Hier_Dim
-			VALUES(0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+			VALUES(0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 			' -- Ext_Where_Statement	
 		, NULL -- Tier_3_Stage
 		, NULL -- Tier_3_Stage_DateTime
@@ -21163,6 +23592,17 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, ConstituentId NVARCHAR(100)
 			, AccountId NVARCHAR(100)
 			, New_Id NVARCHAR(100)
+			, BYU_Student_ID NVARCHAR(30) DEFAULT ''BYU Student ID''
+			, BYU_Idaho_Student_ID NVARCHAR(30) DEFAULT ''BYU Idaho Student ID''
+			, BYU_Hawaii_Student_ID NVARCHAR(30) DEFAULT ''BYU Hawaii Student ID''
+			, LDSBC_Student_ID NVARCHAR(30) DEFAULT ''LDSBC Student ID''
+			, BYU_Employee_ID NVARCHAR(30) DEFAULT ''BYU Employee ID''
+			, BYU_Idaho_Employee_ID NVARCHAR(30) DEFAULT ''BYU Idaho Employee ID''
+			, BYU_Hawaii_Employee_ID NVARCHAR(30) DEFAULT ''BYU Hawaii Employee ID''
+			, LDSBC_Employee_ID NVARCHAR(30) DEFAULT ''LDSBC Employee''
+			, CES_ID NVARCHAR(30) DEFAULT ''CES ID''
+			, Church_Payroll_ID NVARCHAR(30) DEFAULT ''Church Payroll ID''
+			, Star NVARCHAR(1) DEFAULT ''*''
 			' -- Ext_Create_Fields
 		, 'ContactId 
 			, Id_Key 
@@ -21241,7 +23681,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			' -- Ext_From_Statement
 		, 'AND C.RowNumber = 1
 			INSERT INTO _Id_Dim
-				VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL);
+				VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 			' -- Ext_Where_Statement	
 		, NULL -- Tier_3_Stage
 		, NULL -- Tier_3_Stage_DateTime
@@ -21458,6 +23898,11 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Graduated_In_Current_Academic_Year NVARCHAR(1)
 			, Current_Year_Plus_4_Student NVARCHAR(1)
 			, Current_Year_Plus_4_Graduate NVARCHAR(1)
+			, Y NVARCHAR(1) DEFAULT ''Y''
+			, BYU NVARCHAR(5) DEFAULT ''BYU''
+			, BYUI NVARCHAR(5) DEFAULT ''BYUI''
+			, BYUH NVARCHAR(5) DEFAULT ''BYUH''
+			, LDSBC NVARCHAR(5) DEFAULT ''LDSBC''
 			' -- Ext_Create_Fields
 		, 'Student_Key
 			, Student_Group_Key
@@ -21588,7 +24033,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 												
 			' -- Ext_From_Statement
 		, 'INSERT INTO _Student_Dim
-			VALUES(0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL); 
+			VALUES(0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL); 
 			' -- Ext_Where_Statement	
 		, NULL -- Tier_3_Stage
 		, NULL -- Tier_3_Stage_DateTime
@@ -24821,6 +27266,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Law_School NVARCHAR(50) DEFAULT ''Law School, J. Reuben Clark''
 			, Graduated NVARCHAR(50) DEFAULT ''Graduated''
 			, Not_Graduated NVARCHAR(50) DEFAULT ''Not Graduated''
+			, N234064 NVARCHAR(10) DEFAULT ''234064''
+			, N234060 NVARCHAR(10) DEFAULT ''234060''
+			, Current_Student NVARCHAR(25) DEFAULT ''Current Student''
 			' -- Ext_Create_Fields
 		, 'ContactId
 			, Alumni_Key
@@ -25034,7 +27482,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 											, E.New_MajorName AS Emphasis             											
 			' -- Ext_From_Statement
 		, 'INSERT INTO _Alumni_Dim
-			VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+			VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 			CREATE NONCLUSTERED INDEX IX_New_University 
 				ON _Alumni_Dim(New_University ASC)
 					INCLUDE (
@@ -25862,6 +28310,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 		, '	_Alumni_Dim				
 			' -- Ext_From_Statement
 		, ' AND ContactId IS NOT NULL
+			AND Plus_AlumniId IS NOT NULL
 			' -- Ext_Where_Statement
 		, NULL -- Tier_3_Stage
 		, NULL -- Tier_3_Stage_DateTime
@@ -25869,6 +28318,988 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 		, NULL -- Tier_4_Stage_DateTime
 		, ' ' -- Ext_Select_Statement_2
 		, ' 
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Education_Dim
+-- --------------------------
+	( 5 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Education_Dim' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100) PRIMARY KEY
+			, Byu_Student_Id NVARCHAR(100)
+			, ByuI_Student_Id NVARCHAR(100)
+			, ByuH_Student_Id NVARCHAR(100)
+			, Ldsbc_Student_Id NVARCHAR(100)
+			, Byu_Employee_Id NVARCHAR(100)
+			, ByuI_Employee_Id NVARCHAR(100)
+			, ByuH_Employee_Id NVARCHAR(100)
+			, Ldsbc_Employee_Id NVARCHAR(100)
+			, Ces_Id NVARCHAR(100)
+			, Byu_Degrees NVARCHAR(4000)
+			, ByuI_Degrees NVARCHAR(4000)
+			, ByuH_Degrees NVARCHAR(4000)
+			, Ldsbc_Degrees NVARCHAR(4000)
+			, Donor_Any_School_Current_Student NVARCHAR(1)
+			, Donor_BYU_Current_Student NVARCHAR(1)
+			, Donor_BYUI_Current_Student NVARCHAR(1)
+			, Donor_BYUH_Current_Student NVARCHAR(1)
+			, Donor_LDSBC_Current_Student NVARCHAR(1)
+			, Donor_Current_Student_Yn NVARCHAR(1) 
+			, Byu_Mba_Class_Year NVARCHAR(20)
+		' -- Ext_Create_Fields
+		, ' Donor_Key      
+			, Byu_Student_Id
+			, ByuI_Student_Id
+			, ByuH_Student_Id
+			, Ldsbc_Student_Id
+			, Byu_Employee_Id
+			, ByuI_Employee_Id
+			, ByuH_Employee_Id
+			, Ldsbc_Employee_Id
+			, Ces_Id
+			, Byu_Degrees
+			, ByuI_Degrees
+			, ByuH_Degrees
+			, Ldsbc_Degrees
+			, Donor_Any_School_Current_Student
+			, Donor_BYU_Current_Student
+			, Donor_BYUI_Current_Student
+			, Donor_BYUH_Current_Student
+			, Donor_LDSBC_Current_Student
+			, Donor_Current_Student_Yn 
+			, Byu_Mba_Class_Year
+		' -- Ext_Insert_Fields
+		, ' A.Donor_Key
+			, B.Byu_Student_Id
+			, B.ByuI_Student_Id
+			, B.ByuH_Student_Id
+			, B.Ldsbc_Student_Id
+			, B.Byu_Employee_Id
+			, B.ByuI_Employee_Id
+			, B.ByuH_Employee_Id
+			, B.Ldsbc_Employee_Id
+			, B.Ces_Id
+			, C.Byu_Degrees
+			, D.ByuI_Degrees
+			, E.ByuH_Degrees
+			, F.Ldsbc_Degrees
+			, CASE WHEN G.Donor_Any_School_Current_Student IS NULL THEN A.[N] ELSE G.Donor_Any_School_Current_Student END AS Donor_Any_School_Current_Student
+			, CASE WHEN H.Donor_BYU_Current_Student IS NULL THEN A.[N] ELSE H.Donor_BYU_Current_Student END AS Donor_BYU_Current_Student
+			, CASE WHEN I.Donor_BYUI_Current_Student IS NULL THEN A.[N] ELSE I.Donor_BYUI_Current_Student END AS Donor_BYUI_Current_Student
+			, CASE WHEN J.Donor_BYUH_Current_Student IS NULL THEN A.[N] ELSE J.Donor_BYUH_Current_Student END AS Donor_BYUH_Current_Student
+			, CASE WHEN K.Donor_LDSBC_Current_Student IS NULL THEN A.[N] ELSE K.Donor_LDSBC_Current_Student END AS Donor_LDSBC_Current_Student
+			, CASE WHEN L.Plus_CurrentStudent = 1 THEN A.[Y] ELSE A.[N] END AS Donor_Current_Student_Yn
+			, M.Byu_Mba_Class_Year
+		' -- Ext_Select_Statement
+		, ' _All_Donors_ A
+				LEFT JOIN 
+					(SELECT ContactId
+						, CASE WHEN Byu_Student_Id = [Star] THEN NULL ELSE Byu_Student_Id END AS Byu_Student_Id
+						, CASE WHEN ByuI_Student_Id = [Star] THEN NULL ELSE ByuI_Student_Id END AS ByuI_Student_Id
+						, CASE WHEN ByuH_Student_Id = [Star] THEN NULL ELSE ByuH_Student_Id END AS ByuH_Student_Id
+						, CASE WHEN Ldsbc_Student_Id = [Star] THEN NULL ELSE Ldsbc_Student_Id END AS Ldsbc_Student_Id
+						, CASE WHEN Byu_Employee_Id = [Star] THEN NULL ELSE Byu_Employee_Id END AS Byu_Employee_Id
+						, CASE WHEN ByuI_Employee_Id = [Star] THEN NULL ELSE ByuI_Employee_Id END AS ByuI_Employee_Id
+						, CASE WHEN ByuH_Employee_Id = [Star] THEN NULL ELSE ByuH_Employee_Id END AS ByuH_Employee_Id
+						, CASE WHEN Ldsbc_Employee_Id = [Star] THEN NULL ELSE Ldsbc_Employee_Id END AS Ldsbc_Employee_Id
+						, CASE WHEN Ces_Id = [Star] THEN NULL ELSE Ces_Id END AS Ces_Id
+						, CASE WHEN Church_Payroll_Id = [Star] THEN NULL ELSE Church_Payroll_Id END AS Church_Payroll_Id
+						FROM 
+							(SELECT DISTINCT CONVERT(NVARCHAR(100),ContactId) AS ContactId
+									, [Star]
+									, MAX(CASE WHEN New_Type = [BYU_Student_ID] THEN Plus_Id ELSE [Star] END) AS Byu_Student_Id
+									, MAX(CASE WHEN New_Type = [BYU_Idaho_Student_ID] THEN Plus_Id ELSE [Star] END) AS ByuI_Student_Id
+									, MAX(CASE WHEN New_Type = [BYU_Hawaii_Student_ID] THEN Plus_Id ELSE [Star] END) AS ByuH_Student_Id
+									, MAX(CASE WHEN New_Type = [LDSBC_Student_ID] THEN Plus_Id ELSE [Star] END) AS Ldsbc_Student_Id
+									, MAX(CASE WHEN New_Type = [BYU_Employee_ID] THEN Plus_Id ELSE [Star] END) AS Byu_Employee_Id
+									, MAX(CASE WHEN New_Type = [BYU_Idaho_Employee_ID] THEN Plus_Id ELSE [Star] END) AS ByuI_Employee_Id
+									, MAX(CASE WHEN New_Type = [BYU_Hawaii_Employee_ID] THEN Plus_Id ELSE [Star] END) AS ByuH_Employee_Id
+									, MAX(CASE WHEN New_Type = [LDSBC_Employee_ID] THEN Plus_Id ELSE [Star] END) AS Ldsbc_Employee_Id
+									, MAX(CASE WHEN New_Type = [CES_ID] THEN Plus_Id ELSE [Star] END) AS Ces_Id
+									, MAX(CASE WHEN New_Type = [Church_Payroll_ID] THEN Plus_Id ELSE [Star] END) AS Church_Payroll_Id     
+								FROM LDSPhilanthropiesDW.dbo._Id_Dim 
+								GROUP BY CONVERT(NVARCHAR(100),ContactId)
+								, [Star] 
+							) A
+					) B ON A.Donor_Key = B.ContactId
+				LEFT JOIN Uf_Byu_Degrees() C ON A.Donor_Key = C.Donor_Key
+				LEFT JOIN Uf_Byui_Degrees() D ON A.Donor_Key = D.Donor_Key
+				LEFT JOIN Uf_Byuh_Degrees() E ON A.Donor_Key = E.Donor_Key
+				LEFT JOIN Uf_Ldsbc_Degrees() F ON A.Donor_Key = F.Donor_Key				
+			' -- Ext_From_Statement
+		, ' AND A.Donor_Key IS NOT NULL
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '		LEFT JOIN 
+					(
+					SELECT DISTINCT A.New_StudentsAttendanceId AS Donor_Key
+						, [Y] AS Donor_Any_School_Current_Student
+						FROM Ext_Student A
+						WHERE 1 = 1
+							AND A.Plus_Year = CONVERT(NVARCHAR(10),YEAR(GETDATE()-1))
+					) G ON A.Donor_Key = G.Donor_Key
+				LEFT JOIN
+					(
+					SELECT DISTINCT ContactId AS Donor_Key
+						, [Y] AS Donor_BYU_Current_Student
+						FROM _Student_Dim
+						WHERE 1 = 1
+							AND Current_Year_Plus_4_Student = [Y]
+							AND New_University = [BYU]
+					) H ON A.Donor_Key = H.Donor_Key
+				LEFT JOIN
+					(
+					SELECT DISTINCT ContactId AS Donor_Key
+						, [Y] AS Donor_BYUI_Current_Student
+						FROM _Student_Dim
+						WHERE 1 = 1
+							AND Current_Year_Plus_4_Student = [Y]
+							AND New_University = [BYUI]
+					) I ON A.Donor_Key = I.Donor_Key
+				LEFT JOIN
+					(
+					SELECT DISTINCT ContactId AS Donor_Key
+						, [Y] AS Donor_BYUH_Current_Student
+						FROM _Student_Dim
+						WHERE 1 = 1
+							AND Current_Year_Plus_4_Student = [Y]
+							AND New_University = [BYUH]
+					) J ON A.Donor_Key = J.Donor_Key
+				LEFT JOIN
+					(
+					SELECT DISTINCT ContactId AS Donor_Key
+						, [Y] AS Donor_LDSBC_Current_Student
+						FROM _Student_Dim
+						WHERE 1 = 1
+							AND Current_Year_Plus_4_Student = [Y]
+							AND New_University = [LDSBC]
+					) K ON A.Donor_Key = K.Donor_Key
+				LEFT JOIN Ext_Contact L ON A.Donor_Key = CONVERT(NVARCHAR(100),L.ContactId)
+				LEFT JOIN
+					(SELECT A.ContactId
+						, CASE WHEN A.Plus_ActualGraduationDate IS NULL THEN [Current_Student] ELSE CONVERT(NVARCHAR(4),YEAR(A.Plus_ActualGraduationDate)) END AS Byu_Mba_Class_Year
+						FROM
+							(SELECT ROW_NUMBER () OVER(PARTITION BY A.ContactId ORDER BY A.Plus_ActualGraduationDate DESC) AS Row_Num
+								, A.ContactId
+								, A.Plus_ActualGraduationDate
+								, A.[Current_Student]
+								FROM _Alumni_Dim A
+								WHERE 1 = 1
+									AND A.Program_Code IN ([N234064],[N234060])
+									AND A.ContactId IS NOT NULL
+							) A
+						WHERE 1 = 1
+							AND A.Row_Num = 1
+					) M ON A.Donor_Key = M.ContactId 
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Organization_Dim
+-- --------------------------
+	( 5 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Organization_Dim' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, 'Donor_Key  NVARCHAR(100)  PRIMARY KEY
+			, Donor_Org_Matches_Gifts_Yn  NVARCHAR(1)
+			, Donor_Org_Allow_Mail_Yn NVARCHAR(1)
+			, Donor_Org_Allow_Bulk_Mail_Yn NVARCHAR(1)
+			, Donor_Org_Allow_Email_Yn NVARCHAR(1)
+			, Donor_Org_Allow_Bulk_Email_Yn NVARCHAR(1)
+			, Donor_Org_Allow_Phone_Yn NVARCHAR(1)
+			, Donor_Org_Allow_Fax_Yn NVARCHAR(1)
+			, Donor_Org_Class_Code NVARCHAR(400)
+			, Donor_Org_Retiree_Ratio NVARCHAR(400) 
+			, Donor_Org_Split_Ratio NVARCHAR(400)
+			, Donor_Org_Matching_Ratio NVARCHAR(400)
+			, Donor_Org_Pref_Cont_Meth NVARCHAR(400)
+			, Donor_Org_Description NVARCHAR(4000)
+		' -- Ext_Create_Fields
+		, ' Donor_Key
+			, Donor_Org_Matches_Gifts_Yn
+			, Donor_Org_Allow_Mail_Yn 
+			, Donor_Org_Allow_Bulk_Mail_Yn 
+			, Donor_Org_Allow_Email_Yn
+			, Donor_Org_Allow_Bulk_Email_Yn
+			, Donor_Org_Allow_Phone_Yn
+			, Donor_Org_Allow_Fax_Yn
+			, Donor_Org_Class_Code
+			, Donor_Org_Retiree_Ratio
+			, Donor_Org_Split_Ratio
+			, Donor_Org_Matching_Ratio
+			, Donor_Org_Pref_Cont_Meth
+			, Donor_Org_Description
+		' -- Ext_Insert_Fields
+		, ' CONVERT(NVARCHAR(100),A.AccountId) AS Donor_Key
+			, CASE WHEN A.Plus_MatchingGiftProgram = 100000000 THEN A.[Y] ELSE A.[N] END AS Donor_Org_Matches_Gifts_Yn
+			, CASE WHEN A.DoNotPostalMail = 0 THEN A.[Y] ELSE A.[N] END AS Donor_Org_Allow_Mail_Yn
+			, CASE WHEN A.DoNotBulkPostalMail = 0 THEN A.[Y] ELSE A.[N] END AS Donor_Org_Allow_Bulk_Mail_Yn
+			, CASE WHEN A.DoNotEmail = 0 THEN A.[Y] ELSE A.[N] END AS Donor_Org_Allow_Email_Yn
+			, CASE WHEN A.DoNotBulkEmail = 0 THEN A.[Y] ELSE A.[N] END AS Donor_Org_Allow_Bulk_Email_Yn
+			, CASE WHEN A.DoNotPhone = 0 THEN A.[Y] ELSE A.[N] END AS Donor_Org_Allow_Phone_Yn
+			, CASE WHEN A.DoNotFax = 0 THEN A.[Y] ELSE A.[N] END AS Donor_Org_Allow_Fax_Yn
+			, P.Column_Label AS Donor_Org_Class_Code
+			, Q.Column_Label AS Donor_Org_Retiree_Ratio
+			, R.Column_Label AS Donor_Org_Split_Ratio
+			, S.Column_Label AS Donor_Org_Matching_Ratio
+			, T.Column_Label AS Donor_Org_Pref_Cont_Meth
+			, A.Description AS Donor_Org_Description
+		' -- Ext_Select_Statement
+		, ' Ext_Account A
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Act_Class_Code_ P ON A.AccountClassificationCode = P.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Retiree_Ratio_ Q ON A.new_RetireeRatio = Q.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Split_Ratio_ R ON A.new_SplitRatio = R.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Matching_Ratio_ S ON A.new_MatchingRatio = S.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Pref_Contact_Method_ T ON A.PreferredContactMethodCode = T.Column_Value				
+			' -- Ext_From_Statement
+		, ' AND A.AccountId IS NOT NULL
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' 
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Ldsp_Org_Dim
+-- --------------------------
+	( 5 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Ldsp_Org_Dim' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100) PRIMARY KEY
+			, Donor_Linked_Lds_Account NVARCHAR(1)
+			, Ldsp_Org_Donor NVARCHAR(1)
+			, Ldsp_Org_Current_Recurring_Donor_Type NVARCHAR(50)
+			, Ldsp_Org_Recurring_Donor NVARCHAR(1)
+			, Ldsp_Org_Current_Recurring_Donor NVARCHAR(1)
+		' -- Ext_Create_Fields
+		, ' Donor_Key
+			, Donor_Linked_Lds_Account
+			, Ldsp_Org_Donor
+			, Ldsp_Org_Current_Recurring_Donor_Type
+			, Ldsp_Org_Recurring_Donor
+			, Ldsp_Org_Current_Recurring_Donor
+		' -- Ext_Insert_Fields
+		, '  A.Donor_Key
+			, CASE WHEN B.Donor_Linked_Lds_Account IS NULL THEN A.[N] ELSE B.Donor_Linked_Lds_Account END AS Donor_Linked_Lds_Account
+			, CASE WHEN C.Ldsp_Org_Donor IS NULL THEN A.[N] ELSE C.Ldsp_Org_Donor END AS Ldsp_Org_Donor
+			, CASE WHEN D.Ldsp_Org_Current_Recurring_Donor_Type IS NULL THEN [None] ELSE D.Ldsp_Org_Current_Recurring_Donor_Type END AS Ldsp_Org_Current_Recurring_Donor_Type
+			, CASE WHEN E.Ldsp_Org_Recurring_Donor IS NULL THEN A.[N] ELSE E.Ldsp_Org_Recurring_Donor END AS Ldsp_Org_Recurring_Donor
+			, CASE WHEN F.Ldsp_Org_Current_Recurring_Donor IS NULL THEN A.[N] ELSE F.Ldsp_Org_Current_Recurring_Donor END AS Ldsp_Org_Current_Recurring_Donor
+		' -- Ext_Select_Statement
+		, ' _All_Donors_ A
+				LEFT JOIN
+					(SELECT CONVERT(NVARCHAR(100),ContactId) AS Donor_Key 
+						, CASE WHEN Lds_LinkedLdsAccount  = 1 THEN [Y] 
+							ELSE [N] END AS Donor_Linked_Lds_Account 
+						FROM Ext_Contact
+					) B ON A.Donor_Key = B.Donor_Key
+				LEFT JOIN
+					(SELECT CONVERT(NVARCHAR(100),A.ContactId) AS Donor_Key
+						, CASE WHEN COUNT(B.Plus_WebTransactionId) >= 1 THEN A.[Y] ELSE A.[N] END AS Ldsp_Org_Donor 
+						FROM Ext_Contact A
+							LEFT JOIN Ext_WebTransaction B ON A.ContactId = B.Plus_OneAccordConstituent
+						GROUP BY CONVERT(NVARCHAR(100),A.ContactId)
+							, A.[Y]
+							, A.[N]
+					UNION
+					SELECT CONVERT(NVARCHAR(100),A.AccountId) AS Donor_Key
+						, CASE WHEN COUNT(B.Plus_WebTransactionId) >= 1 THEN A.[Y] ELSE A.[N] END AS Ldsp_Org_Donor 
+						FROM Ext_Account A
+							LEFT JOIN Ext_WebTransaction B ON A.AccountId = B.Lds_OneAccordOrganization
+						GROUP BY CONVERT(NVARCHAR(100),A.AccountId)
+							, A.[Y]
+							, A.[N]
+					) C ON A.Donor_Key = C.Donor_Key
+				LEFT JOIN
+					(SELECT CONVERT(NVARCHAR(100),A.ContactId) AS Donor_Key
+						, CASE WHEN B.Number_of_WebSubscriptions >= 1 THEN A.[Y] ELSE A.[N] END AS Has_Annual_Sub
+						, CASE WHEN C.Number_of_WebSubscriptions >= 1 THEN A.[Y] ELSE A.[N] END AS Has_Monthly_Sub
+						, CASE WHEN B.Number_of_WebSubscriptions >= 1 AND C.Number_of_WebSubscriptions >= 1 THEN A.[Annual_and_Monthly]
+								WHEN B.Number_of_WebSubscriptions >= 1  THEN A.[Annual]
+								WHEN C.Number_of_WebSubscriptions = 1 THEN A.[Monthly]
+							ELSE A.[None] END AS LDSP_ORG_Current_Recurring_Donor_Type
+						FROM Ext_Contact A
+							LEFT JOIN
+								(SELECT A.ContactId
+									, COUNT(Lds_WebSubscriptionId) AS Number_of_WebSubscriptions
+								    FROM Ext_Contact A
+								         LEFT JOIN Ext_WebSubscription B ON A.ContactId = B.Lds_OneAccordConstituent
+								    WHERE 1 = 1
+										AND B.StateCode = 0
+								    	AND Lds_TypeOfDonation = 100000000
+								    GROUP BY A.ContactId
+								) B ON B.ContactId = A.ContactId
+							LEFT JOIN
+								(SELECT A.ContactId
+									, COUNT(Lds_WebSubscriptionId) AS Number_of_WebSubscriptions
+								    FROM Ext_Contact A
+								         LEFT JOIN Ext_WebSubscription B ON A.ContactId = B.Lds_OneAccordConstituent
+								    WHERE 1 = 1
+										AND B.StateCode = 0
+								    	AND Lds_TypeOfDonation = 100000001
+								    GROUP BY ContactId
+								) C ON C.ContactId = A.ContactId
+					UNION
+					SELECT CONVERT(NVARCHAR(100),A.AccountId) AS Donor_Key
+						, CASE WHEN B.Number_of_WebSubscriptions >= 1 THEN A.[Y] ELSE A.[N] END AS Has_Annual_Sub
+						, CASE WHEN C.Number_of_WebSubscriptions >= 1 THEN A.[Y] ELSE A.[N] END AS Has_Monthly_Sub
+						, CASE WHEN B.Number_of_WebSubscriptions >= 1 AND C.Number_of_WebSubscriptions >= 1 THEN A.[Annual_and_Monthly]
+								WHEN B.Number_of_WebSubscriptions >= 1  THEN A.[Annual]
+								WHEN C.Number_of_WebSubscriptions = 1 THEN A.[Monthly]
+							ELSE A.[None] END AS LDSP_ORG_Current_Recurring_Donor_Type
+						FROM Ext_Account A
+							LEFT JOIN
+								(SELECT A.AccountId
+									, COUNT(Lds_WebSubscriptionId) AS Number_of_WebSubscriptions
+								    FROM Ext_Account A
+								         LEFT JOIN Ext_WebSubscription B ON A.AccountId = B.Lds_OneAccordOrganization
+								    WHERE 1 = 1
+										AND B.StateCode = 0
+								    	AND B.Lds_TypeOfDonation = 100000000
+								    GROUP BY A.AccountId
+								) B ON B.AccountId = A.AccountId										
+			' -- Ext_From_Statement
+		, ' AND A.Donor_Key IS NOT NULL
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '					LEFT JOIN
+								(SELECT A.AccountId
+									, COUNT(Lds_WebSubscriptionId) AS Number_of_WebSubscriptions
+								    FROM Ext_Account A
+								         LEFT JOIN Ext_WebSubscription B ON A.AccountId = B.Lds_OneAccordOrganization
+								    WHERE 1 = 1
+										AND B.StateCode = 0
+								    	AND Lds_TypeOfDonation = 100000001
+								    GROUP BY A.AccountId
+								) C ON C.AccountId = A.AccountId
+					) D ON A.Donor_Key = D.Donor_Key
+				LEFT JOIN
+					(SELECT CONVERT(NVARCHAR(100),A.ContactId) AS Donor_Key
+						, CASE WHEN B.Lds_WebSubscriptionId IS NOT NULL THEN A.[Y] ELSE A.[N] END AS Ldsp_Org_Recurring_Donor
+						FROM Ext_Contact A
+							LEFT JOIN Ext_WebSubscription B ON A.ContactId = B.Lds_OneAccordConstituent
+					UNION
+					SELECT CONVERT(NVARCHAR(100),A.AccountId) AS Donor_Key
+						, CASE WHEN B.Lds_WebSubscriptionId IS NOT NULL THEN A.[Y] ELSE A.[N] END AS Ldsp_Org_Recurring_Donor
+						FROM Ext_Account A
+							LEFT JOIN Ext_WebSubscription B ON A.AccountId = B.Lds_OneAccordOrganization
+					) E ON A.Donor_Key = E.Donor_Key
+				LEFT JOIN
+					(SELECT CONVERT(NVARCHAR(100),A.ContactId) AS Donor_Key
+						, CASE WHEN B.Number_Of_Web_Subscriptions >= 1 THEN A.[Y] ELSE A.[N] END AS LDSP_ORG_Current_Recurring_Donor
+						, CASE WHEN C.Number_Of_Web_Subscriptions >= 1 THEN A.[Y] ELSE A.[N] END AS LDSP_ORG_Recurring_Donor_At_Some_Time
+						FROM Ext_Contact A
+							LEFT JOIN
+								(SELECT A.ContactId
+									, COUNT(Lds_WebSubscriptionId) AS Number_Of_Web_Subscriptions
+								    FROM Ext_Contact A
+								         LEFT JOIN Ext_WebSubscription B ON A.ContactId = B.Lds_OneAccordConstituent
+								    WHERE 1 = 1
+										AND B.StateCode = 0
+								    GROUP BY A.ContactId
+								) B ON A.ContactId = B.ContactId
+							LEFT JOIN
+								(SELECT A.ContactId
+									, COUNT(Lds_WebSubscriptionId) AS Number_Of_Web_Subscriptions
+								    FROM Ext_Contact A
+								         LEFT JOIN Ext_WebSubscription B ON A.ContactId = B.Lds_OneAccordConstituent
+								    GROUP BY ContactId
+								) C ON A.ContactId = C.ContactId
+					UNION
+					SELECT CONVERT(NVARCHAR(100),A.AccountId) AS Donor_Key
+						, CASE WHEN B.Number_Of_Web_Subscriptions >= 1 THEN A.[Y] ELSE A.[N] END AS LDSP_ORG_Current_Recurring_Donor
+						, CASE WHEN C.Number_Of_Web_Subscriptions >= 1 THEN A.[Y] ELSE A.[N] END AS LDSP_ORG_Recurring_Donor_At_Some_Time
+						FROM Ext_Account A
+							LEFT JOIN
+								(SELECT A.AccountId
+									, COUNT(Lds_WebSubscriptionId) AS Number_Of_Web_Subscriptions
+								    FROM Ext_Account A
+								         LEFT JOIN Ext_WebSubscription B ON A.AccountId = B.Lds_OneAccordOrganization
+								    WHERE 1 = 1
+										AND B.StateCode = 0
+								    GROUP BY A.AccountId
+								) B ON A.AccountId = B.AccountId
+							LEFT JOIN
+								(SELECT A.AccountId
+									, COUNT(Lds_WebSubscriptionId) AS Number_Of_Web_Subscriptions
+								    FROM Ext_Account A
+								         LEFT JOIN Ext_WebSubscription B ON A.AccountId = B.Lds_OneAccordOrganization
+								    GROUP BY AccountId
+								) C ON A.AccountId = C.AccountId
+					) F ON A.Donor_Key = F.Donor_Key
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Web_Subscription_Dim
+-- --------------------------
+	( 5 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Web_Subscription_Dim' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, ' WebSubscription_Dim_Key NVARCHAR(100) PRIMARY KEY
+			, Web_Subscription_Name NVARCHAR(100) 
+			, Transaction_ID NVARCHAR(100)
+			, Recurring_Donation_Start_Date DATE
+			, Recurring_Donation_Stop_Date DATE
+			, Next_Payment_Date DATE
+			, Payment_Type NVARCHAR(400)
+			, Tender_Name NVARCHAR(400) 
+			, Opt_Into_Email_Communication NVARCHAR(400) 
+			, CID NVARCHAR(200)
+			, CDE2 NVARCHAR(200)
+			, Type_of_Donation NVARCHAR(400)
+			, Appeal_Code NVARCHAR(10)
+			, Donor_First_Name_From_Web NVARCHAR(100)
+			, Donor_Middle_Name_From_Web NVARCHAR(100)
+			, Donor_Last_Name_From_Web NVARCHAR(100)
+			, Web_Subscription_Linked_LDS_Account NVARCHAR(1)
+			, Donor_Email_From_Web NVARCHAR(100)
+			, Donor_Phone_Number_From_Web NVARCHAR(100)
+			, Donor_Address_Line_1_From_Web NVARCHAR(100)
+			, Donor_Address_Line_2_From_Web NVARCHAR(100)
+			, Donor_Address_City_From_Web NVARCHAR(100)
+			, Donor_Address_State_From_Web NVARCHAR(100)
+			, Donor_Address_Zip_Code_From_Web NVARCHAR(100)
+			, Donor_Address_Country_From_Web NVARCHAR(100)
+			, Comments NVARCHAR(1000)
+			, Telefund_Comments NVARCHAR(4000)	
+			, Donor_Type NVARCHAR(400)	
+			, Donor_Match_Status NVARCHAR(400)	
+			, Web_Subscription_Status NVARCHAR(400)
+			, Web_Subscription_Status_Reason NVARCHAR(400)	
+			, Web_Subscription_Created_On DATE
+			, Web_Subscription_Modified_On DATE
+			, Address_Match NVARCHAR(400)	
+			, Data_Entry_Status NVARCHAR(400)
+			, Receipt_Date DATETIME
+			, Matched_by_User NVARCHAR(200)
+		' -- Ext_Create_Fields
+		, ' WebSubscription_Dim_Key
+			, Web_Subscription_Name
+			, Transaction_ID
+			, Recurring_Donation_Start_Date
+			, Recurring_Donation_Stop_Date
+			, Next_Payment_Date
+			, Payment_Type
+			, Tender_Name
+			, Opt_Into_Email_Communication
+			, CID
+			, CDE2
+			, Type_of_Donation
+			, Appeal_Code
+			, Donor_First_Name_From_Web
+			, Donor_Middle_Name_From_Web
+			, Donor_Last_Name_From_Web
+			, Web_Subscription_Linked_LDS_Account
+			, Donor_Email_From_Web
+			, Donor_Phone_Number_From_Web
+			, Donor_Address_Line_1_From_Web
+			, Donor_Address_Line_2_From_Web
+			, Donor_Address_City_From_Web
+			, Donor_Address_State_From_Web
+			, Donor_Address_Zip_Code_From_Web
+			, Donor_Address_Country_From_Web
+			, Comments
+			, Telefund_Comments	
+			, Donor_Type	
+			, Donor_Match_Status	
+			, Web_Subscription_Status
+			, Web_Subscription_Status_Reason	
+			, Web_Subscription_Created_On
+			, Web_Subscription_Modified_On	
+			, Address_Match	
+			, Data_Entry_Status
+			, Receipt_Date
+			, Matched_by_User
+		' -- Ext_Insert_Fields
+		, ' CONVERT(NVARCHAR(100),A.Lds_WebSubscriptionId) AS WebSubscription_Dim_Key
+			, A.Lds_Name AS Web_Subscription_Name
+			, A.Lds_TransactionId AS Transaction_ID
+			, CONVERT(VARCHAR(10),A.Lds_RecurringDonationStartDate,101) AS Recurring_Donation_Start_Date
+			, CONVERT(VARCHAR(10),A.Lds_RecurringDonationStopDate,101) AS Recurring_Donation_Stop_Date
+			, CONVERT(VARCHAR(10),A.Lds_NextPaymentDate,101) AS Next_Payment_Date
+			, C.Column_Label AS Payment_Type
+			, D.Column_Label AS Tender_Name
+			, E.Column_Label AS Opt_Into_Email_Communication
+			, A.Lds_Cid AS CID
+			, A.Lds_Cde2 AS CDE2
+			, F.Column_Label AS Type_of_Donation
+			, A.Lds_Appeal AS Appeal_Code
+			, A.Lds_DonorFirstName AS Donor_First_Name_From_Web
+			, A.Lds_DonorMiddleName AS Donor_Middle_Name_From_Web
+			, A.Lds_DonorLastName AS Donor_Last_Name_From_Web
+			, CASE WHEN A.Lds_LinkedLdsAccount = 1 THEN A.[Y] ELSE A.[N] END AS Web_Subscription_Linked_LDS_Account
+			, A.Lds_DonorEmailAddress AS Donor_Email_From_Web
+			, A.Lds_DonorPhoneNumber AS Donor_Phone_Number_From_Web
+			, A.Lds_DonorAddressLine1 AS Donor_Address_Line_1_From_Web
+			, A.Lds_DonorAddressLine2 AS Donor_Address_Line_2_From_Web
+			, A.Lds_DonorAddressCity AS Donor_Address_City_From_Web
+			, A.Lds_DonorAddressState AS Donor_Address_State_From_Web
+			, A.Lds_DonorAddressZipCode AS Donor_Address_Zip_Code_From_Web
+			, A.Lds_DonorAddressCountry AS Donor_Address_Country_From_Web
+			, A.Lds_Comments AS Comments
+			, CONVERT(NVARCHAR(4000),SUBSTRING(A.Lds_TelefundComments,1,4000)) AS Telefund_Comments	
+			, G.Column_Label AS Donor_Type	
+			, H.Column_Label AS Donor_Match_Status	
+			, I.Column_Label AS Web_Subscription_Status
+			, J.Column_Label AS Web_Subscription_Status_Reason	
+			, CONVERT(VARCHAR(10),A.CreatedOn,101) AS Web_Subscription_Created_On
+			, CONVERT(VARCHAR(10),A.ModifiedOn,101) AS Web_Subscription_Modified_On	
+			, K.Column_Label AS Address_Match	
+			, L.Column_Label AS Data_Entry_Status
+			, A.Lds_ReceiptDate AS Receipt_Date
+			, B.FullName AS Matched_by_User
+			' -- Ext_Select_Statement
+		, '	Ext_WebSubscription A
+				LEFT JOIN Ext_System_User B ON B.SystemUserId = A.Lds_ConstituentMatchedBy
+				LEFT JOIN _Lds_PaymentType_ C ON A.Lds_PaymentType = C.Column_Value
+				LEFT JOIN _Lds_TenderName_ D ON A.Lds_tendername = D.Column_Value
+				LEFT JOIN _Lds_OptIntoEmailCommunication_ E ON A.Lds_OptIntoEmailCommunication = E.Column_Value
+				LEFT JOIN _Lds_TypeOfDonation_ F ON A.Lds_TypeOfDonation = F.Column_Value
+				LEFT JOIN _Lds_DonorType_ G ON A.Lds_DonorType = G.Column_Value
+				LEFT JOIN _Lds_ConstituentMatchStatus_ H ON A.Lds_ConstituentMatchStatus = H.Column_Value
+				LEFT JOIN _WebSubscription_StateCode_ I ON A.StateCode = I.Column_Value
+				LEFT JOIN _WebSubscription_StatusCode_ J ON A.StatusCode = J.Column_Value
+				LEFT JOIN _Lds_AddressMatch_ K ON A.Lds_AddressMatch = K.Column_Value
+				LEFT JOIN _Lds_DataEntryStatus_ L ON A.Lds_DataEntryStatus = L.Column_Value									
+			' -- Ext_From_Statement
+		, ' Exec dbo.usp_Web_Subscription_Dim_Zero_Key;
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Web_Transaction_Dim
+-- --------------------------
+	( 5 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Web_Transaction_Dim' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, ' Web_Transaction_Dim_Key NVARCHAR(100) PRIMARY KEY
+			, Transaction_Id NVARCHAR(100)
+			, Receipt_Date DATETIME
+			, Payment_Type NVARCHAR(400) 
+			, Tender_Name NVARCHAR(400)
+			, Type_Of_Donation NVARCHAR(400)
+			, Recurred_Donation_Status NVARCHAR(400)
+			, Appeal_Code NVARCHAR(10)
+			, Cid NVARCHAR(200)
+			, Cde2 NVARCHAR(200)
+			, Score NVARCHAR(100)
+			, Opt_Into_Email_Communication NVARCHAR(400)
+			, Donor_First_Name_From_Web NVARCHAR(100)
+			, Donor_Middle_Name_From_Web NVARCHAR(100)
+			, Donor_Last_Name_From_Web NVARCHAR(100)
+			, Web_Subscription_Linked_Lds_Account NVARCHAR(1)
+			, Donor_Email_From_Web NVARCHAR(255)
+			, Donor_Phone_Number_From_Web NVARCHAR(100)
+			, Donor_Address_Line_1_From_Web NVARCHAR(100)
+			, Donor_Address_Line_2_From_Web NVARCHAR(100)
+			, Donor_Address_City_From_Web NVARCHAR(100)
+			, Donor_Address_State_From_Web NVARCHAR(100)
+			, Donor_Address_Zip_Code_From_Web NVARCHAR(100)
+			, Donor_Address_Country_From_Web NVARCHAR(100)
+			, Comments NVARCHAR(1000)
+			, Telefund_Comments NVARCHAR(4000)
+			, Address_Match NVARCHAR(400) 
+			, Data_Entry_Status NVARCHAR(400)
+			, In_Memoriam_Flag NVARCHAR(400)
+			, In_Memory_Of_Type NVARCHAR(400)
+			, Notify_Fmaily_Friends NVARCHAR(400)
+			, Notify_This_Person NVARCHAR(400)
+			, Honoree_Name NVARCHAR(100)
+			, Notify_By_Card NVARCHAR(400)
+			, Notify_By_Email NVARCHAR(400)
+			, Web_Transaction_Status NVARCHAR(400)
+			, Web_Transaction_Status_Reason NVARCHAR(400)
+			, Web_Transaction_Created_On DATE
+			, Web_Transaction_Modified_On DATE
+			, Web_Transaction_Modified_By NVARCHAR(200) 
+		' -- Ext_Create_Fields
+		, ' Web_Transaction_Dim_Key
+			, Transaction_Id
+			, Receipt_Date
+			, Payment_Type 
+			, Tender_Name
+			, Type_Of_Donation
+			, Recurred_Donation_Status
+			, Appeal_Code
+			, Cid
+			, Cde2
+			, Score
+			, Opt_Into_Email_Communication
+			, Donor_First_Name_From_Web
+			, Donor_Middle_Name_From_Web
+			, Donor_Last_Name_From_Web
+			, Web_Subscription_Linked_Lds_Account
+			, Donor_Email_From_Web
+			, Donor_Phone_Number_From_Web
+			, Donor_Address_Line_1_From_Web
+			, Donor_Address_Line_2_From_Web
+			, Donor_Address_City_From_Web
+			, Donor_Address_State_From_Web
+			, Donor_Address_Zip_Code_From_Web
+			, Donor_Address_Country_From_Web
+			, Comments
+			, Telefund_Comments
+			, Address_Match 
+			, Data_Entry_Status
+			, In_Memoriam_Flag
+			, In_Memory_Of_Type
+			, Notify_Fmaily_Friends
+			, Notify_This_Person
+			, Honoree_Name
+			, Notify_By_Card
+			, Notify_By_Email
+			, Web_Transaction_Status
+			, Web_Transaction_Status_Reason
+			, Web_Transaction_Created_On
+			, Web_Transaction_Modified_On
+			, Web_Transaction_Modified_By
+		' -- Ext_Insert_Fields
+		, ' CONVERT(NVARCHAR(100),A.Plus_WebTransactionId) AS Web_Transaction_Dim_Key
+			, A.Plus_transactionid AS Transaction_Id
+			, A.Plus_ReceiptDate AS Receipt_Date 
+			, C.Column_Label AS Payment_Type 
+			, D.Column_Label AS Tender_Name
+			, E.Column_Label AS Type_Of_Donation
+			, F.Column_Label AS Recurred_Donation_Status
+			, A.Plus_Appeal AS Appeal_Code
+			, A.Plus_Cid AS Cid
+			, A.Plus_Cde2 AS Cde2
+			, A.Plus_Score AS Score
+			, G.Column_Label AS Opt_Into_Email_Communication
+			, A.Plus_DonorFirstName AS Donor_First_Name_From_Web
+			, A.Lds_DonorMiddleName AS Donor_Middle_Name_From_Web
+			, A.Plus_DonorLastName AS Donor_Last_Name_From_Web
+			, CASE WHEN A.Lds_LinkedLdsAccount IS NULL THEN [N]
+					WHEN A.Lds_LinkedLdsAccount = 0 THEN [N]
+					ELSE [Y] END AS Web_Subscription_Linked_Lds_Account
+			, A.Plus_DonorEmailAddress AS Donor_Email_From_Web
+			, A.Plus_DonorPhoneNumber AS Donor_Phone_Number_From_Web
+			, A.Plus_DonorAddressLine1 AS Donor_Address_Line_1_From_Web
+			, A.Plus_DonorAddressLine2 AS Donor_Address_Line_2_From_Web
+			, A.Plus_DonorAddressCity AS Donor_Address_City_From_Web
+			, A.Plus_DonorAddressState AS Donor_Address_State_From_Web
+			, A.Plus_DonorAddressZipCode AS Donor_Address_Zip_Code_From_Web
+			, A.Plus_DonorAddressCountry AS Donor_Address_Country_From_Web
+			, A.Plus_Comment AS Comments
+			, A.Lds_TeleFundComments AS Telefund_Comments
+			, H.Column_Label AS Address_Match 
+			, I.Column_Label AS Data_Entry_Status
+			, J.Column_Label AS In_Memoriam_Flag
+			, K.Column_Label AS In_Memory_Of_Type
+			, L.Column_Label AS Notify_Fmaily_Friends
+			, M.Column_Label AS Notify_This_Person
+			, A.Plus_HonoreeName AS Honoree_Name
+			, N.Column_Label AS Notify_By_Card
+			, O.Column_Label AS Notify_By_Email
+			, P.Column_Label AS Web_Transaction_Status
+			, Q.Column_Label AS Web_Transaction_Status_Reason
+			, A.CreatedOn AS Web_Transaction_Created_On
+			, A.ModifiedOn AS Web_Transaction_Modified_On
+			, B.FullName AS Web_Transaction_Modified_By
+			' -- Ext_Select_Statement
+		, ' Ext_WebTransaction A
+				LEFT JOIN Ext_System_User B ON A.ModifiedBy = B.SystemUserId
+				LEFT JOIN _WebTransaction_Plus_PaymentType_ C ON A.Plus_PaymentType = C.Column_Value
+				LEFT JOIN _WebTransaction_Plus_TenderName_ D ON A.Plus_TenderName = D.Column_Value
+				LEFT JOIN _WebTransaction_Plus_TypeOfDonation_ E ON A.Plus_TypeOfDonation = E.Column_Value
+				LEFT JOIN _WebTransaction_Plus_RecurredDonationStatus_ F ON A.Plus_RecurredDonationStatus = F.Column_Value
+				LEFT JOIN _WebTransaction_Plus_OptIntoEmailCommunication_ G ON A.Plus_OptIntoEmailCommunication = G.Column_Value
+				LEFT JOIN _WebTransaction_Plus_AddressMatch_ H ON A.Plus_AddressMatch = H.Column_Value
+				LEFT JOIN _WebTransaction_DataEntryStatus_ I ON A.Lds_DataEntryStatus = I.Column_Value
+				LEFT JOIN _WebTransaction_Plus_InMemoriamFlag_ J ON A.Plus_InMemoriamFlag = J.Column_Value
+				LEFT JOIN _WebTransaction_Plus_InMemoryOfType_ K ON A.Plus_InMemoryOfType = K.Column_Value
+				LEFT JOIN _WebTransaction_Plus_NotifyFamilyFriendsFlag_ L ON A.Plus_NotifyFamilyFriendsFlag = L.Column_Value
+				LEFT JOIN _WebTransaction_Plus_NotifyPersonFlag_ M ON A.Plus_NotifyPersonFlag = M.Column_Value
+				LEFT JOIN _WebTransaction_Plus_NotifyByCardFlag_ N ON A.Plus_NotifyByCardFlag = N.Column_Value
+				LEFT JOIN _WebTransaction_Plus_NotifyByEmailFlag_ O ON A.Plus_NotifyByEmailFlag = O.Column_Value
+				LEFT JOIN _WebTransaction_StateCode_ P ON A.StateCode = P.Column_Value
+				LEFT JOIN _WebTransaction_StatusCode_ Q ON A.StatusCode = Q.Column_Value									
+			' -- Ext_From_Statement
+		, ' Exec dbo.usp_Web_Transaction_Dim_Zero_Key;
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '
 			' -- Ext_From_Statement_2
 		, ' ' -- Ext_Create_Fields_2
 		, ' ' -- Ext_Create_Fields_3
@@ -27173,6 +30604,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Donation_Receipt_Ytd_Two_Weeks_Ago NVARCHAR(1)
 			, Donation_Description NVARCHAR(4000)
 			, Lds_BatchType NVARCHAR(400)
+			, Posted NVARCHAR(10) DEFAULT ''Posted''
 			' -- Ext_Create_Fields
 		, '	Donation_Key 
 			, New_ConstituentDonor
@@ -27789,6 +31221,10 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Donor_Qualified NVARCHAR(1)
 			, Donor_Qualified_By NVARCHAR(200)
 			, Donor_Qualified_On DATE
+			, Donor_CreatedOn DATE
+			, Donor_ModifiedOn DATE
+			, Donor_Status NVARCHAR(400)
+			, Donor_Status_Reason NVARCHAR(400)
 			' -- Ext_Create_Fields
 		, '	Donor_Key      
 			, Donor_Marriage_Status 
@@ -27814,6 +31250,10 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Donor_Qualified
 			, Donor_Qualified_By
 			, Donor_Qualified_On
+			, Donor_CreatedOn
+			, Donor_ModifiedOn
+			, Donor_Status
+			, Donor_Status_Reason
 			' -- Ext_Insert_Fields
 		, 'A.Donor_Key
 			, C.Column_Label AS Donor_Marriage_Status
@@ -27838,7 +31278,11 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, B.Plus_I5TextLinesLdsp AS Donor_Ldsp_Text_Lines
 			, CASE WHEN COALESCE(B.Lds_IsQualified,J.Lds_IsQualified) IS NULL OR COALESCE(B.Lds_IsQualified,J.Lds_IsQualified) = 0 THEN COALESCE(B.[N],J.[N]) ELSE COALESCE(B.[Y],J.[Y])  END AS Donor_Qualified
 			, COALESCE(K.FullName,L.FullName) AS Donor_Qualified_By
-			, CONVERT(DATE,COALESCE(B.Lds_QualifiedOn,J.Lds_QualifiedOn)) AS Donor_Qualified_On 
+			, CONVERT(DATE,COALESCE(B.Lds_QualifiedOn,J.Lds_QualifiedOn)) AS Donor_Qualified_On
+			, M.Donor_CreatedOn
+			, M.Donor_ModifiedOn
+			, M.Donor_Status
+			, M.Donor_Status_Reason
 			' -- Ext_Select_Statement
 		, '_All_Donors_ A
 				LEFT JOIN Ext_Contact B ON A.Donor_Key = CONVERT(NVARCHAR(100),B.ContactId)
@@ -28191,6 +31635,33 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				LEFT JOIN Ext_Account J ON A.Donor_Key = CONVERT(NVARCHAR(100),J.AccountId)
 				LEFT JOIN Ext_System_User K ON B.Lds_QualifiedBy = K.SystemUserId 
 				LEFT JOIN Ext_System_User L ON J.Lds_QualifiedBy = L.SystemUserId
+				LEFT JOIN 
+					(SELECT COALESCE(A.Donor_Key,B.Donor_Key) AS Donor_Key
+						, COALESCE(A.CreatedOn,B.CreatedOn) AS Donor_CreatedOn
+						, COALESCE(A.ModifiedOn, B.ModifiedOn) AS Donor_ModifiedOn
+						, COALESCE(A.StateCode, B.StateCode) AS Donor_Status
+						, COALESCE(A.StatusCode, B.StatusCode) AS Donor_Status_Reason
+						FROM
+							(SELECT CONVERT(NVARCHAR(100),ContactId) AS Donor_Key
+								, CONVERT(VARCHAR(10),CreatedOn,101) AS CreatedOn
+								, CONVERT(VARCHAR(10),ModifiedOn,101) AS ModifiedOn
+								, B.Column_Label AS StateCode
+								, C.Column_Label AS StatusCode
+								FROM Ext_Contact A
+									LEFT JOIN _Contact_StateCode_ B ON A.StateCode = B.Column_Value
+									LEFT JOIN _Contact_StatusCode_ C ON A.StatusCode = C.Column_Value
+							) A
+							FULL OUTER JOIN
+							(SELECT CONVERT(NVARCHAR(100),A.AccountId) AS Donor_Key
+								, CONVERT(VARCHAR(10),CreatedOn,101) AS CreatedOn
+								, CONVERT(VARCHAR(10),ModifiedOn,101) AS ModifiedOn
+								, B.Column_Label AS StateCode
+								, C.Column_Label AS StatusCode
+								FROM Ext_Account A
+									LEFT JOIN _Account_StateCode_ B ON A.StateCode = B.Column_Value
+									LEFT JOIN _Account_StatusCode_ C ON A.StatusCode = C.Column_Value
+							) B ON A.Donor_Key = B.Donor_Key
+					) M ON A.Donor_Key = M.Donor_Key
 			'-- Ext_From_Statement_4
 		, NULL -- Ext_From_Statement_5
 		, NULL -- Ext_From_Statement_6
@@ -28955,6 +32426,210 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 	)
 	,
 -- --------------------------
+-- _Web_Subscription_Fact
+-- --------------------------
+	( 7 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Web_Subscription_Fact' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, ' WebSubscription_Key NVARCHAR(100) PRIMARY KEY
+			, WebSubscription_Dim_Key NVARCHAR(100)
+			, Transaction_Total MONEY
+			, Donor_Key NVARCHAR(100)
+			, Appeal_Key NVARCHAR(100)
+		' -- Ext_Create_Fields
+		, ' WebSubscription_Key
+			, WebSubscription_Dim_Key
+			, Transaction_Total
+			, Donor_Key
+			, Appeal_Key
+		' -- Ext_Insert_Fields
+		, ' CONVERT(NVARCHAR(100),A.Lds_WebSubscriptionId) AS WebSubscription_Key
+			, B.WebSubscription_Dim_Key
+			, A.Lds_TransactionTotal AS Transaction_Total
+			, COALESCE(C.Donor_Key,A.[Zero]) AS Donor_Key
+			, COALESCE(D.Appeal_Key,A.[Zero]) AS Appeal_Key
+			' -- Ext_Select_Statement
+		, ' Ext_Websubscription A
+				LEFT JOIN _Web_Subscription_Dim B ON CONVERT(NVARCHAR(100),A.Lds_WebSubscriptionId) = B.WebSubscription_Dim_Key
+				LEFT JOIN _Donor_Key_Dim C ON COALESCE(A.Lds_OneAccordConstituent,A.Lds_OneAccordOrganization) = C.Donor_Key
+				LEFT JOIN 
+					(SELECT Appeal_Key
+						, Appeal_Code
+						FROM 
+							(SELECT ROW_NUMBER() OVER (PARTITION BY Appeal_Code ORDER BY Appeal_Key) AS Row_Num
+								, Appeal_Key
+								, Appeal_Code
+								FROM _Appeal_Dim 
+							) A
+						WHERE 1 = 1
+							AND Row_Num = 1
+					) D ON A.Lds_Appeal = D.Appeal_Code									
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Web_Transaction_Fact
+-- --------------------------
+	( 7 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Web_Transaction_Fact' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, ' WebTransaction_Key NVARCHAR(100) PRIMARY KEY
+			, Web_Transaction_Dim_Key NVARCHAR(100)
+			, Transaction_Total MONEY
+			, Donor_Key NVARCHAR(100)
+			, Appeal_Key NVARCHAR(100)
+		' -- Ext_Create_Fields
+		, ' WebTransaction_Key
+			, Web_Transaction_Dim_Key
+			, Transaction_Total
+			, Donor_Key
+			, Appeal_Key
+		' -- Ext_Insert_Fields
+		, ' CONVERT(NVARCHAR(100),A.Plus_WebTransactionId) AS WebTransaction_Key
+			, B.Web_Transaction_Dim_Key
+			, A.Plus_TransactionTotal AS Transaction_Total
+			, COALESCE(C.Donor_Key,A.[Zero]) AS Donor_Key
+			, COALESCE(D.Appeal_Key,A.[Zero]) AS Appeal_Key
+			' -- Ext_Select_Statement
+		, ' Ext_WebTransaction A
+				LEFT JOIN _Web_Transaction_Dim B ON CONVERT(NVARCHAR(100),A.Plus_WebTransactionId) = B.Web_Transaction_Dim_Key
+				LEFT JOIN _Donor_Key_Dim C ON COALESCE(A.Plus_OneAccordConstituent,A.Lds_OneAccordOrganization) = C.Donor_Key
+				LEFT JOIN 
+					(SELECT Appeal_Key
+						, Appeal_Code
+						FROM 
+							(SELECT ROW_NUMBER() OVER (PARTITION BY Appeal_Code ORDER BY Appeal_Key) AS Row_Num
+								, Appeal_Key
+								, Appeal_Code
+								FROM _Appeal_Dim 
+							) A
+						WHERE 1 = 1
+							AND Row_Num = 1
+					) D ON A.Plus_Appeal = D.Appeal_Code									
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
 -- _Donation_Fact
 -- --------------------------
 	( 7 -- Tier
@@ -29002,7 +32677,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Expectancy_Key NVARCHAR(100)
 			, User_Coordinating_Liaison_Key NVARCHAR(100) DEFAULT ''0''
 			, User_Pending_Liaison_Key NVARCHAR(100) DEFAULT ''0''
-			, User_Connected_Liaison_Key NVARCHAR(100) DEFAULT ''0''			
+			, User_Connected_Liaison_Key NVARCHAR(100) DEFAULT ''0''
+			, Hard NVARCHAR(5) DEFAULT ''Hard''
+			, Shared NVARCHAR(10) DEFAULT ''Shared''
 			' -- Ext_Create_Fields
 		, '	Donor_Key
 			, Acitivity_Group_Key 
@@ -32391,6 +36068,202 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 	)
 	,
 -- --------------------------
+-- _Donor_Financial_Dim
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Financial_Dim' -- Ext_Table
+		, ' ' -- Dest_Create_Fields
+		, ' ' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Wealth_Dt DATE
+			, Donor_Major_Gift_Propen  NVARCHAR(400)
+			, Donor_Annual_Gift NVARCHAR(400) 
+			, Donor_Planned_Gift NVARCHAR(400)
+			, Donor_Gift_Capacity_Enp NVARCHAR(400)
+			, Donor_Gift_Capacity_En NVARCHAR(400) 
+			, Donor_Philan_Cap_Rating NVARCHAR(400) 
+			, Donor_Est_Household_Income NVARCHAR(400) 
+			, Donor_Est_Home_Market_Val NVARCHAR(400) 
+			, Donor_Block_Clusters NVARCHAR(400)
+			, Donor_Total_Donation NVARCHAR(50)
+			, Byu_Donor NVARCHAR(1)
+			, ByuI_Donor NVARCHAR(1)
+			, ByuH_Donor NVARCHAR(1)
+			, Ldsbc_Donor NVARCHAR(1)
+		' -- Ext_Create_Fields
+		, ' Donor_Key      
+			, Donor_Wealth_Dt
+			, Donor_Major_Gift_Propen 
+			, Donor_Annual_Gift 
+			, Donor_Planned_Gift
+			, Donor_Gift_Capacity_Enp 
+			, Donor_Gift_Capacity_En 
+			, Donor_Philan_Cap_Rating 
+			, Donor_Est_Household_Income 
+			, Donor_Est_Home_Market_Val 
+			, Donor_Block_Clusters
+			, Donor_Total_Donation
+			, Byu_Donor
+			, ByuI_Donor
+			, ByuH_Donor
+			, Ldsbc_Donor
+		' -- Ext_Insert_Fields
+		, '  A.Donor_Key
+			, CONVERT(VARCHAR(10),B.Plus_WealthDate,101) AS Donor_Wealth_Dt
+			, C.Column_Label AS Donor_Major_Gift_Propen
+			, D.Column_Label AS Donor_Annual_Gift
+			, E.Column_Label AS Donor_Planned_Gift
+			, F.Column_Label AS Donor_Gift_Capacity_Enp
+			, G.Column_Label AS Donor_Gift_Capacity_En
+			, H.Column_Label AS Donor_Philan_Cap_Rating
+			, I.Column_Label AS Donor_Est_Household_Income
+			, J.Column_Label AS Donor_Est_Home_Market_Val 
+			, K.Column_Label AS Donor_Block_Clusters
+			, L.Donor_Total_Donation
+			, M.Byu_Donor
+			, M.ByuI_Donor
+			, M.ByuH_Donor
+			, M.Ldsbc_Donor
+		' -- Ext_Select_Statement
+		, ' _All_Donors_ A
+			LEFT JOIN Ext_Contact B ON A.Donor_Key = CONVERT(NVARCHAR(100),ContactId)
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Major_Gift_ C ON B.New_MajorGiftPropensity1 = C.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Annual_Gift_ D ON B.Plus_AnnualGift1 = D.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Planned_Gift_ E ON B.Plus_PlannedGift = E.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Gift_Cap_Enp_ F ON B.Plus_GiftCapacityEnp = F.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Gift_Cap_En_ G ON B.Plus_GiftCapacityEn = G.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Phil_Cap_Rate_ H ON B.Plus_PhilanthropicCapacityRatingPcr = H.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Est_House_Income_ I ON B.Plus_EstimatedHouseHoldIncome = I.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Est_House_Value_ J ON B.Plus_EstimatedHomemarketValue = J.Column_Value
+			LEFT JOIN LDSPhilanthropiesDW.dbo._Donor_Blockclusters_ K ON B.Plus_BlockClusters = K.Column_Value
+			LEFT JOIN
+				(SELECT DISTINCT A.Donor_Key
+					, COALESCE(Total_Donation, 0) + COALESCE(Matching_Credit,0) AS Donor_Total_Donation
+					FROM
+						(SELECT A.Donor_Key
+							, SUM(COALESCE(B.Donation_Primary_Amt,0)) AS Total_Donation
+							, SUM(COALESCE(C.Credit_Amount,0)) AS Matching_Credit
+							FROM _All_Donors_ A
+								LEFT JOIN _Donation_Fact B ON A.Donor_Key = B.Donor_Key
+								LEFT JOIN 
+									(SELECT CONVERT(NVARCHAR(100),Plus_OriginatingConstituent) AS Originating_Constituent
+										, SUM(New_CreditAmount) AS Credit_Amount
+										FROM 
+											(SELECT DISTINCT Plus_OriginatingConstituent
+												, New_CreditAmount
+												, New_RelatedGift
+												FROM _Gift_Credit_
+												WHERE 1 = 1
+													AND Plus_OriginatingConstituent IS NOT NULL
+													AND New_OrganizationId IS NOT NULL
+											) A
+										GROUP BY CONVERT(NVARCHAR(100),Plus_OriginatingConstituent)
+									) C ON A.Donor_Key = C.Originating_Constituent
+							GROUP BY A.Donor_Key
+						) A
+				) L ON A.Donor_Key = L.Donor_Key
+			LEFT JOIN
+				(SELECT A.Donor_Key
+					, MAX(A.Byu_Donor) AS Byu_Donor
+					, MAX(A.ByuI_Donor) AS ByuI_Donor
+					, MAX(A.ByuH_Donor) AS ByuH_Donor
+					, MAX(A.Ldsbc_Donor) AS Ldsbc_Donor
+					FROM
+						(SELECT A.Donor_Key
+							, CASE WHEN B.Donor_Key IS NOT NULL AND B.New_Inst = B.[BYU] THEN A.[Y]
+								ELSE A.[N] END AS Byu_Donor
+							, CASE WHEN B.Donor_Key IS NOT NULL AND B.New_Inst = B.[BYUI] THEN A.[Y]
+								ELSE A.[N] END AS ByuI_Donor
+							, CASE WHEN B.Donor_Key IS NOT NULL AND B.New_Inst = B.[BYUH] THEN A.[Y]
+								ELSE A.[N] END AS ByuH_Donor
+							, CASE WHEN B.Donor_Key IS NOT NULL AND B.New_Inst = B.[LDSBC] THEN A.[Y]
+								ELSE A.[N] END AS Ldsbc_Donor
+							FROM _Donor_Key_Dim A
+								LEFT JOIN
+									(SELECT A.Donor_Key
+										, B.New_Inst
+										, B.[BYU]
+										, B.[BYUI]
+										, B.[BYUH]
+										, B.[LDSBC]
+										, SUM(A.Donation_Credit_Amt) AS Donation_Credit_Amt
+										FROM _Donation_Fact A
+											INNER JOIN _Hier_Dim B ON A.Hier_Key = B.Hier_Key
+										WHERE 1 = 1
+											AND New_Inst IN (B.[BYU],B.[BYUI],B.[BYUH],B.[LDSBC])
+										GROUP BY A.Donor_Key
+											, B.New_Inst
+											, B.[BYU]
+											, B.[BYUI]
+											, B.[BYUH]
+											, B.[LDSBC]
+									) B ON A.Donor_Key = B.Donor_Key
+						) A
+					GROUP BY A.Donor_Key
+				) M ON A.Donor_Key = M.Donor_Key			
+			' -- Ext_From_Statement
+		, ' AND A.Donor_Key IS NOT NULL
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, NULL -- Ext_From_Statement_3
+		, NULL -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
 -- _Accounting_Tender_Type_Dim
 -- --------------------------
 	( 8 -- Tier
@@ -33105,7 +36978,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 																		LEFT JOIN _Donation_Fact B ON CONVERT(NVARCHAR(100),C.New_PledgeId) = B.Expectancy_Key
 																		LEFT JOIN _Donation_Dim D ON B.Donation_Key = D.Donation_Key
 																	WHERE 1 = 1
-																		AND D.StatusCode = [Posted]
+																		AND D.StatusCode = A.[Posted]
 																		AND B.Donation_Primary_Amt IS NOT NULL
 																	GROUP BY A.OpportunityId
 																) D ON A.OpportunityId = D.OpportunityId
@@ -33151,7 +37024,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 																LEFT JOIN _Donation_Fact B ON CONVERT(NVARCHAR(100),C.New_PledgeId) = B.Expectancy_Key
 																LEFT JOIN _Donation_Dim D ON B.Donation_Key = D.Donation_Key
 															WHERE 1 = 1
-																AND D.StatusCode = [Posted]
+																AND D.StatusCode = A.[Posted]
 																AND B.Donation_Primary_Amt IS NOT NULL
 															GROUP BY A.OpportunityId
 														) D ON A.OpportunityId = D.OpportunityId
@@ -33339,7 +37212,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				LEFT JOIN _Accounting_Text_ H ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(H.Donation_Key,H.Accounting_Key)
 				LEFT JOIN Uf_Reporting_Group_Key() I ON CONCAT(A.Donation_Key,COALESCE(A.Accounting_Key,[Zero])) = CONCAT(I.Donation_Key,I.Accounting_Key)
 				LEFT JOIN _Accounting_Week J ON A.New_AccountingDate = J.Accounting_Week_Date
-				LEFT JOIN _Donation_Fact K ON A.Donation_Key = K.Donation_Key AND K.Plus_Type = [Hard]															
+				LEFT JOIN _Donation_Fact K ON A.Donation_Key = K.Donation_Key AND K.Plus_Type = A.[Hard]															
 			' -- Ext_From_Statement
 		, '
 			' -- Ext_Where_Statement
@@ -33400,6 +37273,2042 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 		, NULL -- Extra_9
 		, NULL -- Extra_10
 	)
+	,
+-- --------------------------
+-- _Donor_Institution_Giving_Areas_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Institution_Giving_Areas_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Institution_Giving_Areas NVARCHAR(1000)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Institution_Giving_Areas
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, Donor_Institution_Giving_Areas
+			' -- Ext_Select_Statement
+		, '	uf_Donor_Institution_Giving_Areas()															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Byu_Giving_Areas_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Byu_Giving_Areas_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Byu_Giving_Areas NVARCHAR(2000)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Byu_Giving_Areas
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, Donor_Byu_Giving_Areas
+			' -- Ext_Select_Statement
+		, '	uf_Donor_Byu_Giving_Areas()															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Church_Giving_Areas_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Church_Giving_Areas_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Church_Giving_Areas NVARCHAR(2000)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Church_Giving_Areas
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, Donor_Church_Giving_Areas
+			' -- Ext_Select_Statement
+		, '	uf_Donor_Church_Giving_Areas()															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Given_This_Year_To_Byu_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Given_This_Year_To_Byu_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Given_This_Year_To_Byu NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Given_This_Year_To_Byu
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, CASE WHEN A.Credit_Amount IS NULL THEN [N]
+				WHEN A.Credit_Amount <= 0 THEN [N]
+				WHEN A.Credit_Amount > 0 THEN [Y]
+				ELSE [N] END AS Donor_Given_This_Year_To_Byu
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, A.[N]
+				, SUM(A.New_CreditAmount) AS Credit_Amount
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN Ext_Institution B ON A.Plus_InstitutionalHieararchy = B.New_Institutionid
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,0),112) -- Beginning of this year
+											 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-0,-1),112) -- End of this year
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = B.[BYU]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+					, A.[N]
+			) A															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Given_This_Year_To_Byui_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Given_This_Year_To_Byui_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Given_This_Year_To_Byui NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Given_This_Year_To_Byui
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, CASE WHEN A.Credit_Amount IS NULL THEN [N]
+				WHEN A.Credit_Amount <= 0 THEN [N]
+				WHEN A.Credit_Amount > 0 THEN [Y]
+				ELSE [N] END AS Donor_Given_This_Year_To_Byui
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, A.[N]
+				, SUM(A.New_CreditAmount) AS Credit_Amount
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN Ext_Institution B ON A.Plus_InstitutionalHieararchy = B.New_Institutionid
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,0),112) -- Beginning of this year
+											 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-0,-1),112) -- End of this year
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = B.[BYUI]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+					, A.[N]
+			) A															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Given_This_Year_To_Byuh_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Given_This_Year_To_Byuh_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Given_This_Year_To_Byuh NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Given_This_Year_To_Byuh
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, CASE WHEN A.Credit_Amount IS NULL THEN [N]
+				WHEN A.Credit_Amount <= 0 THEN [N]
+				WHEN A.Credit_Amount > 0 THEN [Y]
+				ELSE [N] END AS Donor_Given_This_Year_To_Byuh
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, A.[N]
+				, SUM(A.New_CreditAmount) AS Credit_Amount
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN Ext_Institution B ON A.Plus_InstitutionalHieararchy = B.New_Institutionid
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,0),112) -- Beginning of this year
+											 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-0,-1),112) -- End of this year
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = B.[BYUH]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+					, A.[N]
+			) A															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Given_This_Year_To_Ldsbc_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Given_This_Year_To_Ldsbc_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Given_This_Year_To_Ldsbc NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Given_This_Year_To_Ldsbc
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, CASE WHEN A.Credit_Amount IS NULL THEN [N]
+				WHEN A.Credit_Amount <= 0 THEN [N]
+				WHEN A.Credit_Amount > 0 THEN [Y]
+				ELSE [N] END AS Donor_Given_This_Year_To_Ldsbc
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, A.[N]
+				, SUM(A.New_CreditAmount) AS Credit_Amount
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN Ext_Institution B ON A.Plus_InstitutionalHieararchy = B.New_Institutionid
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,0),112) -- Beginning of this year
+											 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-0,-1),112) -- End of this year
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = B.[LDSBC]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+					, A.[N]
+			) A															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Given_Last_3_Months_To_Byu_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Given_Last_3_Months_To_Byu_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Given_Last_3_Months_To_Byu NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Given_Last_3_Months_To_Byu
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, CASE WHEN A.Credit_Amount IS NULL THEN [N]
+				WHEN A.Credit_Amount <= 0 THEN [N]
+				WHEN A.Credit_Amount > 0 THEN [Y]
+				ELSE [N] END AS Donor_Given_Last_3_Months_To_Byu
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, A.[N]
+				, SUM(A.New_CreditAmount) AS Credit_Amount
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN Ext_Institution B ON A.Plus_InstitutionalHieararchy = B.New_Institutionid
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,0),112) -- Beginning of this year
+											 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-0,-1),112) -- End of this year
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = B.[BYU]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+					, A.[N]
+			) A															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Given_Last_3_Months_To_Byui_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Given_Last_3_Months_To_Byui_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Given_Last_3_Months_To_Byui NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Given_Last_3_Months_To_Byui
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, CASE WHEN A.Credit_Amount IS NULL THEN [N]
+				WHEN A.Credit_Amount <= 0 THEN [N]
+				WHEN A.Credit_Amount > 0 THEN [Y]
+				ELSE [N] END AS Donor_Given_Last_3_Months_To_Byui
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, A.[N]
+				, SUM(A.New_CreditAmount) AS Credit_Amount
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN Ext_Institution B ON A.Plus_InstitutionalHieararchy = B.New_Institutionid
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,0),112) -- Beginning of this year
+											 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-0,-1),112) -- End of this year
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = B.[BYUI]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+					, A.[N]
+			) A															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Given_Last_3_Months_To_Byuh_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Given_Last_3_Months_To_Byuh_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Given_Last_3_Months_To_Byuh NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Given_Last_3_Months_To_Byuh
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, CASE WHEN A.Credit_Amount IS NULL THEN [N]
+				WHEN A.Credit_Amount <= 0 THEN [N]
+				WHEN A.Credit_Amount > 0 THEN [Y]
+				ELSE [N] END AS Donor_Given_Last_3_Months_To_Byuh
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, A.[N]
+				, SUM(A.New_CreditAmount) AS Credit_Amount
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN Ext_Institution B ON A.Plus_InstitutionalHieararchy = B.New_Institutionid
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,0),112) -- Beginning of this year
+											 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-0,-1),112) -- End of this year
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = B.[BYUH]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+					, A.[N]
+			) A															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Given_Last_3_Months_To_Ldsbc_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Given_Last_3_Months_To_Ldsbc_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Given_Last_3_Months_To_Ldsbc NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Given_Last_3_Months_To_Ldsbc
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, CASE WHEN A.Credit_Amount IS NULL THEN [N]
+				WHEN A.Credit_Amount <= 0 THEN [N]
+				WHEN A.Credit_Amount > 0 THEN [Y]
+				ELSE [N] END AS Donor_Given_Last_3_Months_To_Ldsbc
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, A.[N]
+				, SUM(A.New_CreditAmount) AS Credit_Amount
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN Ext_Institution B ON A.Plus_InstitutionalHieararchy = B.New_Institutionid
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,0),112) -- Beginning of this year
+											 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-0,-1),112) -- End of this year
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = B.[LDSBC]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+					, A.[N]
+			) A															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Given_Last_3_Months_To_Church_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Given_Last_3_Months_To_Church_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Given_Last_3_Months_To_Church NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Given_Last_3_Months_To_Church
+			' -- Ext_Insert_Fields
+		, ' Donor_Key 
+			, CASE WHEN A.Credit_Amount IS NULL THEN [N]
+				WHEN A.Credit_Amount <= 0 THEN [N]
+				WHEN A.Credit_Amount > 0 THEN [Y]
+				ELSE [N] END AS Donor_Given_Last_3_Months_To_Church
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, A.[N]
+				, SUM(A.New_CreditAmount) AS Credit_Amount
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN Ext_Institution B ON A.Plus_InstitutionalHieararchy = B.New_Institutionid
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,0),112) -- Beginning of this year
+											 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-0,-1),112) -- End of this year
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = B.[Church]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+					, A.[N]
+			) A															
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '														
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Total_Giving_Byu_High_Flag_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Total_Giving_Byu_High_Flag_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Total_Giving_Byu_High_Flag NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Total_Giving_Byu_High_Flag
+			' -- Ext_Insert_Fields
+		, ' DISTINCT Donor_Key
+				, [Y] AS Donor_Total_Giving_Byu_High_Flag
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byu_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,0),112) -- Beginning of this year -1
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,-1),112) -- End of this year -1
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYU]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byu_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,0),112) -- Beginning of this year -2
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,-1),112) -- End of this year -2
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYU]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byu_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,0),112) -- Beginning of this year -3
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,-1),112) -- End of this year -3
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYU]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '	SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byu_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,0),112) -- Beginning of this year -4
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,-1),112) -- End of this year -4
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYU]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byu_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-6,0),112) -- Beginning of this year -5
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,-1),112) -- End of this year -5
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYU]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+				, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000		
+			) A													
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Total_Giving_Byui_High_Flag_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Total_Giving_Byui_High_Flag_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Total_Giving_Byui_High_Flag NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Total_Giving_Byui_High_Flag
+			' -- Ext_Insert_Fields
+		, ' DISTINCT Donor_Key
+				, [Y] AS Donor_Total_Giving_Byui_High_Flag
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byui_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,0),112) -- Beginning of this year -1
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,-1),112) -- End of this year -1
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYUI]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byui_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,0),112) -- Beginning of this year -2
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,-1),112) -- End of this year -2
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYUI]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byui_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,0),112) -- Beginning of this year -3
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,-1),112) -- End of this year -3
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYUI]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '	SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byui_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,0),112) -- Beginning of this year -4
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,-1),112) -- End of this year -4
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYUI]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byui_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-6,0),112) -- Beginning of this year -5
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,-1),112) -- End of this year -5
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYUI]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+				, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000		
+			) A													
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Total_Giving_Byuh_High_Flag_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Total_Giving_Byuh_High_Flag_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Total_Giving_Byuh_High_Flag NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Total_Giving_Byuh_High_Flag
+			' -- Ext_Insert_Fields
+		, ' DISTINCT Donor_Key
+				, [Y] AS Donor_Total_Giving_Byuh_High_Flag
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byuh_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,0),112) -- Beginning of this year -1
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,-1),112) -- End of this year -1
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYUH]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byuh_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,0),112) -- Beginning of this year -2
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,-1),112) -- End of this year -2
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYUH]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byuh_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,0),112) -- Beginning of this year -3
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,-1),112) -- End of this year -3
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYUH]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '	SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byuh_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,0),112) -- Beginning of this year -4
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,-1),112) -- End of this year -4
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYUH]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Byuh_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-6,0),112) -- Beginning of this year -5
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,-1),112) -- End of this year -5
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [BYUH]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+				, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000		
+			) A													
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Total_Giving_Ldsbc_High_Flag_
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Total_Giving_Ldsbc_High_Flag_' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)
+			, Donor_Total_Giving_Ldsbc_High_Flag NVARCHAR(1)
+			' -- Ext_Create_Fields
+		, '	Donor_Key
+			, Donor_Total_Giving_Ldsbc_High_Flag
+			' -- Ext_Insert_Fields
+		, ' DISTINCT Donor_Key
+				, [Y] AS Donor_Total_Giving_Ldsbc_High_Flag
+			' -- Ext_Select_Statement
+		, '	(SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Ldsbc_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,0),112) -- Beginning of this year -1
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,-1),112) -- End of this year -1
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [LDSBC]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Ldsbc_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,0),112) -- Beginning of this year -2
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,-1),112) -- End of this year -2
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [LDSBC]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Ldsbc_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,0),112) -- Beginning of this year -3
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,-1),112) -- End of this year -3
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [LDSBC]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			' -- Ext_From_Statement
+		, '
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '	SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Ldsbc_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,0),112) -- Beginning of this year -4
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,-1),112) -- End of this year -4
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [LDSBC]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000
+			UNION
+			SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+				, A.[Y]
+				, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Ldsbc_High_Flag
+				FROM dbo._Gift_Credit_ A
+					INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+				WHERE 1 = 1
+					AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-6,0),112) -- Beginning of this year -5
+												AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,-1),112) -- End of this year -5
+					AND A.Plus_Type != 100000001 --Exclude Influence
+					AND A.Plus_SubType != 100000002 --Exclude Match
+					AND B.New_Inst = [LDSBC]
+				GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+				, A.[Y]
+				HAVING SUM(A.New_CreditAmount) BETWEEN 500 AND 5000		
+			) A													
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																												
+			' -- Ext_From_Statement_3
+		, '		
+			'-- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- _Donor_Lifetime_Giving_Dim
+-- --------------------------
+	( 8 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Lifetime_Giving_Dim' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)  
+			, Donor_Total_Lifetime_Giving MONEY
+			, Donor_Total_Lifetime_Giving_Last_5_Years MONEY
+			, Donor_Total_Lifetime_Giving_Byu MONEY
+			, Donor_Total_Lifetime_Giving_Byui MONEY
+			, Donor_Total_Lifetime_Giving_Byuh MONEY
+			, Donor_Total_Lifetime_Giving_Ldsbc MONEY
+			, Donor_Total_Lifetime_Giving_Church MONEY
+			, Donor_Total_Lifetime_Giving_Pcc MONEY
+			, Donor_Total_Lifetime_Giving_Ces MONEY
+			, Donor_Total_Lifetime_Giving_To_Byu_Last_5_Years MONEY
+			, Donor_Total_Lifetime_Giving_To_Byui_Last_5_Years MONEY
+			, Donor_Total_Lifetime_Giving_To_Byuh_Last_5_Years MONEY
+			, Donor_Total_Lifetime_Giving_To_Ldsbc_Last_5_Years MONEY
+			, Donor_Total_Lifetime_Giving_To_Church_Last_5_Years MONEY
+			' -- Ext_Create_Fields
+		, '	Donor_Key      
+			, Donor_Total_Lifetime_Giving
+			, Donor_Total_Lifetime_Giving_Last_5_Years
+			, Donor_Total_Lifetime_Giving_Byu
+			, Donor_Total_Lifetime_Giving_Byui
+			, Donor_Total_Lifetime_Giving_Byuh
+			, Donor_Total_Lifetime_Giving_Ldsbc
+			, Donor_Total_Lifetime_Giving_Church
+			, Donor_Total_Lifetime_Giving_Pcc
+			, Donor_Total_Lifetime_Giving_Ces
+			, Donor_Total_Lifetime_Giving_To_Byu_Last_5_Years
+			, Donor_Total_Lifetime_Giving_To_Byui_Last_5_Years
+			, Donor_Total_Lifetime_Giving_To_Byuh_Last_5_Years
+			, Donor_Total_Lifetime_Giving_To_Ldsbc_Last_5_Years
+			, Donor_Total_Lifetime_Giving_To_Church_Last_5_Years
+			' -- Ext_Insert_Fields
+		, '  A.Donor_Key
+			, Donor_Total_Lifetime_Giving
+			, Donor_Total_Lifetime_Giving_Last_5_Years
+			, Donor_Total_Lifetime_Giving_Byu
+			, Donor_Total_Lifetime_Giving_Byui
+			, Donor_Total_Lifetime_Giving_Byuh
+			, Donor_Total_Lifetime_Giving_Ldsbc
+			, Donor_Total_Lifetime_Giving_Church
+			, Donor_Total_Lifetime_Giving_Pcc
+			, Donor_Total_Lifetime_Giving_Ces
+			, Donor_Total_Lifetime_Giving_To_Byu_Last_5_Years
+			, Donor_Total_Lifetime_Giving_To_Byui_Last_5_Years
+			, Donor_Total_Lifetime_Giving_To_Byuh_Last_5_Years
+			, Donor_Total_Lifetime_Giving_To_Ldsbc_Last_5_Years
+			, Donor_Total_Lifetime_Giving_To_Church_Last_5_Years
+			' -- Ext_Select_Statement
+		, ' _All_Donors_ A
+				LEFT JOIN		
+					(SELECT A.Donor_Key
+						, SUM(A.Donation_Credit_Amt) AS Donor_Total_Lifetime_Giving
+						FROM _Donation_Fact A
+							INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+						WHERE 1 = 1
+							AND B.StatusCode = [Posted]
+							AND A.Plus_Type IN ([Hard],[Shared])
+						GROUP BY A.Donor_Key
+					) B ON A.Donor_Key = B.Donor_Key
+				LEFT JOIN
+					(SELECT ContactId AS Donor_Key
+						, Plus_TotalGivenLast5Years AS Donor_Total_Lifetime_Giving_Last_5_Years
+						FROM Ext_Contact
+					UNION
+					SELECT AccountId AS Donor_Key
+						, Plus_TotalGivenLast5Years AS Donor_Total_Lifetime_Giving_Last_5_Years
+						FROM Ext_Account
+					) C ON A.Donor_Key = C.Donor_Key
+				LEFT JOIN
+					(SELECT A.Donor_Key
+						, SUM(A.Donation_Credit_Amt) AS Donor_Total_Lifetime_Giving_Byu
+						FROM _Donation_Fact A
+							INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+							INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
+						WHERE 1 = 1
+							AND B.StatusCode = [Posted]
+							AND A.Plus_Type IN ([Hard],[Shared])
+							AND C.New_Inst = [BYU]
+						GROUP BY A.Donor_Key
+					) D ON A.Donor_Key = D.Donor_Key
+				LEFT JOIN
+					(SELECT A.Donor_Key
+						, SUM(A.Donation_Credit_Amt) AS Donor_Total_Lifetime_Giving_Byui
+						FROM _Donation_Fact A
+							INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+							INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
+						WHERE 1 = 1
+							AND B.StatusCode = [Posted]
+							AND A.Plus_Type IN ([Hard],[Shared])
+							AND C.New_Inst = [BYUI]
+						GROUP BY A.Donor_Key
+					) E ON A.Donor_Key = E.Donor_Key
+				LEFT JOIN
+					(SELECT A.Donor_Key
+						, SUM(A.Donation_Credit_Amt) AS Donor_Total_Lifetime_Giving_Byuh
+						FROM _Donation_Fact A
+							INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+							INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
+						WHERE 1 = 1
+							AND B.StatusCode = [Posted]
+							AND A.Plus_Type IN ([Hard],[Shared])
+							AND C.New_Inst = [BYUH]
+						GROUP BY A.Donor_Key
+					) F ON A.Donor_Key = F.Donor_Key
+				LEFT JOIN
+					(SELECT A.Donor_Key
+						, SUM(A.Donation_Credit_Amt) AS Donor_Total_Lifetime_Giving_Ldsbc
+						FROM _Donation_Fact A
+							INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+							INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
+						WHERE 1 = 1
+							AND B.StatusCode = [Posted]
+							AND A.Plus_Type IN ([Hard],[Shared])
+							AND C.New_Inst = [LDSBC]
+						GROUP BY A.Donor_Key
+					) G ON A.Donor_Key = G.Donor_Key
+				LEFT JOIN
+					(SELECT A.Donor_Key
+						, SUM(A.Donation_Credit_Amt) AS Donor_Total_Lifetime_Giving_Church
+						FROM _Donation_Fact A
+							INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+							INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
+						WHERE 1 = 1
+							AND B.StatusCode = [Posted]
+							AND A.Plus_Type IN ([Hard],[Shared])
+							AND C.New_Inst = [Church]
+						GROUP BY A.Donor_Key
+					) H ON A.Donor_Key = H.Donor_Key													
+			' -- Ext_From_Statement
+		, '	
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, '		LEFT JOIN
+					(SELECT A.Donor_Key
+						, SUM(A.Donation_Credit_Amt) AS Donor_Total_Lifetime_Giving_Pcc
+						FROM _Donation_Fact A
+							INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+							INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
+						WHERE 1 = 1
+							AND B.StatusCode = [Posted]
+							AND A.Plus_Type IN ([Hard],[Shared])
+							AND C.New_Inst = [PCC]
+						GROUP BY A.Donor_Key
+					) I ON A.Donor_Key = I.Donor_Key
+				LEFT JOIN
+					(SELECT A.Donor_Key
+						, SUM(A.Donation_Credit_Amt) AS Donor_Total_Lifetime_Giving_Ces
+						FROM _Donation_Fact A
+							INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+							INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
+						WHERE 1 = 1
+							AND B.StatusCode = [Posted]
+							AND A.Plus_Type IN ([Hard],[Shared])
+							AND C.New_Inst = [CES]
+						GROUP BY A.Donor_Key
+					) J ON A.Donor_Key = J.Donor_Key
+				LEFT JOIN 
+					(SELECT COALESCE(A.New_RelatedConstituent,A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Lifetime_Giving_To_Byu_Last_5_Years
+							FROM dbo._Gift_Credit_ A
+								INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-6,0),112) -- 5 full calendar years + Ytd
+															AND CONVERT(NVARCHAR(10),GETDATE(),112)
+								AND A.Plus_Type IN (100000000,100000002) -- Hard, Shared (not Influence 100000001)
+								AND A.StatusCode = 1 --Posted
+								AND B.New_Inst = [BYU] --Institution
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					) K ON A.Donor_Key = K.Donor_Key
+				LEFT JOIN 
+					(SELECT COALESCE(A.New_RelatedConstituent,A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Lifetime_Giving_To_Byui_Last_5_Years
+							FROM dbo._Gift_Credit_ A
+								INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-6,0),112) -- 5 full calendar years + Ytd
+															AND CONVERT(NVARCHAR(10),GETDATE(),112)
+								AND A.Plus_Type IN (100000000,100000002) -- Hard, Shared (not Influence 100000001)
+								AND A.StatusCode = 1 --Posted
+								AND B.New_Inst = [BYUI] --Institution
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					) L ON A.Donor_Key = L.Donor_Key				
+			' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '		LEFT JOIN 
+					(SELECT COALESCE(A.New_RelatedConstituent,A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Lifetime_Giving_To_Byuh_Last_5_Years
+							FROM dbo._Gift_Credit_ A
+								INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-6,0),112) -- 5 full calendar years + Ytd
+															AND CONVERT(NVARCHAR(10),GETDATE(),112)
+								AND A.Plus_Type IN (100000000,100000002) -- Hard, Shared (not Influence 100000001)
+								AND A.StatusCode = 1 --Posted
+								AND B.New_Inst = [BYUH] --Institution
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					) M ON A.Donor_Key = M.Donor_Key
+				LEFT JOIN 
+					(SELECT COALESCE(A.New_RelatedConstituent,A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Lifetime_Giving_To_Ldsbc_Last_5_Years
+							FROM dbo._Gift_Credit_ A
+								INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-6,0),112) -- 5 full calendar years + Ytd
+															AND CONVERT(NVARCHAR(10),GETDATE(),112)
+								AND A.Plus_Type IN (100000000,100000002) -- Hard, Shared (not Influence 100000001)
+								AND A.StatusCode = 1 --Posted
+								AND B.New_Inst = [LDSBC] --Institution
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					) N ON A.Donor_Key = N.Donor_Key
+				LEFT JOIN 
+					(SELECT COALESCE(A.New_RelatedConstituent,A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Lifetime_Giving_To_Church_Last_5_Years
+							FROM dbo._Gift_Credit_ A
+								INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-6,0),112) -- 5 full calendar years + Ytd
+															AND CONVERT(NVARCHAR(10),GETDATE(),112)
+								AND A.Plus_Type IN (100000000,100000002) -- Hard, Shared (not Influence 100000001)
+								AND A.StatusCode = 1 --Posted
+								AND B.New_Inst = [Church] --Institution
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					) O ON A.Donor_Key = O.Donor_Key 																											
+			' -- Ext_From_Statement_3
+		, '		
+			' -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
 	,
 -- --------------------------
 -- _Accounting_Reporting_Dim
@@ -33870,6 +39779,178 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 	)
 	,
 -- --------------------------
+-- _Donor_Giving_Dim
+-- --------------------------
+	( 9 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, '_Donor_Giving_Dim' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Donor_Key NVARCHAR(100)      
+			, Donor_Given_This_Year_To_Byu NVARCHAR(1)
+			, Donor_Given_This_Year_To_ByuI NVARCHAR(1)
+			, Donor_Given_This_Year_To_ByuH NVARCHAR(1)
+			, Donor_Given_This_Year_To_LDSBC NVARCHAR(1)
+			, Donor_Given_Last_3_Months_To_Byu NVARCHAR(1)
+			, Donor_Given_Last_3_Months_To_Byui NVARCHAR(1)
+			, Donor_Given_Last_3_Months_To_Byuh NVARCHAR(1)
+			, Donor_Given_Last_3_Months_To_Ldsbc NVARCHAR(1)
+			, Donor_Given_Last_3_Months_To_Church NVARCHAR(1)
+			, Donor_Institution_Giving_Areas NVARCHAR(1000)
+			, Donor_Byu_Giving_Areas NVARCHAR(2000)
+			, Donor_Church_Giving_Areas NVARCHAR(2000)
+			, Donor_Total_Giving_Byu_High_Flag NVARCHAR(1)
+			, Donor_Total_Giving_Byui_High_Flag NVARCHAR(1)
+			, Donor_Total_Giving_Byuh_High_Flag NVARCHAR(1)
+			, Donor_Total_Giving_Ldsbc_High_Flag NVARCHAR(1)
+			, Donor_Gift_Count_Previous_5_Years INT
+			, Donor_Average_Single_Gift_Previous_5_Years MONEY
+			' -- Ext_Create_Fields
+		, '	Donor_Key      
+			, Donor_Given_This_Year_To_Byu
+			, Donor_Given_This_Year_To_ByuI
+			, Donor_Given_This_Year_To_ByuH
+			, Donor_Given_This_Year_To_LDSBC
+			, Donor_Given_Last_3_Months_To_Byu
+			, Donor_Given_Last_3_Months_To_Byui
+			, Donor_Given_Last_3_Months_To_Byuh
+			, Donor_Given_Last_3_Months_To_Ldsbc
+			, Donor_Given_Last_3_Months_To_Church
+			, Donor_Institution_Giving_Areas
+			, Donor_Byu_Giving_Areas
+			, Donor_Church_Giving_Areas
+			, Donor_Total_Giving_Byu_High_Flag
+			, Donor_Total_Giving_Byui_High_Flag
+			, Donor_Total_Giving_Byuh_High_Flag
+			, Donor_Total_Giving_Ldsbc_High_Flag
+			, Donor_Gift_Count_Previous_5_Years
+			, Donor_Average_Single_Gift_Previous_5_Years
+			' -- Ext_Insert_Fields
+		, '  A.Donor_Key 
+			, Donor_Given_This_Year_To_Byu
+			, Donor_Given_This_Year_To_Byui
+			, Donor_Given_This_Year_To_Byuh
+			, Donor_Given_This_Year_To_Ldsbc
+			, Donor_Given_Last_3_Months_To_Byu
+			, Donor_Given_Last_3_Months_To_Byui
+			, Donor_Given_Last_3_Months_To_Byuh
+			, Donor_Given_Last_3_Months_To_Ldsbc
+			, Donor_Given_Last_3_Months_To_Church
+			, Donor_Institution_Giving_Areas
+			, Donor_Byu_Giving_Areas
+			, Donor_Church_Giving_Areas
+			, Donor_Total_Giving_Byu_High_Flag
+			, Donor_Total_Giving_Byui_High_Flag
+			, Donor_Total_Giving_Byuh_High_Flag
+			, Donor_Total_Giving_Ldsbc_High_Flag
+			, Donor_Gift_Count_Previous_5_Years
+			, Donor_Average_Single_Gift_Previous_5_Years
+			' -- Ext_Select_Statement
+		, ' _All_Donors_ A
+			LEFT JOIN _Donor_Given_This_Year_To_Byu_ B ON A.Donor_Key = B.Donor_Key
+			LEFT JOIN _Donor_Given_This_Year_To_Byui_ C ON A.Donor_Key = C.Donor_Key
+			LEFT JOIN _Donor_Given_This_Year_To_Byuh_ D ON A.Donor_Key = D.Donor_Key
+			LEFT JOIN _Donor_Given_This_Year_To_Ldsbc_ E ON A.Donor_Key = E.Donor_Key
+			LEFT JOIN _Donor_Given_Last_3_Months_To_Byu_ F ON A.Donor_Key = F.Donor_Key
+			LEFT JOIN _Donor_Given_Last_3_Months_To_Byui_ G ON A.Donor_Key = G.Donor_Key
+			LEFT JOIN _Donor_Given_Last_3_Months_To_Byuh_ H ON A.Donor_Key = H.Donor_Key
+			LEFT JOIN _Donor_Given_Last_3_Months_To_Ldsbc_ I ON A.Donor_Key = I.Donor_Key
+			LEFT JOIN _Donor_Given_Last_3_Months_To_Church_ J ON A.Donor_Key = J.Donor_Key
+			LEFT JOIN _Donor_Institution_Giving_Areas_ K ON A.Donor_Key = K.Donor_Key
+			LEFT JOIN _Donor_Byu_Giving_Areas_ L ON A.Donor_Key = L.Donor_Key
+			LEFT JOIN _Donor_Church_Giving_Areas_ M ON A.Donor_Key = M.Donor_Key
+			LEFT JOIN _Donor_Total_Giving_Byu_High_Flag_ N ON A.Donor_Key = N.Donor_Key
+			LEFT JOIN _Donor_Total_Giving_Byui_High_Flag_ O ON A.Donor_Key = O.Donor_Key
+			LEFT JOIN _Donor_Total_Giving_Byuh_High_Flag_ P ON A.Donor_Key = P.Donor_Key
+			LEFT JOIN _Donor_Total_Giving_Ldsbc_High_Flag_ Q ON A.Donor_Key = Q.Donor_Key
+			LEFT JOIN 
+				(SELECT A.Donor_Key
+					, COUNT(DISTINCT A.Donation_Key) AS Donor_Gift_Count_Previous_5_Years
+					FROM _Donation_Fact A
+						INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+					WHERE 1 = 1
+						AND B.New_ReceiptDate BETWEEN CONVERT(DATE,DATEADD(year, DATEDIFF(year, 0, GETDATE()) - 5, 0),101)
+												AND CONVERT(DATE,DATEADD(yy, DATEDIFF(yy, 0, GETDATE()) + 0, -1),101)
+					GROUP BY Donor_Key
+				) R ON A.Donor_Key = R.Donor_Key
+			LEFT JOIN
+				(SELECT A.Donor_Key
+					, ROUND(Donor_Credit_Sum_Amt/Donor_Gift_Count_Previous_5_Years,2) AS Donor_Average_Single_Gift_Previous_5_Years 
+					FROM
+						(SELECT A.Donor_Key
+							, SUM(A.Donation_Credit_Amt) AS Donor_Credit_Sum_Amt
+							, COUNT(DISTINCT A.Donation_Key) AS Donor_Gift_Count_Previous_5_Years
+							FROM _Donation_Fact A
+								INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+							WHERE 1 = 1
+								AND B.New_ReceiptDate BETWEEN CONVERT(DATE,DATEADD(year, DATEDIFF(year, 0, GETDATE()) - 5, 0),101)
+														AND CONVERT(DATE,DATEADD(yy, DATEDIFF(yy, 0, GETDATE()) + 0, -1),101)
+							GROUP BY Donor_Key
+						) A
+				) S ON A.Donor_Key = S.Donor_Key													
+			' -- Ext_From_Statement
+		, '	
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																											
+			' -- Ext_From_Statement_3
+		, '		
+			' -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
+	,
+-- --------------------------
 -- _Initiative_Dim
 -- --------------------------
 	( 9 -- Tier
@@ -34046,6 +40127,273 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				, Initiative_Has_Expectancy
 				)
 				VALUES(0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																											
+			' -- Ext_From_Statement_3
+		, '		
+			' -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)
+	,
+-- --------------------------
+-- View_Web_Transaction
+-- --------------------------
+	( 9 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, 'View_Web_Transaction' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Web_Transaction_OA_ID NVARCHAR(100)
+			, Transaction_Id NVARCHAR(100) 
+			, Transaction_Total MONEY
+			, Receipt_Date DATETIME
+			, Payment_Type NVARCHAR(400)
+			, Tender_Name NVARCHAR(400)
+			, Type_of_Donation NVARCHAR(400)
+			, Recurred_Donation_Status NVARCHAR(400)
+			, Appeal_Code NVARCHAR(10)
+			, Appeal_Name NVARCHAR(100)
+			, Appeal_Delivery_Type NVARCHAR(400)			
+			, CID NVARCHAR(200)
+			, CDE2 NVARCHAR(200)
+			, Score NVARCHAR(100)			
+			, Opt_Into_Email_Communication NVARCHAR(400)
+			, Donor_First_Name_From_Web NVARCHAR(100)
+			, Donor_Middle_Name_From_Web NVARCHAR(100)
+			, Donor_Last_Name_From_Web NVARCHAR(100)
+			, Web_Subscription_Linked_LDS_Account NVARCHAR(1)			
+			, Donor_Email_From_Web NVARCHAR(100)
+			, Donor_Phone_Number_From_Web NVARCHAR(100)
+			, Donor_Address_Line_1_From_Web NVARCHAR(100)
+			, Donor_Address_Line_2_From_Web NVARCHAR(100)
+			, Donor_Address_City_From_Web NVARCHAR(100)
+			, Donor_Address_State_From_Web NVARCHAR(100)
+			, Donor_Address_Zip_Code_From_Web NVARCHAR(100)
+			, Donor_Address_Country_From_Web NVARCHAR(100)						
+			, Comments NVARCHAR(1000)
+			, Telefund_Comments NVARCHAR(4000)
+			, Address_Match NVARCHAR(400)
+			, Data_Entry_Status NVARCHAR(400)
+			, In_Memoriam_Flag NVARCHAR(400)
+			, In_Memory_Of_Type NVARCHAR(400)
+			, Notify_Fmaily_Friends NVARCHAR(400)
+			, Notify_This_Person NVARCHAR(400)
+			, Honoree_Name NVARCHAR(100)
+			, Notify_By_Card NVARCHAR(400)
+			, Notify_By_Email NVARCHAR(400)
+			, Web_Transaction_Status NVARCHAR(400)
+			, Web_Transaction_Status_Reason NVARCHAR(400)
+			, Web_Transaction_Created_On DATE
+			, Web_Transaction_Modified_On DATE
+			, Web_Transaction_Modified_By NVARCHAR(200)
+			, DonorId NVARCHAR(100)
+			, Donor_Gender NVARCHAR(400)
+			, Birthdate DATE
+			, Donor_Preferred_Name NVARCHAR(100)
+			, Donor_Name NVARCHAR(160)
+			, Donor_Primary_Email NVARCHAR(150)
+			, Donor_Marriage_Status NVARCHAR(400)
+			, Donor_Deceased NVARCHAR(1)
+			, Donor_Linked_Lds_Account NVARCHAR(1)
+			, Donor_LDSPID NVARCHAR(100)
+			, Donor_CreatedOn DATE
+			, Donor_ModifiedOn DATE
+			, Donor_Status NVARCHAR(400)
+			, Donor_Status_Reason NVARCHAR(400)
+			' -- Ext_Create_Fields
+		, '	Web_Transaction_OA_ID
+			, Transaction_Id 
+			, Transaction_Total
+			, Receipt_Date
+			, Payment_Type
+			, Tender_Name
+			, Type_of_Donation
+			, Recurred_Donation_Status
+			, Appeal_Code
+			, Appeal_Name
+			, Appeal_Delivery_Type			
+			, CID
+			, CDE2
+			, Score			
+			, Opt_Into_Email_Communication
+			, Donor_First_Name_From_Web
+			, Donor_Middle_Name_From_Web
+			, Donor_Last_Name_From_Web
+			, Web_Subscription_Linked_LDS_Account			
+			, Donor_Email_From_Web
+			, Donor_Phone_Number_From_Web
+			, Donor_Address_Line_1_From_Web
+			, Donor_Address_Line_2_From_Web
+			, Donor_Address_City_From_Web
+			, Donor_Address_State_From_Web
+			, Donor_Address_Zip_Code_From_Web
+			, Donor_Address_Country_From_Web						
+			, Comments
+			, Telefund_Comments
+			, Address_Match
+			, Data_Entry_Status
+			, In_Memoriam_Flag
+			, In_Memory_Of_Type
+			, Notify_Fmaily_Friends
+			, Notify_This_Person
+			, Honoree_Name
+			, Notify_By_Card
+			, Notify_By_Email
+			, Web_Transaction_Status
+			, Web_Transaction_Status_Reason
+			, Web_Transaction_Created_On
+			, Web_Transaction_Modified_On
+			, Web_Transaction_Modified_By
+			, DonorId
+			, Donor_Gender
+			, Birthdate
+			, Donor_Preferred_Name
+			, Donor_Name
+			, Donor_Primary_Email
+			, Donor_Marriage_Status
+			, Donor_Deceased
+			, Donor_Linked_Lds_Account
+			, Donor_LDSPID
+			, Donor_CreatedOn
+			, Donor_ModifiedOn
+			, Donor_Status
+			, Donor_Status_Reason
+			' -- Ext_Insert_Fields
+		, '  A.WebTransaction_Key AS Web_Transaction_OA_ID
+			, B.Transaction_Id
+			, A.Transaction_Total
+			, B.Receipt_Date
+			, B.Payment_Type
+			, B.Tender_Name
+			, B.Type_Of_Donation
+			, B.Recurred_Donation_Status
+			, B.Appeal_Code
+			, C.Appeal_Name
+			, C.Delivery_Type AS Appeal_Delivery_Type
+			, B.Cid
+			, B.Cde2
+			, B.Score
+			, B.Opt_Into_Email_Communication
+			, B.Donor_First_Name_From_Web
+			, B.Donor_Middle_Name_From_Web
+			, B.Donor_Last_Name_From_Web
+			, B.Web_Subscription_Linked_Lds_Account
+			, B.Donor_Email_From_Web
+			, B.Donor_Phone_Number_From_Web
+			, B.Donor_Address_Line_1_From_Web
+			, B.Donor_Address_Line_2_From_Web
+			, B.Donor_Address_City_From_Web
+			, B.Donor_Address_State_From_Web
+			, B.Donor_Address_Zip_Code_From_Web
+			, B.Donor_Address_Country_From_Web
+			, B.Comments
+			, B.Telefund_Comments
+			, B.Address_Match
+			, B.Data_Entry_Status
+			, B.In_Memoriam_Flag
+			, B.In_Memory_Of_Type
+			, B.Notify_Fmaily_Friends
+			, B.Notify_This_Person
+			, B.Honoree_Name
+			, B.Notify_By_Card
+			, B.Notify_By_Email
+			, B.Web_Transaction_Status
+			, B.Web_Transaction_Status_Reason
+			, B.Web_Transaction_Created_On
+			, B.Web_Transaction_Modified_On
+			, B.Web_Transaction_Modified_By
+			, D.Donor_Key AS DonorId
+			, E.Donor_Gender AS Gender
+			, E.Donor_Birth_Dt AS Birthdate
+			, F.Donor_Preferred_Name
+			, F.Donor_Name	
+			, G.Email_Address AS Donor_Primary_Email
+			, E.Donor_Marriage_Status 
+			, E.Donor_Deceased_Yn AS Donor_Deceased
+			, H.Donor_Linked_Lds_Account
+			, D.Donor_Ldsp_Id AS Donor_LDSPID	
+			, E.Donor_CreatedOn
+			, E.Donor_ModifiedOn
+			, E.Donor_Status
+			, E.Donor_Status_Reason
+			' -- Ext_Select_Statement
+		, ' _Web_Transaction_Fact A
+				LEFT JOIN _Web_Transaction_Dim B ON A.WebTransaction_Key = B.Web_Transaction_Dim_Key
+				LEFT JOIN	
+					(SELECT Appeal_Key
+						, Appeal_Code
+						, Appeal_Name
+						, Delivery_Type
+						FROM 
+							(SELECT ROW_NUMBER() OVER (PARTITION BY Appeal_Code ORDER BY Appeal_Key) AS Row_Num
+								, Appeal_Key
+								, Appeal_Code
+								, Appeal_Name
+								, Delivery_Type
+								FROM _Appeal_Dim 
+							) A
+						WHERE 1 = 1
+							AND Row_Num = 1
+					) C ON B.Appeal_Code = C.Appeal_Code
+				LEFT JOIN _Donor_Key_Dim D ON A.Donor_Key = D.Donor_Key
+				LEFT JOIN _Donor_Detail_Dim E ON D.Donor_Key = E.Donor_Key
+				LEFT JOIN _Donor_Name_Dim F ON D.Donor_Key = F.Donor_Key
+				LEFT JOIN _Email_Dim G ON D.Donor_Key = G.ContactId AND G.Email_Primary_Yn = D.[Y]
+				LEFT JOIN _Donor_Ldsp_Org_Dim H ON D.Donor_Key = H.Donor_Key													
+			' -- Ext_From_Statement
+		, '	
 			' -- Ext_Where_Statement
 		, NULL -- Tier_3_Stage
 		, NULL -- Tier_3_Stage_DateTime
@@ -34689,6 +41037,264 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 		, NULL -- Extra_9
 		, NULL -- Extra_10
 	)
+	,
+-- --------------------------
+-- View_Web_Subscription
+-- --------------------------
+	( 10 -- Tier
+		, ' ' -- Source_Table
+		, ' ' -- Destination_Table
+		, 'View_Web_Subscription' -- Ext_Table
+		, '	' -- Dest_Create_Fields
+		, '	' -- Dest_Insert_Fields
+		, ' ' -- Dest_Where_Statement
+		, '	Web_Subscription_OA_ID NVARCHAR(100)
+			, Web_Subscription_Name NVARCHAR(100) 
+			, Transaction_Total MONEY
+			, Transaction_ID NVARCHAR(100)
+			, Recurring_Donation_Start_Date DATE
+			, Recurring_Donation_Stop_Date DATE
+			, Next_Payment_Date DATE
+			, Payment_Type NVARCHAR(400)
+			, Tender_Name NVARCHAR(400)
+			, Opt_Into_Email_Communication NVARCHAR(400)
+			, CID NVARCHAR(200)
+			, CDE2 NVARCHAR(200)
+			, Type_of_Donation NVARCHAR(400)
+			, Appeal_Code NVARCHAR(10)
+			, Appeal_Name NVARCHAR(100)
+			, Appeal_Delivery_Type NVARCHAR(400)
+			, Donor_First_Name_From_Web NVARCHAR(100)
+			, Donor_Middle_Name_From_Web NVARCHAR(100)
+			, Donor_Last_Name_From_Web NVARCHAR(100)
+			, Web_Subscription_Linked_LDS_Account NVARCHAR(1)
+			, Donor_Email_From_Web NVARCHAR(100)
+			, Donor_Phone_Number_From_Web NVARCHAR(100)
+			, Donor_Address_Line_1_From_Web NVARCHAR(100)
+			, Donor_Address_Line_2_From_Web NVARCHAR(100)
+			, Donor_Address_City_From_Web NVARCHAR(100)
+			, Donor_Address_State_From_Web NVARCHAR(100)
+			, Donor_Address_Zip_Code_From_Web NVARCHAR(100)
+			, Donor_Address_Country_From_Web NVARCHAR(100)
+			, Comments NVARCHAR(1000)
+			, Telefund_Comments NVARCHAR(4000)
+			, Donor_Type NVARCHAR(400)	
+			, Donor_Match_Status NVARCHAR(400)
+			, Web_Subscription_Status NVARCHAR(400)
+			, Web_Subscription_Status_Reason NVARCHAR(400)	
+			, Web_Subscription_Created_On DATE
+			, Web_Subscription_Modified_On DATE
+			, Address_Match NVARCHAR(400)	
+			, Data_Entry_Status NVARCHAR(400)
+			, Receipt_Date DATETIME
+			, Donor_Key NVARCHAR(100)
+			, Donor_Gender NVARCHAR(400)
+			, Birthdate DATE
+			, Donor_Preferred_Name NVARCHAR(100)
+			, Donor_Name NVARCHAR(160)
+			, Donor_Primary_Email NVARCHAR(150)
+			, Donor_Marriage_Status NVARCHAR(400)
+			, Donor_Deceased NVARCHAR(1)
+			, Donor_Linked_Lds_Account NVARCHAR(1)
+			, Donor_LDSPID	NVARCHAR(100)
+			, Donor_CreatedOn DATE
+			, Donor_ModifiedOn DATE
+			, Donor_Status NVARCHAR(400)
+			, Donor_Status_Reason	NVARCHAR(400)
+			, Matched_by_User NVARCHAR(200)
+			' -- Ext_Create_Fields
+		, '	Web_Subscription_OA_ID
+			, Web_Subscription_Name
+			, Transaction_Total
+			, Transaction_ID
+			, Recurring_Donation_Start_Date
+			, Recurring_Donation_Stop_Date
+			, Next_Payment_Date
+			, Payment_Type
+			, Tender_Name
+			, Opt_Into_Email_Communication
+			, CID
+			, CDE2
+			, Type_of_Donation
+			, Appeal_Code
+			, Appeal_Name
+			, Appeal_Delivery_Type
+			, Donor_First_Name_From_Web
+			, Donor_Middle_Name_From_Web
+			, Donor_Last_Name_From_Web
+			, Web_Subscription_Linked_LDS_Account
+			, Donor_Email_From_Web
+			, Donor_Phone_Number_From_Web
+			, Donor_Address_Line_1_From_Web
+			, Donor_Address_Line_2_From_Web
+			, Donor_Address_City_From_Web
+			, Donor_Address_State_From_Web
+			, Donor_Address_Zip_Code_From_Web
+			, Donor_Address_Country_From_Web
+			, Comments
+			, Telefund_Comments	
+			, Donor_Type	
+			, Donor_Match_Status	
+			, Web_Subscription_Status
+			, Web_Subscription_Status_Reason	
+			, Web_Subscription_Created_On
+			, Web_Subscription_Modified_On	
+			, Address_Match	
+			, Data_Entry_Status
+			, Receipt_Date
+			, Donor_Key
+			, Donor_Gender
+			, Birthdate
+			, Donor_Preferred_Name
+			, Donor_Name
+			, Donor_Primary_Email
+			, Donor_Marriage_Status 
+			, Donor_Deceased
+			, Donor_Linked_Lds_Account
+			, Donor_LDSPID	
+			, Donor_CreatedOn
+			, Donor_ModifiedOn
+			, Donor_Status
+			, Donor_Status_Reason	
+			, Matched_by_User
+			' -- Ext_Insert_Fields
+		, '  A.WebSubscription_Key AS Web_Subscription_OA_ID
+			, B.Web_Subscription_Name
+			, A.Transaction_Total
+			, B.Transaction_ID
+			, B.Recurring_Donation_Start_Date
+			, B.Recurring_Donation_Stop_Date
+			, B.Next_Payment_Date
+			, B.Payment_Type
+			, B.Tender_Name
+			, B.Opt_Into_Email_Communication
+			, B.CID
+			, B.CDE2
+			, B.Type_of_Donation
+			, B.Appeal_Code
+			, C.Appeal_Name
+			, C.Delivery_Type AS Appeal_Delivery_Type
+			, B.Donor_First_Name_From_Web
+			, B.Donor_Middle_Name_From_Web
+			, B.Donor_Last_Name_From_Web
+			, B.Web_Subscription_Linked_LDS_Account
+			, B.Donor_Email_From_Web
+			, B.Donor_Phone_Number_From_Web
+			, B.Donor_Address_Line_1_From_Web
+			, B.Donor_Address_Line_2_From_Web
+			, B.Donor_Address_City_From_Web
+			, B.Donor_Address_State_From_Web
+			, B.Donor_Address_Zip_Code_From_Web
+			, B.Donor_Address_Country_From_Web
+			, B.Comments
+			, B.Telefund_Comments	
+			, B.Donor_Type	
+			, B.Donor_Match_Status	
+			, B.Web_Subscription_Status
+			, B.Web_Subscription_Status_Reason	
+			, B.Web_Subscription_Created_On
+			, B.Web_Subscription_Modified_On	
+			, B.Address_Match	
+			, B.Data_Entry_Status
+			, B.Receipt_Date
+			, D.Donor_Key
+			, E.Donor_Gender
+			, E.Donor_Birth_Dt AS Birthdate
+			, F.Donor_Preferred_Name
+			, F.Donor_Name
+			, G.Email_Address AS Donor_Primary_Email
+			, E.Donor_Marriage_Status 
+			, E.Donor_Deceased_Yn AS Donor_Deceased
+			, H.Donor_Linked_Lds_Account
+			, D.Donor_Ldsp_Id AS Donor_LDSPID	
+			, E.Donor_CreatedOn
+			, E.Donor_ModifiedOn
+			, E.Donor_Status
+			, E.Donor_Status_Reason	
+			, B.Matched_by_User
+			' -- Ext_Select_Statement
+		, '_Web_Subscription_Fact A
+				LEFT JOIN _Web_Subscription_Dim B ON A.WebSubscription_Key = B.WebSubscription_Dim_Key
+				LEFT JOIN	
+					(SELECT Appeal_Key
+						, Appeal_Code
+						, Appeal_Name
+						, Delivery_Type
+						FROM 
+							(SELECT ROW_NUMBER() OVER (PARTITION BY Appeal_Code ORDER BY Appeal_Key) AS Row_Num
+								, Appeal_Key
+								, Appeal_Code
+								, Appeal_Name
+								, Delivery_Type
+								FROM _Appeal_Dim 
+							) A
+						WHERE 1 = 1
+							AND Row_Num = 1
+					) C ON B.Appeal_Code = C.Appeal_Code
+				LEFT JOIN _Donor_Key_Dim D ON A.Donor_Key = D.Donor_Key
+				LEFT JOIN _Donor_Detail_Dim E ON D.Donor_Key = E.Donor_Key
+				LEFT JOIN _Donor_Name_Dim F ON D.Donor_Key = F.Donor_Key
+				LEFT JOIN _Email_Dim G ON D.Donor_Key = G.ContactId AND G.Email_Primary_Yn = D.[Y]
+				LEFT JOIN _Donor_Ldsp_Org_Dim H ON D.Donor_Key = H.Donor_Key													
+			' -- Ext_From_Statement
+		, '	
+			' -- Ext_Where_Statement
+		, NULL -- Tier_3_Stage
+		, NULL -- Tier_3_Stage_DateTime
+		, NULL -- Tier_4_Stage
+		, NULL -- Tier_4_Stage_DateTime
+		, ' ' -- Ext_Select_Statement_2
+		, ' ' -- Ext_From_Statement_2
+		, ' ' -- Ext_Create_Fields_2
+		, ' ' -- Ext_Create_Fields_3
+		, ' ' -- Ext_Where_Statement_2
+		, ' ' -- Ext_Where_Statement_3
+		, NULL -- Tier_5_Stage
+		, NULL -- Tier_5_Stage_DateTime
+		, NULL -- Tier_6_Stage
+		, NULL -- Tier_6_Stage_DateTime
+		, NULL -- Tier_7_Stage
+		, NULL -- Tier_7_Stage_DateTime
+		, NULL -- Tier_8_Stage
+		, NULL -- Tier_8_Stage_DateTime
+		, NULL -- Tier_9_Stage
+		, NULL -- Tier_9_Stage_DateTime
+		, 1
+		, NULL -- Extract_Stage
+		, NULL -- Extract_Stage_DateTime
+		, NULL -- Coupler_Stage
+		, NULL -- Coupler_Stage_DateTime
+		, NULL -- Tier_2_Stage
+		, NULL -- Tier_2_Stage_DateTime
+		, GETDATE()
+		, NULL
+		, NULL -- Ext_Select_Statement_3
+		, NULL -- Ext_Select_Statement_4
+		, NULL -- Ext_Select_Statement_5
+		, NULL -- Ext_Select_Statement_6
+		, NULL -- Ext_Select_Statement_7
+		, '																											
+			' -- Ext_From_Statement_3
+		, '		
+			' -- Ext_From_Statement_4
+		, NULL -- Ext_From_Statement_5
+		, NULL -- Ext_From_Statement_6
+		, NULL -- Ext_From_Statement_7
+		, NULL -- Ext_Where_Statement_4
+		, NULL -- Ext_Where_Statement_5
+		, NULL -- Ext_Where_Statement_6
+		, NULL -- Ext_Where_Statement_7
+		, NULL -- Tier_10_Stage
+		, NULL -- Tier_10_Stage_DateTime
+		, NULL -- Tier_11_Stage
+		, NULL -- Tier_11_Stage_DateTime
+		, NULL -- Tier_12_Stage
+		, NULL -- Tier_12_Stage_DateTime
+		, NULL -- Extra_7
+		, NULL -- Extra_8
+		, NULL -- Extra_9
+		, NULL -- Extra_10
+	)	
 	;	
 
 

@@ -1706,7 +1706,7 @@ FUNCTION Insert-Alpha_Table_1
 														FROM Oa_Extract.Extract_Tables
 														WHERE 1 = 1
 															AND Tier = 2
-															AND Ext_Table IN ('_Picklist_1','_Picklist_2','_Picklist_3')
+															AND Ext_Table IN ('_Picklist_1','_Picklist_2','_Picklist_3','_Picklist_4')
 															AND (Tier_2_Stage IS NULL 
 																OR Tier_2_Stage = 'Incomplete'
 																OR Tier_2_Stage LIKE 'Job%'
@@ -2342,7 +2342,7 @@ FUNCTION Insert-Alpha_Table_1
 														FROM Oa_Extract.Extract_Tables
 														WHERE 1 = 1
 															AND Tier = 2
-															AND Ext_Table IN ('_Picklist_1','_Picklist_2','_Picklist_3')
+															AND Ext_Table IN ('_Picklist_1','_Picklist_2','_Picklist_3','_Picklist_4')
 															AND 1 =
 																(SELECT COUNT(CASE WHEN Coupler_Stage = 'Complete' THEN 1 ELSE NULL END) AS Cnt
 																	FROM Oa_Extract.Extract_Tables
@@ -2507,7 +2507,7 @@ FUNCTION Insert-Alpha_Table_1
 														FROM Oa_Extract.Extract_Tables
 														WHERE 1 = 1
 															AND Tier = 2
-															AND Ext_Table IN ('_Picklist_1','_Picklist_2','_Picklist_3')
+															AND Ext_Table IN ('_Picklist_1','_Picklist_2','_Picklist_3','_Picklist_4')
 															AND (Tier_2_Stage IS NULL 
 																OR Tier_2_Stage = 'Incomplete'
 																OR Tier_2_Stage LIKE 'Job%'
