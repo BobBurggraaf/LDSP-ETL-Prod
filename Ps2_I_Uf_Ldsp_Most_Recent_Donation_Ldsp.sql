@@ -28,5 +28,6 @@ CREATE OR ALTER FUNCTION [dbo].[Ldsp_Most_Recent_Donation_Ldsp]()
 						AND A.Plus_SharedCreditType != 'Matching' -- Not Matching
 						AND A.Plus_Type IN ('Hard','Shared') -- Not Influence 100000001
 						--AND C.New_Inst = 'BYU'
+						AND B.New_ReceiptDate IS NOT NULL
 					GROUP BY A.Donor_Key
 			;
