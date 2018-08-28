@@ -29329,7 +29329,16 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				LEFT JOIN Ext_Institution D ON C.New_InstitutionalHierarchyId = D.New_InstitutionId
 			' -- Ext_From_Statement
 		, 'AND A.Donor_Key IS NOT NULL 
-			GROUP BY A.Donor_Key 
+			GROUP BY A.Donor_Key
+			CREATE NONCLUSTERED INDEX IX_Total_Giving_Dim_Total_Giving_Years
+			ON dbo._Total_Giving_Dim 
+				(Total_Giving_Current_Year_Minus_1_Byu
+					,Total_Giving_Current_Year_Minus_2_Byu
+					,Total_Giving_Current_Year_Minus_3_Byu
+					,Total_Giving_Current_Year_Minus_4_Byu
+					,Total_Giving_Current_Year_Minus_5_Byu)
+			INCLUDE (Donor_Key);
+			UPDATE STATISTICS dbo._Total_Giving_Dim;
 			' -- Ext_Where_Statement	
 		, NULL -- Tier_3_Stage
 		, NULL -- Tier_3_Stage_DateTime
@@ -34074,7 +34083,10 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			' -- Ext_Select_Statement
 		, '_Alumni_Dim				
 			' -- Ext_From_Statement
-		, ' 
+		, ' CREATE NONCLUSTERED INDEX IX_Alumni_Bridge_Alumni_Group_Key
+			ON dbo._Alumni_Bridge (Alumni_Group_Key)
+				INCLUDE (Alumni_Key);
+			UPDATE STATISTICS dbo._Alumni_Bridge;
 			' -- Ext_Where_Statement
 		, NULL -- Tier_3_Stage
 		, NULL -- Tier_3_Stage_DateTime
@@ -35808,7 +35820,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				, B.New_MiddleName2 AS Donor_Middle_Name2
 				, B.New_LastName2 AS Donor_Last_Name2
 				, B.New_PreferredName AS Donor_Preferred_Name
-				, B.Plus_DisplayName AS Donor_Display_Name
+				, COALESCE(B.Plus_DisplayName,C.Name) AS Donor_Display_Name
 				, B.New_BirthName AS Donor_Maiden_Name
 				, D.new_title AS Donor_Title
 				, E.new_professionalsuffix As Donor_Professional_Suffix
@@ -36373,7 +36385,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, D.SpousesName AS Donor_Spouses_Name
 			, CASE WHEN I.Wifes_ContactId IS NOT NULL THEN I.Couples_Name
 					WHEN H.Husbands_ContactId IS NOT NULL THEN H.Couples_Name
-					WHEN CONCAT(COALESCE(Plus_PreferredLastName,LastName),[Comma_Space],COALESCE(Plus_PreferredFirstName,FirstName)) = [Comma_Space] THEN D.Plus_DisplayName
+					WHEN COALESCE(D.Plus_PreferredLastName,D.LastName) IS NULL THEN COALESCE(D.Plus_DisplayName,J.Name)
 						ELSE CONCAT(COALESCE(Plus_PreferredLastName,LastName),[Comma_Space],COALESCE(Plus_PreferredFirstName,FirstName)) END AS Donor_Total_Name_Display
 			, C.Spouse_Education_Summary
 			' -- Ext_Select_Statement
@@ -36435,6 +36447,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 					) G ON A.Donor_Key = G.Donor_Key
 				LEFT JOIN Uf_Couples_Display_Name1() H ON A.Donor_Key = CONVERT(NVARCHAR(100),H.Husbands_ContactId)
 				LEFT JOIN Uf_Couples_Display_Name2() I ON A.Donor_Key = CONVERT(NVARCHAR(100),I.Wifes_ContactId)
+				LEFT JOIN Ext_Account J ON A.Donor_Key = CONVERT(NVARCHAR(100),J.AccountId)
 			' -- Ext_From_Statement
 		, 'AND A.Donor_Key IS NOT NULL 
 			' -- Ext_Where_Statement
@@ -48847,6 +48860,9 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 				LEFT JOIN _Total_Giving_With_Matching_Dim T ON A.Donor_Key = T.Donor_Key
 			' -- Ext_From_Statement
 		, ' AND A.Donor_Key IS NOT NULL
+			CREATE NONCLUSTERED INDEX IX_Donor_Dim_Donor_Ldsp_Id
+			ON dbo._Donor_Dim (Donor_Ldsp_Id);
+			UPDATE STATISTICS dbo._Donor_Dim;
 			' -- Ext_Where_Statement
 		, NULL -- Tier_3_Stage
 		, NULL -- Tier_3_Stage_DateTime
