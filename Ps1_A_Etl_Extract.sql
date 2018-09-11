@@ -10053,6 +10053,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Y NVARCHAR(1) DEFAULT ''Y''
 			, N NVARCHAR(1) DEFAULT ''N''
 			, None NVARCHAR(5) DEFAULT ''None''
+			, D1 NVARCHAR(2) DEFAULT ''D1''
 			' -- Ext_Create_Fields
 		, 'Donor_Key
 			' -- Ext_Insert_Fields
@@ -31041,31 +31042,31 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 		, ' ' -- Dest_Insert_Fields
 		, ' ' -- Dest_Where_Statement
 		, '	Donor_Key NVARCHAR(100)      
-			, Donor_Retention_Type_Code_Byu_Minus_1 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byu_Minus_2 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byu_Minus_3 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byu_Minus_4 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byu_Minus_5 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byui_Minus_1 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byui_Minus_2 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byui_Minus_3 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byui_Minus_4 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byui_Minus_5 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byuh_Minus_1 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byuh_Minus_2 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byuh_Minus_3 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byuh_Minus_4 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byuh_Minus_5 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Ldsbc_Minus_1 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Ldsbc_Minus_2 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Ldsbc_Minus_3 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Ldsbc_Minus_4 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Ldsbc_Minus_5 NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byu NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byui NVARCHAR(2)
-			, Donor_Retention_Type_Code_Byuh NVARCHAR(2)
-			, Donor_Retention_Type_Code_Ldsbc NVARCHAR(2)
-			, Donor_Type_Code_Ldsp NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byu_Minus_1 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byu_Minus_2 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byu_Minus_3 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byu_Minus_4 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byu_Minus_5 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byui_Minus_1 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byui_Minus_2 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byui_Minus_3 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byui_Minus_4 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byui_Minus_5 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byuh_Minus_1 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byuh_Minus_2 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byuh_Minus_3 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byuh_Minus_4 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byuh_Minus_5 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Ldsbc_Minus_1 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Ldsbc_Minus_2 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Ldsbc_Minus_3 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Ldsbc_Minus_4 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Ldsbc_Minus_5 NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byu NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byui NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Byuh NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Retention_Type_Code_Ldsbc NVARCHAR(2) DEFAULT ''D1''
+			, Donor_Type_Code_Ldsp NVARCHAR(2) DEFAULT ''D1''
 		' -- Ext_Create_Fields
 		, ' Donor_Key      
 			, Donor_Retention_Type_Code_Byu_Minus_1
@@ -31095,31 +31096,46 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Donor_Type_Code_Ldsp
 		' -- Ext_Insert_Fields
 		, '  A.Donor_Key
-			, Donor_Retention_Type_Code_Byu_Minus_1
-			, Donor_Retention_Type_Code_Byu_Minus_2
-			, Donor_Retention_Type_Code_Byu_Minus_3
-			, Donor_Retention_Type_Code_Byu_Minus_4
-			, Donor_Retention_Type_Code_Byu_Minus_5
-			, Donor_Retention_Type_Code_Byui_Minus_1
-			, Donor_Retention_Type_Code_Byui_Minus_2
-			, Donor_Retention_Type_Code_Byui_Minus_3
-			, Donor_Retention_Type_Code_Byui_Minus_4
-			, Donor_Retention_Type_Code_Byui_Minus_5
-			, Donor_Retention_Type_Code_Byuh_Minus_1
-			, Donor_Retention_Type_Code_Byuh_Minus_2
-			, Donor_Retention_Type_Code_Byuh_Minus_3
-			, Donor_Retention_Type_Code_Byuh_Minus_4
-			, Donor_Retention_Type_Code_Byuh_Minus_5
-			, Donor_Retention_Type_Code_Ldsbc_Minus_1
-			, Donor_Retention_Type_Code_Ldsbc_Minus_2
-			, Donor_Retention_Type_Code_Ldsbc_Minus_3
-			, Donor_Retention_Type_Code_Ldsbc_Minus_4
-			, Donor_Retention_Type_Code_Ldsbc_Minus_5
-			, Donor_Retention_Type_Code_Byu
-			, Donor_Retention_Type_Code_Byui
-			, Donor_Retention_Type_Code_Byuh
-			, Donor_Retention_Type_Code_Ldsbc
-			, Donor_Type_Code_Ldsp
+			, CASE WHEN Donor_Retention_Type_Code_Byu_Minus_1 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byu_Minus_1 END AS Donor_Retention_Type_Code_Byu_Minus_1
+			, CASE WHEN Donor_Retention_Type_Code_Byu_Minus_2 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byu_Minus_2 END AS Donor_Retention_Type_Code_Byu_Minus_2
+			, CASE WHEN Donor_Retention_Type_Code_Byu_Minus_3 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byu_Minus_3 END AS Donor_Retention_Type_Code_Byu_Minus_3
+			, CASE WHEN Donor_Retention_Type_Code_Byu_Minus_4 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byu_Minus_4 END AS Donor_Retention_Type_Code_Byu_Minus_4
+			, CASE WHEN Donor_Retention_Type_Code_Byu_Minus_5 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byu_Minus_5 END AS Donor_Retention_Type_Code_Byu_Minus_5
+			, CASE WHEN Donor_Retention_Type_Code_Byui_Minus_1 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byui_Minus_1 END AS Donor_Retention_Type_Code_Byui_Minus_1
+			, CASE WHEN Donor_Retention_Type_Code_Byui_Minus_2 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byui_Minus_2 END AS Donor_Retention_Type_Code_Byui_Minus_2
+			, CASE WHEN Donor_Retention_Type_Code_Byui_Minus_3 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byui_Minus_3 END AS Donor_Retention_Type_Code_Byui_Minus_3
+			, CASE WHEN Donor_Retention_Type_Code_Byui_Minus_4 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byui_Minus_4 END AS Donor_Retention_Type_Code_Byui_Minus_4
+			, CASE WHEN Donor_Retention_Type_Code_Byui_Minus_5 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byui_Minus_5 END AS Donor_Retention_Type_Code_Byui_Minus_5
+			, CASE WHEN Donor_Retention_Type_Code_Byuh_Minus_1 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byuh_Minus_1 END AS Donor_Retention_Type_Code_Byuh_Minus_1
+			, CASE WHEN Donor_Retention_Type_Code_Byuh_Minus_2 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byuh_Minus_2 END AS Donor_Retention_Type_Code_Byuh_Minus_2
+			, CASE WHEN Donor_Retention_Type_Code_Byuh_Minus_3 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byuh_Minus_3 END AS Donor_Retention_Type_Code_Byuh_Minus_3
+			, CASE WHEN Donor_Retention_Type_Code_Byuh_Minus_4 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byuh_Minus_4 END AS Donor_Retention_Type_Code_Byuh_Minus_4
+			, CASE WHEN Donor_Retention_Type_Code_Byuh_Minus_5 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byuh_Minus_5 END AS Donor_Retention_Type_Code_Byuh_Minus_5
+			, CASE WHEN Donor_Retention_Type_Code_Ldsbc_Minus_1 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Ldsbc_Minus_1 END AS Donor_Retention_Type_Code_Ldsbc_Minus_1
+			, CASE WHEN Donor_Retention_Type_Code_Ldsbc_Minus_2 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Ldsbc_Minus_2 END AS Donor_Retention_Type_Code_Ldsbc_Minus_2
+			, CASE WHEN Donor_Retention_Type_Code_Ldsbc_Minus_3 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Ldsbc_Minus_3 END AS Donor_Retention_Type_Code_Ldsbc_Minus_3
+			, CASE WHEN Donor_Retention_Type_Code_Ldsbc_Minus_4 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Ldsbc_Minus_4 END AS Donor_Retention_Type_Code_Ldsbc_Minus_4
+			, CASE WHEN Donor_Retention_Type_Code_Ldsbc_Minus_5 IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Ldsbc_Minus_5 END AS Donor_Retention_Type_Code_Ldsbc_Minus_5
 		' -- Ext_Select_Statement
 		, ' _All_Donors_ A
 				LEFT JOIN _Donor_Retention_1 B ON A.Donor_Key = B.Donor_Key
@@ -31185,7 +31201,17 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 		, NULL -- Tier_3_Stage_DateTime
 		, NULL -- Tier_4_Stage
 		, NULL -- Tier_4_Stage_DateTime
-		, ' ' -- Ext_Select_Statement_2
+		, ' , CASE WHEN Donor_Retention_Type_Code_Byu IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byu END AS Donor_Retention_Type_Code_Byu
+			, CASE WHEN Donor_Retention_Type_Code_Byui IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byui END AS Donor_Retention_Type_Code_Byui
+			, CASE WHEN Donor_Retention_Type_Code_Byuh IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Byuh END AS Donor_Retention_Type_Code_Byuh
+			, CASE WHEN Donor_Retention_Type_Code_Ldsbc IS NULL THEN A.[D1]
+				ELSE Donor_Retention_Type_Code_Ldsbc END AS Donor_Retention_Type_Code_Ldsbc
+			, CASE WHEN Donor_Type_Code_Ldsp IS NULL THEN A.[D1]
+				ELSE Donor_Type_Code_Ldsp END AS Donor_Type_Code_Ldsp 
+			' -- Ext_Select_Statement_2
 		, ' 
 			' -- Ext_From_Statement_2
 		, ' ' -- Ext_Create_Fields_2
