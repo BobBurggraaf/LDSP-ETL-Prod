@@ -25,14 +25,14 @@ SELECT DISTINCT ContactId AS Donor_Key
 							, COALESCE(Association_Name,' ') AS Legacy_Society_Memberships
 							FROM _Association_Dim
 							WHERE 1 = 1
-								AND Association_Name IN ('BYU Knight Society','LDSBC Fox Society','BYUH Cowley Society','BYU-Idaho Legacy Society')
+								AND Association_Name IN ('BYU Knight Society','LDSBC Fox Society','BYUH Cowley Society','BYUI Legacy Society')
 								AND StatusCode = 'Current'
 						) A
 					WHERE B.ContactId = A.ContactId FOR XML PATH('')),1 ,2, ''
 			)  Legacy_Society_Memberships
 	FROM _Association_Dim  B
 	WHERE 1 = 1
-		AND Association_Name IN ('BYU Knight Society','LDSBC Fox Society','BYUH Cowley Society','BYU-Idaho Legacy Society')
+		AND Association_Name IN ('BYU Knight Society','LDSBC Fox Society','BYUH Cowley Society','BYUI Legacy Society')
 		AND StatusCode = 'Current'
 
 
