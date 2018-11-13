@@ -36,6 +36,8 @@ CREATE OR ALTER FUNCTION [dbo].[_Donor_First_Gift_]()
 					, Donor_First_Gift_Date_Ldsbc
 					, Donor_First_Gift_Date_Church
 					, Donor_First_Gift_Date_Ldsp
+					, Donor_First_Gift_Date_Byupw
+					, Donor_First_Gift_To_Byupw_Amt
 					FROM _All_Donors_ A
 						LEFT JOIN 
 							(SELECT Donor_Key
@@ -273,4 +275,31 @@ CREATE OR ALTER FUNCTION [dbo].[_Donor_First_Gift_]()
 									AND B.New_ReceiptDate IS NOT NULL
 								GROUP BY A.Donor_Key
 							) Q ON A.Donor_Key = Q.Donor_Key
+						LEFT JOIN
+							(SELECT A.Donor_Key
+								, MIN(B.New_ReceiptDate) AS Donor_First_Gift_Date_Byupw
+								FROM _Donation_Fact A
+									INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+									INNER JOIN _Hier_Dim C ON A.Hier_Key = C.Hier_Key
+								WHERE 1 = 1
+									AND A.Plus_SharedCreditType != 'Matching' -- Not Matching
+									AND A.Plus_Type IN ('Hard','Shared') -- Not Influence 100000001
+									AND C.New_Inst = 'BYUPW'
+									AND B.New_ReceiptDate IS NOT NULL
+								GROUP BY A.Donor_Key
+							) R ON A.Donor_Key = R.Donor_Key
+						LEFT JOIN
+							(SELECT A.Donor_Key
+								, MAX(A.Donation_Credit_Amt) AS Donor_First_Gift_To_Byupw_Amt
+								FROM _Donation_Fact A
+									INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+									INNER JOIN Ldsp_First_Donation_Date_Byupw() C ON A.Donor_Key = C.Donor_Key AND B.New_ReceiptDate = C.Min_Receipt_Date
+									INNER JOIN _Hier_Dim D ON A.Hier_Key = D.Hier_Key
+								WHERE 1 = 1
+									AND A.Plus_SharedCreditType != 'Matching' -- Not Matching
+									AND A.Plus_Type IN ('Hard','Shared') -- Not Influence 100000001
+									AND D.New_Inst = 'BYUPW'
+									AND A.Donation_Credit_Amt IS NOT NULL
+								GROUP BY A.Donor_Key
+							) S ON A.Donor_Key = S.Donor_Key
 			;

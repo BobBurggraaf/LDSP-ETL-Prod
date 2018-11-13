@@ -20,16 +20,12 @@ RETURN
 
 SELECT CONVERT(NVARCHAR(100),ContactId) AS Donor_Key
 	, STUFF(( SELECT  ' | ' + All_Personal_Connections 
-					FROM 
-						(SELECT DISTINCT ContactId
-							, Relationship + ': (' + COALESCE(RTRIM(CONVERT(NVARCHAR(50),Relationship_LdspId)),' ') + ') ' + Relationship_Name AS All_Personal_Connections
-							FROM _Connection_Dim 
-						) A
+					FROM Uf_All_Personal_Connections_Sub_Q() A
 					WHERE B.ContactId = A.ContactId FOR XML PATH('')),1 ,3, ''
 			)  All_Personal_Connections
 	FROM 
 		(SELECT DISTINCT ContactId
-			FROM _Connection_Dim)  B
+			FROM Uf_All_Personal_Connections_Sub_Q())  B
 	WHERE 1 = 1
 		AND ContactId IS NOT NULL
 	GROUP BY ContactId
