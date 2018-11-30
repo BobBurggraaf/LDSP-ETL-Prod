@@ -45549,7 +45549,7 @@ INSERT INTO LDSPhilanthropiesDW.Oa_Extract.Extract_Tables
 			, Donor_Most_Recent_Gift_Date_Church
 			, Donor_Most_Recent_Gift_Date_Byupw
 			, Donor_Most_Recent_Gift_To_Ldsp_Amt
-			, Donor_Most_Recent_Gift_To_Byupw_Amt
+			, Donor_Most_Recent_Gift_To_Byu_Amt
 			, Donor_Most_Recent_Gift_To_Byui_Amt
 			, Donor_Most_Recent_Gift_To_Byuh_Amt
 			, Donor_Most_Recent_Gift_To_Ldsbc_Amt
